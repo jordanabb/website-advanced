@@ -1,4 +1,6 @@
 /* Example for index.css or similar global file */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'); 
+
 body {
   margin: 0; /* Basic reset */
   font-family: 'Inter', sans-serif; /* Default font */
@@ -7,8 +9,6 @@ body {
   -webkit-font-smoothing: antialiased; /* Improves font rendering */
   -moz-osx-font-smoothing: grayscale;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'); */
 
 /* Add other global resets or base styles if needed */
 * {
