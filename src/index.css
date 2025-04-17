@@ -1,0 +1,16 @@
+/* Example for index.css or similar global file */
+body {
+  margin: 0; /* Basic reset */
+  font-family: 'Inter', sans-serif; /* Default font */
+  background-color: #0D1117; /* Dark background */
+  color: #CDD9E5; /* Default text color */
+  -webkit-font-smoothing: antialiased; /* Improves font rendering */
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'); */
+
+/* Add other global resets or base styles if needed */
+* {
+   box-sizing: border-box;
+}
