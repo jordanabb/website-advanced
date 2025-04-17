@@ -1,0 +1,57 @@
+/* src/components/Header.module.css */
+
+.siteHeader {
+    position: fixed; /* Position relative to viewport */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    padding: 12px 24px; /* Adjust vertical padding for desired header height */
+    z-index: 10; /* Ensure it's above the map */
+    background-color: rgb(13, 17, 23); /* Dark background with 70% opacity - Adjust 0.7 as needed #223344; rgba(13, 17, 23, 0.5); */
+
+  
+  
+    /* Flexbox for vertical alignment */
+    display: flex;
+    align-items: center; /* Vertically center items */
+  }
+  
+  .siteHeader > * {
+    /* Re-enable pointer events for text itself */
+    pointer-events: auto;
+    margin: 0; /* Reset default margins */
+  }
+  
+  .name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; /* Example size - adjust */
+    font-weight: 700; /* Bold */
+    color: #CDD9E5;
+    margin-right: 16px; /* Space between name and title */
+  }
+  
+  .title {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px; /* Example size - adjust */
+    font-weight: 400; /* Regular */
+    color: #7D8590; /* Use secondary text color for title */
+  }
+  
+  /* Example Media Query for smaller screens */
+  @media (max-width: 600px) {
+    .siteHeader {
+       padding: 10px 16px;
+       /* Optional: Stack items vertically on small screens if needed */
+       /* flex-direction: column; */
+       /* align-items: flex-start; */ /* Align to start if stacking */
+    }
+    .name {
+       font-size: 18px;
+       /* Remove margin-right if stacking */
+       /* margin-right: 0; */
+       /* margin-bottom: 4px; */ /* Add bottom margin if stacking */
+    }
+    .title {
+        font-size: 12px;
+    }
+  }

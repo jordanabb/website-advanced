@@ -1,5 +1,6 @@
 // src/App.jsx
 import { Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ProjectsListPage from './pages/ProjectsListPage';
@@ -13,6 +14,7 @@ function App() {
   return (
     // Optional: <MainLayout> wrapper here later
     <div> {/* Basic wrapper */}
+      <Header /> {/* Add the fixed Header here */}
       {/* Add Navigation Component here later */}
       <Routes>
         <Route path="/" element={<HomePage />} />

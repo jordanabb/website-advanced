@@ -1,0 +1,42 @@
+/* src/components/SpatialResumeMap.css */
+
+/* --- IMPORTANT: Import Mapbox Base CSS --- */
+@import 'mapbox-gl/dist/mapbox-gl.css';
+
+.map-container {
+    width: 100%;
+    /* Make it slightly less than full viewport height */
+    height: 100vh; /* Example: 90% of viewport height */
+    /* OR a fixed height: */
+    /* height: 700px; */
+    background-color: #0D1117;
+    position: relative;
+    overflow: hidden;
+  }
+
+/* --- Optional: Hide Mapbox Logo (Use with caution - check ToS) --- */
+/* .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right {
+  display: none !important;
+} */
+
+/* --- Optional: Custom styles for Mapbox controls if needed --- */
+.mapboxgl-ctrl-group button {
+   background-color: rgba(48, 54, 61, 0.8) !important; /* Darker transparent background */
+   border: none !important;
+}
+.mapboxgl-ctrl-group button .mapboxgl-ctrl-icon {
+    filter: invert(80%) sepia(10%) saturate(200%) hue-rotate(180deg) brightness(100%) contrast(90%); /* Adjust to tint icons light grey/blue */
+}
+.mapboxgl-ctrl-group button:hover {
+    background-color: rgba(88, 166, 255, 0.2) !important; /* Subtle blue hover */
+}
+
+/* --- Optional: Loading indicator style (if using state) --- */
+/* .map-container > div {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #CDD9E5;
+  font-family: 'Inter', sans-serif;
+} */
