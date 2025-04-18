@@ -3,16 +3,105 @@
 /* --- IMPORTANT: Import Mapbox Base CSS --- */
 @import 'mapbox-gl/dist/mapbox-gl.css';
 
+/* --- Overall Page Wrapper --- */
+/* This acts as the positioning context for the overlay */
+.map-page-wrapper {
+  position: relative; /* Needed for absolute positioning of children */
+  width: 100%;
+  height: 100vh; /* Or the height you want the map area to occupy */
+  overflow: hidden; /* Prevent potential scrollbars from overlay */
+  /* Inherit fonts or set base font for the page */
+  font-family: 'Inter Variable', sans-serif; /* Example font from design doc */
+}
+
+/* --- Map Container --- */
 .map-container {
-    width: 100%;
-    /* Make it slightly less than full viewport height */
-    height: 100vh; /* Example: 90% of viewport height */
-    /* OR a fixed height: */
-    /* height: 700px; */
-    background-color: #0D1117;
-    position: relative;
-    overflow: hidden;
-  }
+  width: 100%;
+  height: 100%; /* Take full height of the wrapper */
+  background-color: #0D1117; /* Dark water/base color */
+  position: absolute; /* Positioned within the wrapper */
+  top: 0;
+  left: 0;
+  z-index: 1; /* Ensure map is behind overlay */
+}
+
+/* --- Controls Overlay --- */
+/* This container holds MapFilters and TimelineSlider */
+.map-controls-overlay {
+  position: absolute; /* Positioned on top of the map */
+  top: 20px;          /* Spacing from the top edge */
+  left: 20px;         /* Spacing from the left edge */
+  z-index: 10;        /* Ensure it's above the map canvas (z-index: 1) */
+
+  /* Styling based on "Generative Blueprint / Data Ink" */
+  background-color: rgba(22, 27, 34, 0.85); /* Use #161B22 (blueprint dark) with opacity */
+  padding: 15px;
+  border-radius: 6px; /* Example border radius */
+  border: 1px solid #30363D; /* Subtle border like blueprint grid lines */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+
+  /* Layout for controls inside */
+  display: flex;
+  flex-direction: column; /* Stack filters and slider vertically */
+  gap: 15px; /* Space between filter group and slider */
+
+  /* Sizing */
+  max-width: 300px; /* Prevent it from getting too wide */
+  width: auto; /* Adjust width based on content */
+
+  /* Text color for controls */
+  color: #CDD9E5; /* Light text color */
+}
+
+/* Add styles for elements INSIDE MapFilters and TimelineSlider if needed */
+/* For example: */
+.map-controls-overlay h3 { /* Assuming MapFilters uses an h3 */
+  margin: 0 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #30363D;
+  font-size: 16px;
+  font-weight: 500; /* Adjust font weight */
+  color: #CDD9E5;
+}
+
+.map-controls-overlay button {
+  /* Style filter buttons if needed */
+}
+
+.map-controls-overlay input[type="range"] {
+  /* Style timeline slider if needed */
+}
+
+
+/* --- Mapbox Popup Styling (Your Existing Styles) --- */
+.mapboxgl-popup {
+  font-family: 'Inter Variable', sans-serif !important; /* Consistent font */
+  z-index: 50; /* High z-index for popups */
+  max-width: 280px !important; /* Control popup width */
+}
+
+.mapboxgl-popup-content {
+  background-color: rgba(22, 27, 34, 0.9) !important; /* Dark background, slightly more opaque */
+  color: #CDD9E5 !important; /* Light text */
+  padding: 12px 15px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+  font-size: 13px !important; /* Slightly smaller for popups maybe */
+  line-height: 1.6 !important;
+}
+
+.mapboxgl-popup-tip {
+  /* Match content background, using transparent borders for other sides */
+  border-top-color: rgba(22, 27, 34, 0.9) !important;
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+.mapboxgl-popup-content strong {
+  color: #A0FCF7; /* Use accent color for emphasis? */
+  font-weight: 600;
+}
 
 /* --- Optional: Hide Mapbox Logo (Use with caution - check ToS) --- */
 /* .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right {
@@ -20,23 +109,128 @@
 } */
 
 /* --- Optional: Custom styles for Mapbox controls if needed --- */
+.mapboxgl-ctrl-group {
+  /* Override default shadows/backgrounds if needed */
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2) !important;
+}
+
 .mapboxgl-ctrl-group button {
    background-color: rgba(48, 54, 61, 0.8) !important; /* Darker transparent background */
    border: none !important;
+   width: 30px !important; /* Consistent size */
+   height: 30px !important;
 }
 .mapboxgl-ctrl-group button .mapboxgl-ctrl-icon {
-    filter: invert(80%) sepia(10%) saturate(200%) hue-rotate(180deg) brightness(100%) contrast(90%); /* Adjust to tint icons light grey/blue */
+    /* A simpler way to make icons light */
+    filter: brightness(1.5) contrast(0.8) grayscale(100%) invert(10%); /* Adjust values for desired light grey */
+    /* Or keep your previous filter if it worked better */
+    /* filter: invert(80%) sepia(10%) saturate(200%) hue-rotate(180deg) brightness(100%) contrast(90%); */
 }
 .mapboxgl-ctrl-group button:hover {
     background-color: rgba(88, 166, 255, 0.2) !important; /* Subtle blue hover */
 }
 
-/* --- Optional: Loading indicator style (if using state) --- */
-/* .map-container > div {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: #CDD9E5;
-  font-family: 'Inter', sans-serif;
-} */
+
+.map-controls-overlay {
+    position: absolute; /* Essential for positioning */
+  
+    /* --- Explicitly set bottom-left positioning --- */
+    bottom: 60px;       /* Distance from bottom edge (adjust as needed) */
+    left: 20px;        /* Distance from left edge (adjust as needed) */
+    top: auto;         /* CRUCIAL: Ensure it's not positioned relative to the top */
+    /* If you still face issues, re-add !important: */
+    /* bottom: 60px !important; */
+    /* top: auto !important;    */
+    /* --- End positioning --- */
+  
+    z-index: 10;        /* Keep it above the map */
+  
+    background-color: rgba(22, 27, 34, 0.85);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #30363D;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  
+    display: flex;
+    flex-direction: column; /* Stack button and content */
+  
+    max-width: 300px;     /* Limit width */
+    width: auto;          /* Size based on content */
+  
+    /* Optional: Add max-height to the container itself as a safeguard */
+    max-height: 80vh; /* e.g., limit height to 80% of viewport */
+    /* If max-height is added, overflow might be needed if content is too large */
+    /* overflow-y: auto; */ /* Uncomment if you add max-height and need scroll */
+  
+  
+    color: #CDD9E5;
+    transition: padding 0.3s ease-out; /* Keep transitions if desired */
+  }
+  
+  
+  /* Style the toggle button */
+  .toggle-button {
+      background-color: #21262D;
+      color: #CDD9E5;
+      border: 1px solid #30363D;
+      border-radius: 4px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      /* Remove margin-bottom if collapsible-content handles spacing */
+      /* margin-bottom: 10px; */
+      text-align: left;
+      transition: background-color 0.2s;
+      /* background-color: rgba(22, 27, 34, 0.85); */ /* Maybe remove this override? */
+      width: 100%; /* Make button full width of container */
+      box-sizing: border-box; /* Include padding/border in width */
+      margin-bottom: 20; /* Reset margin */
+  }
+  .toggle-button:hover {
+      background-color: #30363D;
+  }
+  
+  
+  /* --- Styles for Collapsible Content --- */
+  .collapsible-content {
+    /* Use flex to stack items inside and apply gap */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Apply the gap here */
+  
+    /* Transition properties */
+    max-height: 500px; /* Set a large enough max-height for expanded state */
+    opacity: 1;
+    overflow: hidden; /* Important for hiding content during transition */
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-out, margin-top 0.3s ease-out;
+    will-change: max-height, opacity, margin-top; /* Optimize animation */
+    margin-top: 15px; /* Space between button and content */
+  }
+  
+  /* --- Styles when the overlay is collapsed --- */
+  .map-controls-overlay.collapsed .collapsible-content {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0; /* Remove space when collapsed */
+    /* Overflow is already hidden */
+  }
+  
+  /* Optional: Reduce padding when collapsed */
+  .map-controls-overlay.collapsed {
+     /* Optionally reduce padding or adjust other container styles */
+     /* padding-top: 10px; */
+     /* padding-bottom: 10px; */
+  }
+  
+  
+  /* --- (Keep your existing Mapbox Popup/Control styles below) --- */
+  
+  /* Example of styling heading inside collapsible content */
+  .collapsible-content h3 {
+    margin: 0 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #30363D;
+    font-size: 16px;
+    font-weight: 500;
+    color: #CDD9E5;
+  }

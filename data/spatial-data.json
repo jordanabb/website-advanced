@@ -70,7 +70,7 @@
       "lat": 30.2672,
       "lon": -97.7431,
       "startDate": "2022-06",
-      "endDate": "Present",
+      "endDate": "2025-03",
       "description": "Developing agent-based models informed by census data and sociological theory to simulate population shifts and predict strain on municipal resources (schools, infrastructure) under different policy scenarios.",
       "disciplines": ["CS", "Data Sci", "Soc", "Geo", "Policy"]
     },

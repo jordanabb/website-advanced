@@ -1,0 +1,39 @@
+/* src/components/MapFilters.module.css */
+.filterContainer {
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    gap: 8px; /* Space between buttons */
+    padding: 8px;
+    background-color: rgba(13, 17, 23, 0.8); /* Semi-transparent dark background */
+    border-radius: 4px;
+  }
+  
+  /* Optional Label Style */
+  /* .filterLabel {
+    color: #7D8590;
+    font-size: 12px;
+    margin-right: 8px;
+    align-self: center;
+  } */
+  
+  .filterButton {
+    /* Inherit font */
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 12px; /* Pill shape */
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    background-color: transparent; /* Default background */
+  }
+  
+  .filterButton:hover {
+    /* Subtle hover effect - maybe lighten background slightly */
+     background-color: rgba(205, 217, 229, 0.1); /* Light grey subtle hover */
+  }
+  
+  /* Style applied dynamically via style prop now */
+  /* .filterButton.active { ... } */
