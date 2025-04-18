@@ -186,10 +186,112 @@ function SpatialResumeMap() {
                 map.addSource('resume-points', {
                     type: 'geojson',
                     data: geojsonData,
-                    promoteId: 'id' // <<<--- CRITICAL: Ensure this matches the 'id' field in your GeoJSON features
+                    promoteId: 'id', // Keep this! It's needed for feature state on individual points.
+                    cluster: true, // <<<--- Enable clustering
+                    clusterMaxZoom: 14, // <<<--- Max zoom level where points cluster (adjust as needed)
+                    clusterRadius: 50, // <<<--- Radius of each cluster cell on screen, in pixels (adjust as needed)
+                    // Optional: Add properties to clusters (e.g., count per type) - more advanced
+                    // clusterProperties: {
+                    //    'education_count': ['+', ['case', ['==', ['get', 'type'], 'education'], 1, 0]],
+                    //    'project_count': ['+', ['case', ['==', ['get', 'type'], 'project'], 1, 0]],
+                    //    // ... etc for other types
+                    // }
                 });
-                console.log('GeoJSON source added: resume-points');
+                console.log('GeoJSON source added with clustering enabled: resume-points');
             }
+
+                        // --- Add Cluster Layers ---
+                        if (!map.getLayer('clusters')) {
+                            map.addLayer({
+                                id: 'clusters',
+                                type: 'circle',
+                                source: 'resume-points',
+                                filter: ['has', 'point_count'], // Only apply to features created by clustering
+                                paint: {
+                                    // Use step expressions to style clusters based on point count
+                                    'circle-color': [
+                                        'step',
+                                        ['get', 'point_count'],
+                                        '#51bbd6', // Color for clusters with < 10 points
+                                        10, '#f1f075', // Color for clusters with 10-29 points
+                                        30, '#f28cb1'  // Color for clusters with >= 30 points
+                                    ],
+                                    'circle-radius': [
+                                        'step',
+                                        ['get', 'point_count'],
+                                        18, // Pixel radius for clusters with < 10 points
+                                        10, 22, // Radius for clusters with 10-29 points
+                                        30, 28  // Radius for clusters with >= 30 points
+                                    ],
+                                    'circle-stroke-width': 1,
+                                    'circle-stroke-color': '#fff' // Optional stroke
+                                }
+                            });
+                            console.log('Cluster layer added: clusters');
+                        }
+            
+                        if (!map.getLayer('cluster-count')) {
+                            map.addLayer({
+                                id: 'cluster-count',
+                                type: 'symbol',
+                                source: 'resume-points',
+                                filter: ['has', 'point_count'], // Only apply to clustered features
+                                layout: {
+                                    'text-field': '{point_count_abbreviated}', // Shows the count (e.g., 1.2k)
+                                    'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                                    'text-size': 12
+                                },
+                                paint: {
+                                    'text-color': '#ffffff'
+                                }
+                            });
+                            console.log('Cluster count layer added: cluster-count');
+                        }
+                        // --- Add Interaction for Clusters ---
+                        map.on('click', 'clusters', (e) => {
+                            const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                            if (!features.length) {
+                                return;
+                            }
+                            const clusterId = features[0].properties.cluster_id;
+                            const source = map.getSource('resume-points'); // Get the source object
+            
+                            // Ensure source has the getClusterExpansionZoom method (it should if cluster:true)
+                            if (source && typeof source.getClusterExpansionZoom === 'function') {
+                                source.getClusterExpansionZoom(
+                                    clusterId,
+                                    (err, zoom) => {
+                                        if (err) {
+                                            console.error("Error getting cluster expansion zoom:", err);
+                                            return;
+                                        }
+            
+                                        // Ease map view to the cluster's center and the calculated zoom level
+                                        map.easeTo({
+                                            center: features[0].geometry.coordinates,
+                                            zoom: zoom + 0.5, // Add a little buffer to the zoom
+                                            duration: 2500
+                                        });
+                                    }
+                                );
+                            } else {
+                                 console.warn('Resume-points source or getClusterExpansionZoom method not available.');
+                                 // Fallback: Maybe just zoom in one or two levels?
+                                 map.easeTo({
+                                     center: features[0].geometry.coordinates,
+                                     zoom: map.getZoom() + 1.5,
+                                     duration: 600
+                                 });
+                            }
+                        });
+            
+                        // Optional: Change cursor on cluster hover
+                        map.on('mouseenter', 'clusters', () => {
+                            map.getCanvas().style.cursor = 'pointer';
+                        });
+                        map.on('mouseleave', 'clusters', () => {
+                            map.getCanvas().style.cursor = '';
+                        });
 
             // --- Add Layers & Interactions ---
             console.log('Adding data layers and event listeners...');
