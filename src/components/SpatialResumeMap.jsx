@@ -4,9 +4,9 @@ import mapboxgl from 'mapbox-gl';
 import gsap from 'gsap';
 import resumeData from '../../data/spatial-data.json';
 import './SpatialResumeMap.css'; // Ensure this CSS file exists and imports mapbox-gl.css
-import MapFilters from './MapFilters'; // Import Filters
+import MapFilters from './MapFilters'; 
 import TimelineSlider from './TimelineSlider';
-import gsap from 'gsap';
+
 
 // Access token from environment variable
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
