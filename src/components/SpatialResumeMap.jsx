@@ -140,75 +140,113 @@ function SpatialResumeMap() {
     setGeojsonData(convertToGeoJSON(resumeData));
   }, []);
 
-  // --- Effect for Map Initialization ---
-  useEffect(() => {
-    if (!geojsonData || !MAPBOX_TOKEN) return; // Wait for data and token
+ // src/components/SpatialResumeMap.jsx
 
-    if (!mapRef.current) { // Initialize map only once
+// ... (Imports: React, useState, useRef, useEffect, useCallback, useMemo, mapboxgl, gsap, resumeData, CSS, components)
+// ... (Component definition: SpatialResumeMap() )
+// ... (State variables: initialViewState, isMapLoaded, geojsonData, popupRef, hoveredStateIdRef, minYear, maxYear, currentYear, activeFilters, filtersVisible, isPanelOpen, selectedFeatureData, panelRef)
+// ... (Handlers: handleYearChange, handleFilterChange, closePanel - closePanel might be defined later or passed in)
+// ... (Layer configs: nodeLayerIds, nodeLayersConfig)
+
+
+// --- Effect for Map Initialization ---
+useEffect(() => {
+    // Exit if data or token isn't ready
+    if (!geojsonData || !MAPBOX_TOKEN) {
+      console.log("Map initialization waiting for data or token.");
+      return;
+    }
+  
+    // Initialize map only once
+    if (!mapRef.current) {
+      console.log("Initializing Mapbox map...");
       mapboxgl.accessToken = MAPBOX_TOKEN;
       const map = new mapboxgl.Map({
         container: mapContainerRef.current,
-        style: 'mapbox://styles/mapbox/dark-v11',
+        style: 'mapbox://styles/mapbox/dark-v11', // Or your custom style
         center: [initialViewState.longitude, initialViewState.latitude],
         zoom: initialViewState.zoom,
         renderWorldCopies: false,
+        // Add any other map options here
       });
       mapRef.current = map; // Store map instance
-
+  
+      // --- Map Load Event Listener ---
       map.on('load', () => {
         console.log('Map loaded event fired. Applying styles, source, layers...');
-        // --- Apply Custom Styling ---
+  
+        // --- Apply Custom Base Map Styling ---
+            // --- Apply Custom Base Map Styling (More Robust) ---
+console.log('Applying custom base map styles...');
+// Land Styling
+['land', 'national-park', 'landuse'].forEach(layerId => {
+    if (map.getLayer(layerId)) {
         try {
-            // Land Styling
-            ['land', 'national-park', 'landuse'].forEach(layerId => {
-                if (map.getLayer(layerId)) {
-                    try { map.setPaintProperty(layerId, 'fill-color', '#161B22'); }
-                    catch (e) { console.warn(`Could not set fill-color for ${layerId}:`, e.message); }
-                }
-            });
-            // Water Styling
-            ['water', 'waterway', 'water-shadow'].forEach(layerId => {
-                 if (map.getLayer(layerId)) {
-                    try { map.setPaintProperty(layerId, 'fill-color', '#0D1117'); }
-                    catch (e) { console.warn(`Could not set fill-color for ${layerId}:`, e.message); }
-                }
-            });
-            // Border Styling
-            ['admin-1-boundary-bg', 'admin-0-boundary-bg', 'admin-1-boundary', 'admin-0-boundary', 'admin-0-boundary-disputed'].forEach(layerId => {
-                if (map.getLayer(layerId)) {
-                    try {
-                        map.setPaintProperty(layerId, 'line-color', '#30363D');
-                        map.setPaintProperty(layerId, 'line-width', 0.5);
-                        map.setPaintProperty(layerId, 'line-opacity', layerId.includes('-bg') ? 0 : 0.7);
-                    } catch(e) {
-                         console.warn(`Could not set paint props for border ${layerId}:`, e.message);
-                    }
-                }
-            });
-            // Remove Labels, Icons, Roads, Buildings
-            map.getStyle().layers.forEach(layer => {
-                if (layer.type === 'symbol' || layer.id.includes('road') || layer.id.includes('bridge') || layer.id.includes('tunnel') || layer.id.includes('railway') || layer.id.includes('transit') || layer.id.includes('aeroway') || layer.id === 'building') {
-                    try { map.setLayoutProperty(layer.id, 'visibility', 'none'); } catch (e) { /* ignore if layer removed by style */ }
-                }
-            });
-            console.log('Custom base styles applied.');
-        } catch (error) {
-            console.error("Error applying custom map styles:", error);
+            map.setPaintProperty(layerId, 'fill-color', '#161B22');
+        } catch (innerError) {
+            console.warn(`Failed to set fill-color for ${layerId}:`, innerError.message);
         }
-
+    }
+});
+// Water Styling
+['water', 'waterway', 'water-shadow'].forEach(layerId => {
+     if (map.getLayer(layerId)) {
+         try {
+            map.setPaintProperty(layerId, 'fill-color', '#0D1117');
+         } catch (innerError) {
+             console.warn(`Failed to set fill-color for ${layerId}:`, innerError.message);
+         }
+    }
+});
+// Border Styling
+['admin-1-boundary-bg', 'admin-0-boundary-bg', 'admin-1-boundary', 'admin-0-boundary', 'admin-0-boundary-disputed'].forEach(layerId => {
+    if (map.getLayer(layerId)) {
+         try {
+            map.setPaintProperty(layerId, 'line-color', '#30363D');
+            map.setPaintProperty(layerId, 'line-width', 0.5);
+            map.setPaintProperty(layerId, 'line-opacity', layerId.includes('-bg') ? 0 : 0.7);
+         } catch (innerError) {
+             console.warn(`Failed to set paint props for border ${layerId}:`, innerError.message);
+         }
+    }
+});
+// Remove Labels, Icons, Roads, etc.
+// Use try-catch within the loop to prevent one failure from stopping others
+map.getStyle().layers.forEach(layer => {
+    if (!layer) return; // Basic safety check
+    if (layer.type === 'symbol' || layer.id.includes('road') || layer.id.includes('bridge') || layer.id.includes('tunnel') || layer.id.includes('railway') || layer.id.includes('transit') || layer.id.includes('aeroway') || layer.id === 'building') {
+        try {
+            // Double-check layer exists *just before* modifying it
+            if (map.getLayer(layer.id)) {
+                map.setLayoutProperty(layer.id, 'visibility', 'none');
+            }
+        } catch (innerError) {
+             // Log warnings but allow the loop to continue
+             // Avoid logging common "layer does not exist" errors if style is changing rapidly
+             if (!innerError.message || !innerError.message.includes('does not exist')) {
+                console.warn(`Failed to hide layer ${layer.id}:`, innerError.message);
+             }
+        }
+    }
+});
+console.log('Custom base styles application attempt finished.');
+// --- End Robust Styling Block ---
+      
+  
         // --- Add Data Source ---
         if (!map.getSource('resume-points')) {
           map.addSource('resume-points', {
             type: 'geojson',
             data: geojsonData,
-            promoteId: 'id' // Crucial for feature-state
+            promoteId: 'id' // <<<--- CRITICAL: Ensure this is present
           });
           console.log('GeoJSON source added: resume-points');
         } else {
-             console.log('Source resume-points already exists.'); // Should not happen with current logic
+           console.log('Source resume-points already exists.');
         }
-
+  
         // --- Add Layers & Interactions ---
+        console.log('Adding data layers and event listeners...');
         nodeLayersConfig.forEach(layerConfig => {
           if (!map.getLayer(layerConfig.id)) {
             map.addLayer({
@@ -216,62 +254,70 @@ function SpatialResumeMap() {
               type: 'circle',
               source: 'resume-points',
               paint: {
-                'circle-radius': ['case', ['boolean', ['feature-state', 'hover'], false], layerConfig.hoverRadius ?? layerConfig.radius, layerConfig.radius],
+                // Hover state logic for radius/stroke
+                'circle-radius': [
+                  'case',
+                  ['boolean', ['feature-state', 'hover'], false], layerConfig.hoverRadius ?? layerConfig.radius,
+                  layerConfig.radius
+                ],
                 'circle-color': layerConfig.color,
-                'circle-opacity': 0.9,
-                'circle-stroke-color': layerConfig.strokeColor ?? 'transparent', // Use transparent if null
-                'circle-stroke-width': ['case', ['boolean', ['feature-state', 'hover'], false], layerConfig.hoverStrokeWidth ?? layerConfig.strokeWidth ?? 0, layerConfig.strokeWidth ?? 0], // Handle undefined stroke widths
-                'circle-color-transition': { duration: 100 },
-                'circle-radius-transition': { duration: 100 },
-                'circle-stroke-width-transition': { duration: 100 },
-                'circle-stroke-color-transition': { duration: 100 },
+                'circle-stroke-color': layerConfig.strokeColor ?? 'transparent',
+                'circle-stroke-width': [
+                    'case',
+                    ['boolean', ['feature-state', 'hover'], false], layerConfig.hoverStrokeWidth ?? layerConfig.strokeWidth ?? 0,
+                    layerConfig.strokeWidth ?? 0
+                ],
+  
+                // Control Opacity via 'active' state
+                'circle-opacity': [
+                  'case',
+                  ['!', ['boolean', ['feature-state', 'active'], true]], 0, // If active is explicitly false, opacity 0
+                  0.9 // Default visible opacity
+                ],
+                'circle-stroke-opacity': [ // Also fade stroke
+                  'case',
+                  ['!', ['boolean', ['feature-state', 'active'], true]], 0,
+                  0.9 // Default visible stroke opacity
+                ],
+  
+                // Add Transitions
+                'circle-opacity-transition': { duration: 300, delay: 0 },
+                'circle-stroke-opacity-transition': { duration: 300, delay: 0 },
+                'circle-radius-transition': { duration: 150 },
+                'circle-stroke-width-transition': { duration: 150 },
               }
-              // Filter is applied dynamically later
+              // No 'filter' property here for visibility control
             });
             console.log(`Layer added: ${layerConfig.id}`);
-
-            // --- Event Listeners (Full Implementation) ---
+  
+            // --- Event Listeners (Uncommented and Functional) ---
             map.on('mouseenter', layerConfig.id, (e) => {
               map.getCanvas().style.cursor = 'pointer';
               const feature = e.features?.[0];
-              if (!feature || feature.id == null) return; // Check feature and id existence
-
-              // If hovering over a different feature, remove state from the old one
+              if (!feature || feature.id == null) return;
+  
+              // Clear hover state from previous feature ONLY if it's different
               if (hoveredStateIdRef.current !== null && hoveredStateIdRef.current !== feature.id) {
                 try {
-                    map.setFeatureState(
-                        { source: 'resume-points', id: hoveredStateIdRef.current },
-                        { hover: false }
-                    );
-                } catch (error) {
-                    // Ignore errors if the feature/state doesn't exist anymore
-                    // console.warn(`Could not unset hover state for old feature ${hoveredStateIdRef.current}:`, error.message);
-                }
+                  if (map.getSource('resume-points') && map.getFeatureState({ source: 'resume-points', id: hoveredStateIdRef.current }) !== null) {
+                    map.setFeatureState( { source: 'resume-points', id: hoveredStateIdRef.current }, { hover: false } );
+                  }
+                } catch (error) { console.warn(`Could not unset hover state for old feature ${hoveredStateIdRef.current}:`, error.message); }
               }
-
-              // Set hover state for the new feature
+  
+              // Set hover state for the current feature
               hoveredStateIdRef.current = feature.id;
               try {
-                  map.setFeatureState(
-                      { source: 'resume-points', id: hoveredStateIdRef.current },
-                      { hover: true }
-                  );
-              } catch (error) {
-                   console.warn(`Could not set hover state for new feature ${hoveredStateIdRef.current}:`, error.message);
-              }
-
-
+                 if (map.getSource('resume-points') && map.querySourceFeatures('resume-points', { filter: ['==', 'id', feature.id] }).length > 0) {
+                   map.setFeatureState( { source: 'resume-points', id: hoveredStateIdRef.current }, { hover: true } ); // Triggers radius/stroke animation
+                 }
+              } catch (error) { console.warn(`Could not set hover state for new feature ${hoveredStateIdRef.current}:`, error.message); }
+  
               // --- Popup ---
               const coordinates = feature.geometry.coordinates.slice();
-              if (typeof coordinates[0] !== 'number' || typeof coordinates[1] !== 'number') {
-                  console.warn("Invalid coordinates for popup:", coordinates);
-                  return;
-              }
-              // Adjust longitude for world wrap
               while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
                 coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
               }
-
               const properties = feature.properties || {};
               const description = `
                 <strong>${properties.title || 'No Title'}</strong><br>
@@ -280,71 +326,114 @@ function SpatialResumeMap() {
                 ${properties.startDate ? `<br>Date: ${properties.startDate}` : ''}
                 ${properties.date && !properties.startDate ? `<br>Date: ${properties.date}` : ''}
               `;
-              popupRef.current.setLngLat(coordinates).setHTML(description).addTo(map);
+               // Ensure popup is created and has setLngLat method
+               if (popupRef.current && typeof popupRef.current.setLngLat === 'function') {
+                  popupRef.current.setLngLat(coordinates).setHTML(description).addTo(map);
+               } else {
+                  console.error("Popup reference is not correctly initialized.");
+               }
             });
-
+  
             map.on('mouseleave', layerConfig.id, () => {
               map.getCanvas().style.cursor = '';
-              popupRef.current.remove();
-              // Remove hover state only if the mouse is truly leaving *this* feature's state ID
+              popupRef.current.remove(); // Remove popup
+  
+              // Clear hover state if the ref still holds an ID
               if (hoveredStateIdRef.current !== null) {
                 try {
-                    map.setFeatureState(
-                        { source: 'resume-points', id: hoveredStateIdRef.current },
-                        { hover: false }
-                    );
-                } catch (error) {
-                    // Ignore errors if the feature/state doesn't exist anymore
-                    // console.warn(`Could not unset hover state on mouseleave for ${hoveredStateIdRef.current}:`, error.message);
-                }
+                   if (map.getSource('resume-points') && map.getFeatureState({ source: 'resume-points', id: hoveredStateIdRef.current }) !== null) {
+                     map.setFeatureState( { source: 'resume-points', id: hoveredStateIdRef.current }, { hover: false } ); // Triggers revert animation
+                   }
+                } catch (error) { console.warn(`Could not unset hover state on mouseleave for ${hoveredStateIdRef.current}:`, error.message); }
               }
-              hoveredStateIdRef.current = null; // Clear the ref when leaving any layer point
+              hoveredStateIdRef.current = null; // Clear the ref
             });
-
-            map.on('click', layerConfig.id, (e) => {
+  
+            // --- Click Listener (Placeholder for Panel Trigger) ---
+            // Note: The full implementation including panel animation trigger
+            // belongs in a separate useEffect hook added in Step 5's instructions.
+            // This basic listener can remain for initial setup/debugging.
+            const basicClickHandler = (e) => {
               const feature = e.features?.[0];
               if (feature?.properties) {
-                  console.log("Clicked Feature Properties:", feature.properties);
-                  // --- Placeholder for opening contextual panel ---
-                  // e.g., setDetailPanelData(feature.properties);
+                  console.log("Node clicked (basic listener):", feature.properties);
+                  // Later, this logic moves to a dedicated effect to handle panel state/animation
               }
-            });
-          } else {
-              console.log(`Layer ${layerConfig.id} already exists.`); // Should not happen
+            };
+            map.on('click', layerConfig.id, basicClickHandler);
+            // --- End Event Listeners ---
+  
+          } else { // end if (!map.getLayer(layerConfig.id))
+              console.log(`Layer ${layerConfig.id} already exists.`);
           }
         }); // end nodeLayersConfig.forEach
-        console.log('Layers and interactions added.');
-
-        // *** CRITICAL: Set loaded state AND apply initial filters *after* everything is added ***
+        console.log('Layers configuration and basic event listeners added.');
+  
+        // --- Set Initial Feature State ---
+        console.log('Setting initial feature states based on default filters/year...');
+        if (geojsonData && geojsonData.features) {
+            let countInitialActive = 0;
+            geojsonData.features.forEach(feature => {
+                if (feature.id == null) return;
+  
+                // Determine initial visibility based on component's starting state vars
+                const typeMatch = activeFilters.includes(feature.properties.type);
+                const dateStr = feature.properties.startDate || feature.properties.date || '';
+                const year = parseInt(dateStr.substring(0, 4) || 'NaN', 10);
+                const dateMatch = !isNaN(year) && year <= currentYear;
+                const initiallyActive = typeMatch && dateMatch;
+  
+                if (initiallyActive) { countInitialActive++; }
+  
+                try {
+                    // Initialize 'active' state. Also explicitly set 'hover' to false.
+                    map.setFeatureState(
+                        { source: 'resume-points', id: feature.id },
+                        { active: initiallyActive, hover: false }
+                    );
+                } catch (e) {
+                     console.warn(`Could not set initial state for feature ${feature.id}:`, e.message);
+                }
+            });
+            console.log(`Initial feature states set. ${countInitialActive} features initially active.`);
+        } else {
+             console.warn('GeoJSON data not available for initial state setting.');
+        }
+        // --- End Initial State Logic ---
+  
+        // *** Set loaded state AFTER layers and initial states are applied ***
         setIsMapLoaded(true);
-        applyFilters(map, activeFilters, currentYear); // Apply initial filters
-        console.log('Map is fully loaded and initial filters applied.');
-
+        console.log('Map is fully loaded and initial feature states applied.');
+  
       }); // End map.on('load')
-
+  
+      // --- Error Handling ---
       map.on('error', (e) => {
-          // Ignore background layer errors which sometimes happen on style changes/map remove
-          if (e?.error?.message?.includes("layer 'background' does not exist")) { return; }
-          console.error("Mapbox error:", e);
-          // Provide more detail for style validation errors
-          if (e.error) {
-              console.error("Mapbox error detail:", e.error);
-          }
+        // Ignore background layer errors which sometimes happen on style changes/map remove
+        if (e?.error?.message?.includes("layer 'background' does not exist")) { return; }
+        console.error("Mapbox error:", e);
+        if (e.error) { console.error("Mapbox error detail:", e.error); }
       });
+  
     } // End of map initialization block (!mapRef.current)
-
-    // --- Cleanup ---
+  
+    // --- Cleanup Function ---
+    // This runs when the component unmounts or dependencies change forcing re-initialization
     return () => {
       if (mapRef.current) {
-        console.log("Removing map on unmount.");
+        console.log("Cleaning up map instance.");
         mapRef.current.remove(); // Clean up the map instance
-        mapRef.current = null; // Clear the ref
-        setIsMapLoaded(false); // Reset loaded state
+        mapRef.current = null;   // Clear the ref
+        setIsMapLoaded(false);   // Reset loaded state
         hoveredStateIdRef.current = null; // Clear hover ref
       }
     };
-  // Dependencies for INITIALIZATION only: data, view config, and the filter function reference
-  }, [geojsonData, initialViewState, applyFilters]);
+  
+  // Dependencies for INITIALIZATION: Only re-run if data or initial view changes.
+  // Filter/year state changes should NOT trigger this whole hook again.
+  }, [geojsonData, initialViewState]); // Dependency Array
+  
+  // ... (The REST of your component: state, other useEffects for animation, handlers, render method) ...
 
 
   // --- Effect for Applying Filters on State Change ---
