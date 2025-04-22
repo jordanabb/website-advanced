@@ -1,65 +1,67 @@
 /* src/components/TimelineSlider.module.css */
 .timelineContainer {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 15px;
-    background-color: rgba(13, 17, 23, 0.8);
-    border-radius: 4px;
-    width: 100%; /* Make it take available width */
-    max-width: 500px; /* Optional max width */
-  }
-  
-  .slider {
-    flex-grow: 1; /* Allow slider to take up available space */
-    cursor: pointer;
-    height: 4px; /* Height of the track */
-    background: #30363D; /* Track color */
-    border-radius: 2px;
-    /* Reset appearance for cross-browser styling */
-    -webkit-appearance: none;
-    appearance: none;
-  }
-  
-  /* --- Slider Thumb Styling (Cross-browser) --- */
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 14px; /* Thumb width */
-    height: 14px; /* Thumb height */
-    background: #58A6FF; /* Thumb color (Primary Accent) */
-    border-radius: 50%; /* Make it circular */
-    cursor: pointer;
-    border: 2px solid #0D1117; /* Border matching background for contrast */
-    margin-top: -5px; /* Adjust vertical centering */
-  }
-  
-  .slider::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    background: #58A6FF;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #0D1117;
-  }
-  
-  /* Optional: Style track progress (more complex, often JS needed for cross-browser) */
-  
-  
-  .yearLabel {
-    color: #7D8590;
-    font-size: 12px;
-    min-width: 30px; /* Ensure space for year */
-    text-align: center;
-  }
-  
-  .currentYearDisplay {
-    color: #CDD9E5;
-    font-size: 14px;
-    font-weight: 500;
-    min-width: 40px; /* Ensure space for year */
-    text-align: center;
-    background-color: #30363D;
-    padding: 2px 6px;
-    border-radius: 3px;
-  }
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 15px;
+  background-color: rgba(13, 17, 23, 0.8);
+  border-radius: 4px;
+  width: 100%; /* Make it take available width */
+  max-width: 500px; /* Optional max width */
+}
+
+.slider {
+  flex-grow: 1; /* Allow slider to take up available space */
+  cursor: pointer;
+  height: 4px; /* Height of the track */
+  background: #30363D; /* Track color */
+  border-radius: 2px;
+  /* Reset appearance for cross-browser styling */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* --- Slider Thumb Styling (Cross-browser) --- */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 14px; /* Thumb width */
+  height: 14px; /* Thumb height */
+  background: #58A6FF; /* Thumb color (Primary Accent) */
+  border-radius: 50%; /* Make it circular */
+  cursor: pointer;
+  border: 2px solid #0D1117; /* Border matching background for contrast */
+  margin-top: -5px; /* Adjust vertical centering */
+}
+
+.slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: #58A6FF;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #0D1117;
+}
+
+/* Optional: Style track progress (more complex, often JS needed for cross-browser) */
+
+
+.yearLabel {
+  color: #7D8590;
+  font-size: 12px;
+  min-width: 30px; /* Ensure space for year */
+  text-align: center;
+}
+
+.currentYearDisplay {
+  color: #CDD9E5;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 40px; /* Ensure space for year */
+  text-align: center;
+  background-color: #30363D;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+
