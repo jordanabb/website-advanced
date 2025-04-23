@@ -1,0 +1,181 @@
+/* src/components/ContextualPanel/ContextualPanel.module.css */
+/* --- Test Version: Red Lines, Transparent Content --- */
+
+/* Overlay for positioning and optional click-outside */
+.panelOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 199;
+  display: flex;
+  justify-content: flex-end; /* Align panel to the right */
+  pointer-events: none; /* Allow clicks through overlay by default */
+}
+/* Optional: enable overlay click to close */
+/* .panelOverlay[data-clickable="true"] { pointer-events: auto; } */
+
+
+/* Main Panel Container */
+.contextualPanel {
+  position: relative;
+  width: 350px;
+  max-width: 90%;
+  height: 100vh;
+  background-color: #161B22; /* Base background for the panel itself */
+  border-left: 1px solid #30363D;
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Hide canvas overflow */
+  pointer-events: auto; /* Panel is interactive */
+
+  /* Animation */
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease-out;
+  will-change: transform, opacity;
+}
+
+/* Slide in when rendered */
+.panelOverlay:not(:empty) .contextualPanel {
+   transform: translateX(0);
+   opacity: 1;
+}
+
+/* Canvas Background Style */
+.generativeBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;  /* Take full width of parent */
+  height: 100%; /* Take full height of parent */
+  z-index: 1; /* Behind content */
+  pointer-events: none; /* Allow clicks to pass through */
+}
+
+/* Panel Content Sections */
+.panelHeader,
+.panelBody,
+.panelFooter {
+  position: relative; /* Position above canvas */
+  z-index: 2;
+  box-sizing: border-box;
+  /* --- FOR TESTING: Force transparent background --- */
+  /* This allows the canvas lines to be seen clearly behind the content */
+  background-color: transparent !important;
+  /* --- REMOVE !important after testing --- */
+}
+
+/* Header Styles */
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #30363D; /* Keep border */
+  flex-shrink: 0;
+  /* background-color: transparent !important; */ /* Applied above */
+}
+
+.panelTitle {
+  margin: 0 !important;
+  font-size: 18px !important;
+  color: #CDD9E5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #7D8590;
+  padding: 5px;
+  margin: -5px;
+  cursor: pointer;
+  line-height: 0;
+  border-radius: 4px;
+  transition: color 0.2s, background-color 0.2s;
+  flex-shrink: 0;
+}
+.closeButton:hover {
+  color: #CDD9E5;
+  background-color: rgba(88, 166, 255, 0.1);
+}
+.closeButton:focus-visible {
+   outline: 2px solid #58A6FF;
+   outline-offset: 1px;
+}
+
+/* Body Styles */
+.panelBody {
+  padding: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+  /* background-color: transparent !important; */ /* Applied above */
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #30363D #161B22; /* Base panel color for track */
+}
+.panelBody::-webkit-scrollbar { width: 6px; background-color: #161B22; } /* Base panel color */
+.panelBody::-webkit-scrollbar-thumb { background-color: #30363D; border-radius: 3px; }
+/* Remove margin from last element in body */
+.panelBody > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Body Content Specific Styles */
+.panelType {
+   font-size: 12px !important;
+   text-transform: uppercase;
+   letter-spacing: 0.5px;
+   margin-bottom: 6px !important;
+   color: #7D8590;
+   display: block;
+}
+.panelInstitution, .panelPublisher, .panelVenue {
+    margin-bottom: 12px !important;
+    font-size: 13px !important;
+    color: #7D8590;
+    display: block;
+}
+.panelDescription {
+  margin-bottom: 16px !important;
+  color: #CDD9E5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.panelDescription:last-child {
+     margin-bottom: 0 !important;
+}
+
+.panelTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.panelTag {
+  display: inline-block;
+  background-color: #30363D;
+  color: #7D8590;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Footer Styles */
+.panelFooter {
+  padding: 16px 20px;
+  border-top: 1px solid #30363D; /* Keep border */
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  /* background-color: transparent !important; */ /* Applied above */
+}
