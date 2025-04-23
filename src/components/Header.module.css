@@ -1,57 +1,207 @@
 /* src/components/Header.module.css */
 
+/* --- Main Header Container --- */
 .siteHeader {
-    position: fixed; /* Position relative to viewport */
-    top: 0;
-    left: 0;
-    width: 100%; /* Full width */
-    padding: 12px 24px; /* Adjust vertical padding for desired header height */
-    z-index: 10; /* Ensure it's above the map */
-    background-color: rgb(13, 17, 23); /* Dark background with 70% opacity - Adjust 0.7 as needed #223344; rgba(13, 17, 23, 0.5); */
+  position: fixed; /* Position relative to viewport */
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width */
+  padding: 12px 24px; /* Overall header padding */
+  z-index: 100; /* Header needs high z-index */
+  background-color: rgb(13, 17, 23); /* Dark background */
+  border-bottom: 1px solid #30363D; /* Optional subtle border */
 
-  
-  
-    /* Flexbox for vertical alignment */
-    display: flex;
-    align-items: center; /* Vertically center items */
+  /* --- Flexbox for Layout --- */
+  display: flex;
+  align-items: center; /* Vertically center items */
+  justify-content: flex-start; /* <<< CHANGED: Align left content to the start */
+  box-sizing: border-box; /* Include padding in width */
+}
+
+/* --- Left Side Container (Name/Title) --- */
+.leftContent {
+  display: flex;
+  align-items: center; /* Vertically align name and title */
+  pointer-events: auto; /* Allow interaction with text */
+  /* Optional margin to prevent overlap with fixed button on very narrow screens */
+  /* margin-right: 50px; */
+}
+
+/* --- Right Side Container (Not strictly needed for layout anymore) --- */
+/* .rightContent can be removed or left empty if div still exists in JSX */
+/* .rightContent { } */
+
+
+/* --- Name and Title Styles --- */
+.name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: #CDD9E5;
+  margin: 0; /* Remove default margin */
+  margin-right: 16px; /* Space between name and title */
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+.title {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #7D8590;
+  margin: 0; /* Remove default margin */
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+/* --- Hamburger Button Styles --- */
+.hamburgerButton {
+  /* --- Positioning --- */
+  position: fixed; /* Position relative to the viewport */
+  top: 12px;       /* Match header's top padding (adjust if needed) */
+  right: 24px;      /* Match header's right padding (adjust if needed) */
+  z-index: 101;    /* Ensure it's above header background/overlay */
+  /* --- End Positioning --- */
+
+  /* Visuals & Interaction */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.hamburgerButton:focus {
+  outline: none;
+}
+.hamburgerButton:focus-visible {
+  outline: 2px solid #58A6FF; /* Focus color */
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.hamburgerLine {
+  width: 100%;
+  height: 3px;
+  background-color: #CDD9E5; /* Line color */
+  border-radius: 2px;
+  transition: all 0.3s linear;
+  transform-origin: 1px;
+}
+
+/* Animation for 'X' */
+.hamburgerButton.open .hamburgerLine:nth-child(1) {
+  transform: rotate(45deg) translate(1px, -1px);
+}
+.hamburgerButton.open .hamburgerLine:nth-child(2) {
+  opacity: 0;
+  transform: translateX(20px);
+}
+.hamburgerButton.open .hamburgerLine:nth-child(3) {
+  transform: rotate(-45deg) translate(1px, 1px);
+}
+
+/* --- Mobile Menu Styles --- */
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  max-width: 80%;
+  height: 100vh;
+  background-color: #161B22; /* Panel background */
+  border-left: 1px solid #30363D;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+  padding: 70px 20px 20px 20px; /* Adjust top padding if needed due to fixed button */
+  box-sizing: border-box;
+  z-index: 100; /* Below button, above overlay */
+  transform: translateX(100%); /* Off-screen */
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+}
+
+.mobileMenu.open {
+  transform: translateX(0); /* Slide in */
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
+}
+
+.menuList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.menuLink {
+  display: block;
+  padding: 10px 15px;
+  color: #CDD9E5;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.menuLink:hover,
+.menuLink:focus {
+  background-color: rgba(88, 166, 255, 0.1);
+  color: #A0FCF7; /* Accent color */
+  outline: none;
+}
+
+/* --- Overlay Style --- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99; /* Below menu panel */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+  backdrop-filter: blur(2px); /* Optional */
+}
+
+/* Show overlay when menu is open (using class on header or conditional rendering) */
+.siteHeader.menuOpen .overlay,
+.overlay:not(:empty) /* Covers both cases */
+{
+ opacity: 1;
+ visibility: visible;
+ transition: opacity 0.3s ease-in-out, visibility 0s linear 0s;
+}
+
+
+/* --- Media Query Adjustments --- */
+@media (max-width: 600px) {
+  .siteHeader {
+     padding: 10px 16px;
   }
-  
-  .siteHeader > * {
-    /* Re-enable pointer events for text itself */
-    pointer-events: auto;
-    margin: 0; /* Reset default margins */
-  }
-  
   .name {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 20px; /* Example size - adjust */
-    font-weight: 700; /* Bold */
-    color: #CDD9E5;
-    margin-right: 16px; /* Space between name and title */
+     font-size: 18px;
   }
-  
   .title {
-    font-family: 'Inter', sans-serif;
-    font-size: 14px; /* Example size - adjust */
-    font-weight: 400; /* Regular */
-    color: #7D8590; /* Use secondary text color for title */
+      font-size: 12px;
+      /* display: none; */ /* Optional: hide title on small screens */
   }
-  
-  /* Example Media Query for smaller screens */
-  @media (max-width: 600px) {
-    .siteHeader {
-       padding: 10px 16px;
-       /* Optional: Stack items vertically on small screens if needed */
-       /* flex-direction: column; */
-       /* align-items: flex-start; */ /* Align to start if stacking */
-    }
-    .name {
-       font-size: 18px;
-       /* Remove margin-right if stacking */
-       /* margin-right: 0; */
-       /* margin-bottom: 4px; */ /* Add bottom margin if stacking */
-    }
-    .title {
-        font-size: 12px;
-    }
+  .mobileMenu {
+      width: 250px; /* Slightly narrower menu */
   }
+
+  /* Adjust fixed button position for smaller padding */
+  .hamburgerButton {
+     top: 10px;    /* Match new padding-top */
+     right: 16px;   /* Match new padding-right */
+  }
+}

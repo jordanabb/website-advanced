@@ -1,32 +1,54 @@
 // src/App.jsx
-import { Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import HomePage from './pages/HomePage';
+
+import React from 'react';
+import {
+  // No Router import needed here if it's in main.jsx
+  Routes,
+  Route,
+  Link
+} from 'react-router-dom';
+
+// Import your page components
+import SpatialResumeMap from './components/SpatialResumeMap';
 import AboutPage from './pages/AboutPage';
-import ProjectsListPage from './pages/ProjectsListPage';
-import ProjectDetailPage from './pages/ProjectDetailPage';
-import PublicationsPage from './pages/PublicationsPage';
-import CvPage from './pages/CvPage';
+import CVPage from './pages/CvPage'; // Corrected case
 import ContactPage from './pages/ContactPage';
-import styles from './App.module.css'; 
+
+// Import your Header component
+import Header from './components/Header'; // Corrected casing
+
+// Optional: Import global styles
+import './App.module.css'; // Or your global CSS entry point
 
 function App() {
   return (
-    // Optional: <MainLayout> wrapper here later
-    <div> {/* Basic wrapper */}
-      <Header /> {/* Add the fixed Header here */}
-      {/* Add Navigation Component here later */}
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/projects" element={<ProjectsListPage />} />
-        <Route path="/projects/:projectId" element={<ProjectDetailPage />} /> {/* Route for specific projects */}
-        <Route path="/publications" element={<PublicationsPage />} />
-        <Route path="/cv" element={<CvPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        {/* Optional: Add a 404 Not Found route */}
-      </Routes>
-    </div>
+    // Use a Fragment or div, NOT <Router> here
+    <>
+      {/* Render your Header component */}
+      <Header />
+
+      {/* Main Content Area */}
+      <main> {/* Optional semantic wrapper */}
+          <Routes>
+            {/* Routes are defined inside the component that is wrapped by the Router */}
+            <Route path="/" element={<SpatialResumeMap />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/cv" element={<CVPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="*" element={
+              <div style={{ padding: '40px', textAlign: 'center' }}>
+                <h2>404 Not Found</h2>
+                <Link to="/" style={{ color: '#58A6FF' }}>Go Home</Link>
+              </div>
+            } />
+          </Routes>
+      </main>
+
+      {/* Optional: Footer Component */}
+      {/* <footer> Your Footer Content Here </footer> */}
+
+    </> // End Fragment or div
   );
 }
+
 export default App;
