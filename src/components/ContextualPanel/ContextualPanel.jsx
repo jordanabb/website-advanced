@@ -124,6 +124,22 @@ function ContextualPanel({
     const pointsRef = useRef([]);
     const connectionsRef = useRef([]);
 
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'ArrowLeft') {
+                onNavigatePrev();
+            } else if (event.key === 'ArrowRight') {
+                onNavigateNext();
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [onNavigatePrev, onNavigateNext]);
+
     // --- Function to Setup Points and Connections ---
     // Wrapped in useCallback to keep its identity stable unless dependencies change (none here)
     const setupDrawingData = useCallback(() => {

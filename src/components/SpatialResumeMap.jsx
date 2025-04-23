@@ -12,6 +12,7 @@ import TimelineSlider from './TimelineSlider';    // ADJUST PATH if needed
 import './SpatialResumeMap.css';             // Your component's CSS file
 import ContextualPanel from './ContextualPanel/ContextualPanel';
 import Icon from './ui/Icon/Icon'; // Import Icon for navigation buttons
+import Button from './ui/Button/Button'; // <<< ADDED: Import Button component
 
 // Ensure Mapbox CSS is loaded globally (e.g., in index.html or main App component)
 
@@ -373,7 +374,7 @@ map.on('click', mainId, (e) => {
                 mapRef.current.flyTo({
                     center: newFeature.geometry.coordinates,
                     zoom: Math.max(mapRef.current.getZoom(), 8), // Zoom in if needed, but not too far
-                    duration: 1000 // Animation duration in ms
+                    duration: 2500 // Animation duration in ms
                 });
             }
         }
@@ -381,6 +382,36 @@ map.on('click', mainId, (e) => {
 
     const handleNavigatePrev = useCallback(() => handleNavigate('prev'), [handleNavigate]);
     const handleNavigateNext = useCallback(() => handleNavigate('next'), [handleNavigate]);
+
+    // --- Reset View Handler ---
+    const handleResetView = useCallback(() => {
+        if (!mapRef.current) return;
+        console.log("Reset View Clicked - Flying map only"); // Add log for debugging
+
+        // Reset map position and zoom
+        mapRef.current.flyTo({
+            center: [initialViewState.longitude, initialViewState.latitude],
+            zoom: initialViewState.zoom,
+            duration: 1500 // Animation duration
+        });
+
+        // Reset filters
+        setActiveFilters(['education', 'project', 'publication', 'conference']);
+
+        // Reset timeline
+        setDisplayYear(maxYear);
+        // Use a timeout to ensure the debounced function doesn't immediately override
+        setTimeout(() => {
+            setCurrentYear(maxYear);
+            // Cancel any pending debounced year change from slider interaction
+            debouncedYearChange.cancel();
+        }, 50); // Small delay
+
+        // Close contextual panel
+        setSelectedNodeData(null);
+        setSelectedIndex(-1);
+
+    }, [initialViewState, maxYear, debouncedYearChange]); // Dependencies - Restored
 
     // --- JSX Rendering ---
     return (
@@ -425,6 +456,15 @@ map.on('click', mainId, (e) => {
                                 //  disabled={isTransitioning}
                                  isDragging={isSliderDragging}
                              />
+                             {/* Reset Button */}
+                             <Button
+                                 onClick={handleResetView}
+                                 variant="secondary" // Or choose another appropriate variant
+                                 size="small"
+                                 style={{ marginTop: 'var(--spacing-medium)', width: '100%' }} // Add some top margin and make full width
+                             >
+                                 <Icon name="RefreshCcw" size={14} style={{ marginRight: '6px' }} /> Reset View
+                             </Button>
                          </>
                      ) : (
                          <p>Loading controls...</p> // Or a spinner
