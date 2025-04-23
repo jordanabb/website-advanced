@@ -20,7 +20,7 @@
 /* Main Panel Container */
 .contextualPanel {
   position: relative;
-  width: 350px;
+  width: 500px;
   max-width: 90%;
   height: 100vh;
   background-color: #161B22; /* Base background for the panel itself */
@@ -186,7 +186,31 @@
   border-top: 1px solid #30363D; /* Keep border */
   flex-shrink: 0;
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: space-between; /* Space out actions and navigation */
+  align-items: center; /* Vertically align items */
+  gap: 16px; /* Add some gap between sections */
   /* background-color: transparent !important; */ /* Applied above */
+}
+
+/* Container for existing action buttons */
+.footerActions {
+    display: flex;
+    gap: 10px; /* Gap between action buttons */
+    align-items: center;
+}
+
+/* Container for navigation controls */
+.footerNavigation {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Gap between nav buttons and counter */
+}
+
+/* Style for the counter text */
+.navCounter {
+    color: #7D8590; /* Use a subtle color */
+    font-size: 13px !important;
+    min-width: 40px; /* Give it some space */
+    text-align: center;
+    margin: 0 !important; /* Remove default margins */
 }

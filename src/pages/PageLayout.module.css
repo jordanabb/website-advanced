@@ -1,0 +1,16 @@
+/* src/pages/PageLayout.module.css */
+.mainContent {
+    max-width: 1100px; /* Example max width for content */
+    margin: 40px auto; /* Center content with top/bottom margin */
+    padding: 0 20px; /* Add horizontal padding */
+    /* Add any other common styles for page containers here */
+  }
+  
+  /* Add media queries for responsive adjustments */
+  @media (max-width: 768px) {
+    .mainContent {
+       margin-top: 20px;
+       margin-bottom: 20px;
+       padding: 0 15px;
+    }
+  }

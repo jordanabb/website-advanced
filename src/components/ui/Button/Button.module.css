@@ -1,0 +1,76 @@
+/* src/components/ui/Button/Button.module.css */
+.button {
+    display: inline-flex; /* Aligns icon and text nicely if used */
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px; /* Base padding for 'medium' */
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500; /* Medium weight */
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid transparent; /* Base border */
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+  }
+  
+  .button:focus-visible { /* Modern focus outline */
+     outline: 2px solid #58A6FF; /* Primary Accent */
+     outline-offset: 2px;
+  }
+  .button:disabled {
+     opacity: 0.5;
+     cursor: not-allowed;
+  }
+  
+  /* Primary */
+  .primary {
+    background-color: #58A6FF; /* Primary Accent */
+    color: #0D1117; /* Dark background for contrast */
+    border-color: #58A6FF;
+  }
+  .primary:not(:disabled):hover {
+    background-color: #7AB1FF; /* Lighter blue */
+    border-color: #7AB1FF;
+  }
+   .primary:not(:disabled):active {
+     background-color: #4A96E8; /* Darker blue */
+     border-color: #4A96E8;
+   }
+  
+  /* Secondary (Outline) */
+  .secondary {
+    background-color: transparent;
+    color: #58A6FF; /* Primary Accent */
+    border-color: #58A6FF;
+  }
+   .secondary:not(:disabled):hover {
+     background-color: rgba(88, 166, 255, 0.1); /* Subtle blue background */
+     border-color: #7AB1FF; /* Lighter border */
+     color: #7AB1FF;
+   }
+   .secondary:not(:disabled):active {
+      background-color: rgba(88, 166, 255, 0.2);
+      border-color: #4A96E8;
+      color: #4A96E8;
+   }
+  
+  /* Text (Link-like) */
+  .text {
+    background-color: transparent;
+    color: #58A6FF; /* Primary Accent */
+    border-color: transparent;
+    padding: 8px 10px; /* Adjust padding maybe */
+  }
+  .text:not(:disabled):hover {
+     color: #7AB1FF;
+     text-decoration: underline;
+  }
+  .text:not(:disabled):active {
+      color: #4A96E8;
+  }
+  
+  /* Optional Sizes */
+  .small { padding: 4px 10px; font-size: 12px; }
+  .large { padding: 12px 24px; font-size: 16px; }

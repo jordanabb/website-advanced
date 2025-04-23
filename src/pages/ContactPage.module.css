@@ -1,0 +1,71 @@
+/* src/pages/ContactPage.module.css */
+.contactDetails {
+    margin-top: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .contactItem {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+  }
+  
+  .contactIcon {
+    flex-shrink: 0; /* Prevent icon from shrinking */
+    color: #7D8590; /* Muted icon color */
+  }
+  
+  .contactLink {
+    color: #58A6FF; /* Link color */
+    text-decoration: none;
+    font-size: 16px; /* Match body text maybe */
+  }
+  .contactLink:hover {
+    text-decoration: underline;
+  }
+  
+  
+  .profilesHeader {
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  
+  .profileLinks {
+    display: flex;
+    flex-wrap: wrap; /* Allow links to wrap */
+    gap: 20px; /* Space between links */
+  }
+  
+  .profileLink {
+    display: inline-flex; /* Align icon and text */
+    align-items: center;
+    gap: 8px;
+    color: #CDD9E5; /* Primary text color for links */
+    text-decoration: none;
+    padding: 8px 12px; /* Add some padding for click area */
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border: 1px solid transparent; /* For potential border on hover */
+  }
+  
+  .profileLink:hover {
+    color: #58A6FF; /* Accent color on hover */
+    background-color: rgba(88, 166, 255, 0.1); /* Subtle blue background */
+    /* border-color: #30363D; */ /* Optional subtle border */
+  }
+  
+  .profileIcon {
+     color: #7D8590; /* Muted icon color by default */
+     transition: color 0.2s ease;
+  }
+  .profileLink:hover .profileIcon {
+      color: #58A6FF; /* Match link hover color */
+  }
+  
+  /* Styles for contact form if added */
+  .formHeader {
+     margin-top: 50px;
+  }
+  .contactForm {
+     /* Layout styles for form */
+  }

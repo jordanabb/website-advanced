@@ -10,6 +10,8 @@ import resumeData from '../../data/spatial-data.json'; // ADJUST PATH if needed
 import MapFilters from './MapFilters';          // ADJUST PATH if needed
 import TimelineSlider from './TimelineSlider';    // ADJUST PATH if needed
 import './SpatialResumeMap.css';             // Your component's CSS file
+import ContextualPanel from './ContextualPanel/ContextualPanel';
+import Icon from './ui/Icon/Icon'; // Import Icon for navigation buttons
 
 // Ensure Mapbox CSS is loaded globally (e.g., in index.html or main App component)
 
@@ -61,7 +63,9 @@ function SpatialResumeMap() {
 
     const [initialViewState] = useState({ longitude: -98.5795, latitude: 39.8283, zoom: 3.5 });
     const [isMapLoaded, setIsMapLoaded] = useState(false);
-    const [isTransitioning, setIsTransitioning] = useState(false); // Indicates fade animation is running
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [selectedNodeData, setSelectedNodeData] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected node in filtered list
 
     // Initialize Popup ref safely after mount
     useEffect(() => {
@@ -174,11 +178,46 @@ function SpatialResumeMap() {
                 map.on('mousemove', mainId, e => { if(isTransitioning) return; if(e.features?.length > 0){ const currentId=e.features[0].id; if(hoveredStateIdRef.current !== currentId){ if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false});}catch(e){} hoveredStateIdRef.current=currentId; try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:true});}catch(e){}}} else { if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){} }});
                 map.on('mouseleave', mainId, () => { if(isTransitioning) return; if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){} popupRef.current?.remove(); map.getCanvas().style.cursor=''; });
                 map.on('mouseenter', mainId, e => { if(isTransitioning) return; map.getCanvas().style.cursor='pointer'; const f=e.features?.[0]; if(!f?.geometry?.coordinates || !f?.properties) return; const co=f.geometry.coordinates.slice(); while(Math.abs(e.lngLat.lng-co[0])>180){co[0]+=e.lngLat.lng>co[0]?360:-360;} const p=f.properties; const d=`<strong>${p.title||'Untitled'}</strong><br>Type: ${p.type||'N/A'}<br>Loc: ${p.location||'N/A'}${p.startDate?`<br>Start: ${p.startDate}`:''}${p.endDate && p.endDate !== "Present" ?`<br>End: ${p.endDate}`:''}${p.endDate === "Present" ? `<br>Ongoing`:''}${p.date&&!p.startDate?`<br>Date: ${p.date}`:''}`; if(popupRef.current?.setLngLat){popupRef.current.setLngLat(co).setHTML(d).addTo(map);} });
-                map.on('click', mainId, e => { if(isTransitioning) return; const f=e.features?.[0]; if(f?.properties){console.log("Node clicked:", f.properties);/* --- TODO: Trigger Panel --- */} });
+                // Inside map.once('load', ...) -> nodeLayersConfig.forEach(...)
+map.on('click', mainId, (e) => {
+    const feature = e.features?.[0];
+    if (feature?.properties) {
+        const clickedId = feature.id; // Use feature.id which is promoted
+        const currentFeatures = filteredGeojsonData.features; // Use the currently filtered data
+        const index = currentFeatures.findIndex(f => f.id === clickedId);
+
+        console.log(`Node clicked: ID=${clickedId}, Index=${index}`); // Log which node and its index
+
+        if (index !== -1) {
+            setSelectedNodeData(feature.properties);
+            setSelectedIndex(index);
+        } else {
+            console.warn(`Clicked feature ID ${clickedId} not found in filteredGeojsonData.`);
+            setSelectedNodeData(null);
+            setSelectedIndex(-1);
+        }
+    } else {
+        setSelectedNodeData(null);
+        setSelectedIndex(-1);
+    }
+});
+            });
+            map.on('click', (e) => {
+                // Check if the click originated on one of your node layers
+                const nodeLayerIds = nodeLayersConfig.map(lc => lc.id);
+                const features = map.queryRenderedFeatures(e.point, { layers: nodeLayerIds });
+            
+                // If the click was NOT on one of your nodes (i.e., on the map background)
+                if (!features.length) {
+                     console.log("Map background clicked, closing panel.");
+                     setSelectedNodeData(null);
+                     setSelectedIndex(-1); // Reset index when closing panel
+                }
+                // If click WAS on a node, the layer-specific handler above already ran/will run
             });
 
             // Setup Cluster Interactions
-            map.on('click', 'clusters', e => { if(isTransitioning) return; const f=map.queryRenderedFeatures(e.point,{layers:['clusters']}); if(!f.length) return; const cId=f[0].properties.cluster_id; const src=map.getSource('resume-points'); if(src?.getClusterExpansionZoom){src.getClusterExpansionZoom(cId,(err,zoom)=>{ if(err)return; map.easeTo({center:f[0].geometry.coordinates,zoom:Math.min(zoom+0.5,map.getMaxZoom()),duration:800}); });}else{map.easeTo({center:f[0].geometry.coordinates,zoom:Math.min(map.getZoom()+1.5,map.getMaxZoom()),duration:600});} });
+            map.on('click', 'clusters', e => { if(isTransitioning) return; const f=map.queryRenderedFeatures(e.point,{layers:['clusters']}); if(!f.length) return; const cId=f[0].properties.cluster_id; const src=map.getSource('resume-points'); if(src?.getClusterExpansionZoom){src.getClusterExpansionZoom(cId,(err,zoom)=>{ if(err)return; map.easeTo({center:f[0].geometry.coordinates,zoom:Math.min(zoom+0.5,map.getMaxZoom()),duration:2500}); });}else{map.easeTo({center:f[0].geometry.coordinates,zoom:Math.min(map.getZoom()+1.5,map.getMaxZoom()),duration:600});} });
             map.on('mouseenter', 'clusters', () => map.getCanvas().style.cursor='pointer');
             map.on('mouseleave', 'clusters', () => map.getCanvas().style.cursor='');
 
@@ -313,27 +352,60 @@ function SpatialResumeMap() {
 
     }, [isMapLoaded, filteredGeojsonData, isSliderDragging]); // Effect dependencies
 
+    // --- Navigation Handlers ---
+    const handleNavigate = useCallback((direction) => {
+        const currentFeatures = filteredGeojsonData.features;
+        if (!currentFeatures || currentFeatures.length === 0 || selectedIndex === -1) return;
+
+        let newIndex;
+        if (direction === 'prev') {
+            newIndex = selectedIndex > 0 ? selectedIndex - 1 : currentFeatures.length - 1; // Wrap around
+        } else { // 'next'
+            newIndex = selectedIndex < currentFeatures.length - 1 ? selectedIndex + 1 : 0; // Wrap around
+        }
+
+        const newFeature = currentFeatures[newIndex];
+        if (newFeature?.properties) {
+            setSelectedNodeData(newFeature.properties);
+            setSelectedIndex(newIndex);
+            // Optional: Fly to the new point on the map
+            if (mapRef.current && newFeature.geometry?.coordinates) {
+                mapRef.current.flyTo({
+                    center: newFeature.geometry.coordinates,
+                    zoom: Math.max(mapRef.current.getZoom(), 8), // Zoom in if needed, but not too far
+                    duration: 1000 // Animation duration in ms
+                });
+            }
+        }
+    }, [filteredGeojsonData.features, selectedIndex]);
+
+    const handleNavigatePrev = useCallback(() => handleNavigate('prev'), [handleNavigate]);
+    const handleNavigateNext = useCallback(() => handleNavigate('next'), [handleNavigate]);
 
     // --- JSX Rendering ---
     return (
-        <div className="map-page-wrapper">
+        <div className="map-page-wrapper"> {/* Main wrapper for positioning */}
+
             {/* Map container div */}
             <div ref={mapContainerRef} className="map-container"></div>
 
-            {/* Optional: Indicator shown during fade transitions */}
-            {isTransitioning && <div className="map-transition-indicator">Updating...</div>}
+            {/* Optional: Indicator shown during data processing (if you re-add isTransitioning) */}
+            {/* {isTransitioning && <div className="map-transition-indicator">Updating...</div>} */}
 
             {/* Controls Overlay Panel */}
             <div className={`map-controls-overlay ${!filtersVisible ? 'collapsed' : ''}`}>
+                 {/* Toggle Button for Controls */}
                  <button
-                     className="toggle-button" // Use classes from your CSS
+                     className="toggle-button"
                      onClick={() => setFiltersVisible(v => !v)}
-                     disabled={isTransitioning}
+                    //  disabled={isTransitioning} // Can re-enable if needed
                      aria-expanded={filtersVisible}
                      aria-controls="collapsible-map-controls"
                  >
                      {filtersVisible ? 'Hide Controls ▼' : 'Show Controls ▲'}
                  </button>
+
+                 {/* Collapsible Content Area */}
                  <div id="collapsible-map-controls" className={`collapsible-content ${!filtersVisible ? 'hidden' : ''}`}>
                      {/* Render actual controls only if date range is valid */}
                      {(minYear !== Infinity && maxYear !== -Infinity) ? (
@@ -341,7 +413,7 @@ function SpatialResumeMap() {
                              <MapFilters // Your actual component
                                  activeFilters={activeFilters}
                                  onFilterChange={handleFilterChange}
-                                 disabled={isTransitioning}
+                                //  disabled={isTransitioning}
                              />
                              <TimelineSlider // Your actual component
                                  minYear={minYear}
@@ -350,7 +422,7 @@ function SpatialResumeMap() {
                                  onYearChange={handleSliderChange}
                                  onDragStart={handleSliderDragStart}
                                  onDragEnd={handleSliderDragEnd}
-                                 disabled={isTransitioning}
+                                //  disabled={isTransitioning}
                                  isDragging={isSliderDragging}
                              />
                          </>
@@ -359,10 +431,29 @@ function SpatialResumeMap() {
                      )}
                  </div>
             </div>
-             {/* --- Contextual Panel placeholder --- */}
-             {/* <ContextualPanel selectedData={selectedFeatureData} onClose={handlePanelClose} /> */}
-        </div>
+
+            {/* --- Conditionally Render Contextual Panel --- */}
+            {/* This will only render when selectedNodeData is not null */}
+            {selectedNodeData && (
+                <ContextualPanel
+                    data={selectedNodeData} // Pass the selected node's data as a prop
+                    onClose={() => {
+                        setSelectedNodeData(null);
+                        setSelectedIndex(-1); // Reset index on close
+                    }}
+                    // Navigation Props
+                    onNavigatePrev={handleNavigatePrev}
+                    onNavigateNext={handleNavigateNext}
+                    currentIndex={selectedIndex}
+                    totalItems={filteredGeojsonData.features.length}
+                />
+            )}
+            {/* --- End Contextual Panel --- */}
+
+        </div> // End map-page-wrapper
     );
 }
+
+// ... (Helper functions like convertToGeoJSON, config like nodeLayersConfig if defined outside) ...
 
 export default SpatialResumeMap;

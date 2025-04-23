@@ -12,7 +12,7 @@ import styles from './ContextualPanel.module.css'; // Import CSS Module
 
 // --- Configuration for Canvas Pattern ---
 const LINE_COLOR = "rgba(255, 215, 0, 0.3)"; // Gold color @ 70% opacity
-const LINE_WIDTH = 0.35;                     // Thin lines (try 1 if needed)
+const LINE_WIDTH = .35;                     // Thin lines (try 1 if needed)
 const NUM_POINTS = 60;                      // Number of "cell centers"
 const CONNECTION_RADIUS = 200;              // Max distance to connect points
 const ANIMATION_DURATION = 3000;            // Duration for lines to draw (in ms)
@@ -109,7 +109,16 @@ const animateDrawing = (canvas, startTime, connections) => {
 
 
 // --- ContextualPanel Component ---
-function ContextualPanel({ data, onClose, className = '' }) {
+function ContextualPanel({
+    data,
+    onClose,
+    className = '',
+    // Navigation Props
+    onNavigatePrev,
+    onNavigateNext,
+    currentIndex,
+    totalItems
+}) {
     const canvasRef = useRef(null);
     const animationFrameIdRef = useRef(null);
     const pointsRef = useRef([]);
@@ -286,8 +295,36 @@ function ContextualPanel({ data, onClose, className = '' }) {
 
                 {/* Footer */}
                 <div className={styles.panelFooter}>
-                     {(data.type === 'project' || data.type === 'publication') && (<Button variant="secondary" size="small">View Full Details</Button>)}
-                     {data.url && data.type !== 'project' && (<Button variant="secondary" size="small" href={data.url} target="_blank" rel="noopener noreferrer">View Source <Icon name="ExternalLink" size={14} style={{marginLeft: '6px'}}/></Button>)}
+                    {/* Existing Buttons */}
+                    <div className={styles.footerActions}>
+                        {(data.type === 'project' || data.type === 'publication') && (<Button variant="secondary" size="small">View Full Details</Button>)}
+                        {data.url && data.type !== 'project' && (<Button variant="secondary" size="small" href={data.url} target="_blank" rel="noopener noreferrer">View Source <Icon name="ExternalLink" size={14} style={{marginLeft: '6px'}}/></Button>)}
+                    </div>
+
+                    {/* Navigation Controls */}
+                    {totalItems > 1 && ( // Only show navigation if there's more than one item
+                        <div className={styles.footerNavigation}>
+                            <Button
+                                variant="ghost"
+                                size="small"
+                                onClick={onNavigatePrev}
+                                disabled={currentIndex === 0} // Disable if first item
+                                aria-label="Previous item"
+                            >
+                                <Icon name="ChevronLeft" size={16} />
+                            </Button>
+                            <Text type="caption" className={styles.navCounter}>{currentIndex + 1} / {totalItems}</Text>
+                            <Button
+                                variant="ghost"
+                                size="small"
+                                onClick={onNavigateNext}
+                                disabled={currentIndex === totalItems - 1} // Disable if last item
+                                aria-label="Next item"
+                            >
+                                <Icon name="ChevronRight" size={16} />
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </aside>
         </div>
