@@ -24,8 +24,10 @@
   display: flex;
   align-items: center; /* Vertically align name and title */
   pointer-events: auto; /* Allow interaction with text */
-  /* Optional margin to prevent overlap with fixed button on very narrow screens */
-  /* margin-right: 50px; */
+  /* Prevent overlap with fixed button on narrow screens */
+  margin-right: 80px; /* Ensure space for theme toggle + hamburger */
+  flex: 1; /* Allow it to take available space */
+  min-width: 0; /* Allow text to shrink if needed */
 }
 
 /* --- Right Side Container --- */
@@ -192,13 +194,21 @@
   .siteHeader {
      padding: 10px 16px;
   }
+  
+  .leftContent {
+     margin-right: 100px; /* More space on mobile for buttons */
+  }
+  
   .name {
-     font-size: 18px;
+     font-size: 16px; /* Smaller on mobile */
+     margin-right: 8px; /* Less space between name and title */
   }
+  
   .title {
-      font-size: 12px;
-      /* display: none; */ /* Optional: hide title on small screens */
+      font-size: 11px;
+      /* Consider hiding title on very small screens */
   }
+  
   .mobileMenu {
       width: 250px; /* Slightly narrower menu */
   }
@@ -207,5 +217,24 @@
   .rightContent {
      right: 16px; /* Match new padding-right */
      top: 20px; /* Center within smaller header: 10px padding + 10px to center */
+  }
+}
+
+/* Additional mobile breakpoint for very small screens */
+@media (max-width: 480px) {
+  .leftContent {
+     margin-right: 120px; /* Even more space on very small screens */
+  }
+  
+  .name {
+     font-size: 14px;
+  }
+  
+  .title {
+     display: none; /* Hide title on very small screens */
+  }
+  
+  .mobileMenu {
+     width: 90%; /* Take most of screen width on small devices */
   }
 }

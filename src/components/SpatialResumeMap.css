@@ -111,14 +111,8 @@ body:has(.map-page-wrapper) {
   font-weight: 600;
 }
 
-/* --- Optional: Hide Mapbox Logo (Use with caution - check ToS) --- */
-/* .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right {
-  display: none !important;
-} */
-
-/* --- Optional: Custom styles for Mapbox controls if needed --- */
 .mapboxgl-ctrl-group {
-  /* Override default shadows/backgrounds if needed */
+
   box-shadow: 0 1px 4px rgba(0,0,0,0.2) !important;
 }
 
@@ -174,6 +168,47 @@ body:has(.map-page-wrapper) {
     color: var(--color-text-primary);
     transition: padding 0.3s ease-out, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Keep transitions if desired */
   }
+
+/* Mobile optimizations for map controls */
+@media (max-width: 768px) {
+  .map-controls-overlay {
+    bottom: 20px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+    width: auto;
+    padding: 8px;
+    max-height: 60vh; /* Reduce max height on mobile */
+  }
+  
+  .toggle-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  
+  .collapsible-content {
+    gap: 10px; /* Reduce gap between elements */
+  }
+}
+
+@media (max-width: 480px) {
+  .map-controls-overlay {
+    bottom: 15px;
+    left: 8px;
+    right: 8px;
+    padding: 6px;
+    max-height: 50vh; /* Further reduce on small screens */
+  }
+  
+  .toggle-button {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+  
+  .collapsible-content {
+    gap: 8px;
+  }
+}
   
   
   /* Style the toggle button */

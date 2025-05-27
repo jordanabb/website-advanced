@@ -68,3 +68,70 @@
   margin-left: -10px; /* Move it to the left to prevent cutoff */
   transition: color 0.3s ease, background-color 0.3s ease;
 }
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .timelineContainer {
+    gap: 8px;
+    padding: 8px 12px;
+  }
+  
+  .slider {
+    height: 6px; /* Slightly thicker for easier touch interaction */
+  }
+  
+  .slider::-webkit-slider-thumb {
+    width: 18px; /* Larger thumb for touch */
+    height: 18px;
+    margin-top: -6px; /* Adjust for larger thumb */
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .yearLabel {
+    font-size: 11px;
+    min-width: 28px;
+  }
+  
+  .currentYearDisplay {
+    font-size: 11px;
+    min-width: 32px;
+    padding: 1px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timelineContainer {
+    gap: 6px;
+    padding: 6px 10px;
+  }
+  
+  .slider {
+    height: 8px; /* Even thicker on small screens */
+  }
+  
+  .slider::-webkit-slider-thumb {
+    width: 20px; /* Even larger for small screens */
+    height: 20px;
+    margin-top: -6px;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .yearLabel {
+    font-size: 10px;
+    min-width: 24px;
+  }
+  
+  .currentYearDisplay {
+    font-size: 10px;
+    min-width: 28px;
+    padding: 1px 3px;
+  }
+}

@@ -10,7 +10,7 @@
   bottom: 0;
   z-index: 199;
   display: flex;
-  justify-content: flex-end; /* Align panel to the right */
+  justify-content: flex-end; /* Align panel to the right on desktop */
   pointer-events: none; /* Allow clicks through overlay by default */
 }
 /* Optional: enable overlay click to close */
@@ -43,6 +43,43 @@
 .panelOverlay:not(:empty) .contextualPanel {
    transform: translateX(0);
    opacity: 1;
+}
+
+/* Mobile Layout - Bottom Panel */
+@media (max-width: 768px) {
+  .panelOverlay {
+    justify-content: flex-start; /* Reset alignment for mobile */
+    align-items: flex-end; /* Align to bottom */
+  }
+  
+  .contextualPanel {
+    width: 100%;
+    max-width: 100%;
+    height: 70vh; /* Take up 70% of viewport height */
+    max-height: 80vh; /* Don't exceed 80% */
+    min-height: 50vh; /* Minimum height for usability */
+    border-left: none;
+    border-top: 1px solid var(--color-border-subtle);
+    border-radius: 16px 16px 0 0; /* Rounded top corners */
+    
+    /* Mobile animation - slide up from bottom */
+    transform: translateY(100%);
+  }
+  
+  .panelOverlay:not(:empty) .contextualPanel {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Very small mobile screens */
+@media (max-width: 480px) {
+  .contextualPanel {
+    height: 75vh; /* Take up more space on small screens */
+    max-height: 85vh;
+    min-height: 60vh;
+    border-radius: 12px 12px 0 0; /* Slightly smaller radius */
+  }
 }
 
 /* Canvas Background Style */

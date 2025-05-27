@@ -24,6 +24,23 @@ const NUM_POINTS = 60;                      // Number of "cell centers"
 const CONNECTION_RADIUS = 200;              // Max distance to connect points
 const ANIMATION_DURATION = 3000;            // Duration for lines to draw (in ms)
 
+// Mobile performance optimizations
+const isMobile = () => window.innerWidth <= 768;
+const getMobileOptimizedConfig = () => {
+    if (isMobile()) {
+        return {
+            numPoints: 30,           // Reduce points on mobile
+            connectionRadius: 150,   // Reduce connection radius
+            animationDuration: 2000  // Faster animation
+        };
+    }
+    return {
+        numPoints: NUM_POINTS,
+        connectionRadius: CONNECTION_RADIUS,
+        animationDuration: ANIMATION_DURATION
+    };
+};
+
 // --- Drawing Function for Static Pattern (Handles DPR) ---
 // This function sets up the canvas size and can draw the full static pattern
 const drawGenerativeLines = (canvas) => {
@@ -130,6 +147,11 @@ function ContextualPanel({
     const animationFrameIdRef = useRef(null);
     const pointsRef = useRef([]);
     const connectionsRef = useRef([]);
+    
+    // Touch/swipe handling refs
+    const touchStartRef = useRef(null);
+    const touchStartTimeRef = useRef(null);
+    const panelRef = useRef(null);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -147,6 +169,55 @@ function ContextualPanel({
         };
     }, [onNavigatePrev, onNavigateNext]);
 
+    // Touch event handlers for swipe gestures
+    const handleTouchStart = useCallback((e) => {
+        const touch = e.touches[0];
+        touchStartRef.current = {
+            x: touch.clientX,
+            y: touch.clientY
+        };
+        touchStartTimeRef.current = Date.now();
+    }, []);
+
+    const handleTouchEnd = useCallback((e) => {
+        if (!touchStartRef.current) return;
+
+        const touch = e.changedTouches[0];
+        const deltaX = touch.clientX - touchStartRef.current.x;
+        const deltaY = touch.clientY - touchStartRef.current.y;
+        const deltaTime = Date.now() - touchStartTimeRef.current;
+
+        // Swipe thresholds
+        const minSwipeDistance = 50;
+        const maxSwipeTime = 300;
+        const maxVerticalDeviation = 100;
+
+        // Check for horizontal swipe (navigation between entries)
+        if (Math.abs(deltaX) > minSwipeDistance && 
+            Math.abs(deltaY) < maxVerticalDeviation && 
+            deltaTime < maxSwipeTime) {
+            
+            if (deltaX > 0) {
+                // Swipe right - go to previous
+                onNavigatePrev();
+            } else {
+                // Swipe left - go to next
+                onNavigateNext();
+            }
+        }
+        
+        // Check for vertical swipe down (close panel)
+        else if (deltaY > minSwipeDistance && 
+                 Math.abs(deltaX) < maxVerticalDeviation && 
+                 deltaTime < maxSwipeTime) {
+            onClose();
+        }
+
+        // Reset touch tracking
+        touchStartRef.current = null;
+        touchStartTimeRef.current = null;
+    }, [onNavigatePrev, onNavigateNext, onClose]);
+
     // --- Function to Setup Points and Connections ---
     // Wrapped in useCallback to keep its identity stable unless dependencies change (none here)
     const setupDrawingData = useCallback(() => {
@@ -157,10 +228,13 @@ function ContextualPanel({
 
         const width = rect.width;
         const height = rect.height;
+        
+        // Get mobile-optimized configuration
+        const config = getMobileOptimizedConfig();
 
         // 1. Generate Points
         const newPoints = [];
-        for (let i = 0; i < NUM_POINTS; i++) {
+        for (let i = 0; i < config.numPoints; i++) {
             newPoints.push({
                 x: Math.random() * (width + 40) - 20,
                 y: Math.random() * (height + 40) - 20
@@ -175,7 +249,7 @@ function ContextualPanel({
                 const p1 = newPoints[i]; const p2 = newPoints[j];
                 const dx = p1.x - p2.x; const dy = p1.y - p2.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < CONNECTION_RADIUS) {
+                if (distance < config.connectionRadius) {
                     newConnections.push({ x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y });
                 }
             }
@@ -358,7 +432,16 @@ function ContextualPanel({
     // JSX structure for the panel
     return (
         <div className={styles.panelOverlay}>
-            <aside className={combinedClassName} aria-labelledby="contextual-panel-title" aria-modal="true" role="dialog" onClick={(e) => e.stopPropagation()} >
+            <aside 
+                ref={panelRef}
+                className={combinedClassName} 
+                aria-labelledby="contextual-panel-title" 
+                aria-modal="true" 
+                role="dialog" 
+                onClick={(e) => e.stopPropagation()}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+            >
                 {/* Canvas for background */}
                 <canvas ref={canvasRef} className={styles.generativeBackground} aria-hidden="true" />
 

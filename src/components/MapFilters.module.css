@@ -30,6 +30,12 @@
     transition: background-color 0.2s ease, color 0.2s ease;
     background-color: transparent; /* Default background */
     color: var(--color-text-primary);
+    /* Ensure minimum touch target size */
+    min-height: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .filterButton:hover {
@@ -40,3 +46,32 @@
   
   /* Style applied dynamically via style prop now */
   /* .filterButton.active { ... } */
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .filterContainer {
+    gap: 6px;
+    padding: 6px;
+  }
+  
+  .filterButton {
+    font-size: 11px;
+    padding: 6px 12px;
+    min-height: 36px; /* Larger touch target on mobile */
+    min-width: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filterContainer {
+    gap: 4px;
+    padding: 4px;
+  }
+  
+  .filterButton {
+    font-size: 10px;
+    padding: 4px 8px;
+    min-height: 32px;
+    min-width: 32px;
+  }
+}
