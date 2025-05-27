@@ -55,15 +55,16 @@
   .contextualPanel {
     width: 100%;
     max-width: 100%;
-    height: 70vh; /* Take up 70% of viewport height */
-    max-height: 80vh; /* Don't exceed 80% */
-    min-height: 50vh; /* Minimum height for usability */
+    height: 55vh; /* Reduced from 70vh to keep more map visible */
+    max-height: 70vh; /* Reduced from 80vh */
+    min-height: 30vh; /* Reduced minimum for better map visibility */
     border-left: none;
     border-top: 1px solid var(--color-border-subtle);
     border-radius: 16px 16px 0 0; /* Rounded top corners */
     
     /* Mobile animation - slide up from bottom */
     transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease-out, background-color 0.3s ease, border-color 0.3s ease, height 0.2s ease;
   }
   
   .panelOverlay:not(:empty) .contextualPanel {
@@ -75,10 +76,47 @@
 /* Very small mobile screens */
 @media (max-width: 480px) {
   .contextualPanel {
-    height: 75vh; /* Take up more space on small screens */
-    max-height: 85vh;
-    min-height: 60vh;
+    height: 60vh; /* Reduced from 75vh */
+    max-height: 75vh; /* Reduced from 85vh */
+    min-height: 35vh; /* Reduced from 60vh */
     border-radius: 12px 12px 0 0; /* Slightly smaller radius */
+  }
+}
+
+/* Drag handle for resizing */
+.dragHandle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  cursor: ns-resize;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+}
+
+.dragHandle::after {
+  content: '';
+  width: 40px;
+  height: 4px;
+  background-color: var(--color-text-secondary);
+  border-radius: 2px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease, background-color 0.3s ease;
+}
+
+.dragHandle:hover::after {
+  opacity: 1;
+  background-color: var(--color-text-primary);
+}
+
+/* Hide drag handle on desktop */
+@media (min-width: 769px) {
+  .dragHandle {
+    display: none;
   }
 }
 

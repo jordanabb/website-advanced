@@ -152,6 +152,12 @@ function ContextualPanel({
     const touchStartRef = useRef(null);
     const touchStartTimeRef = useRef(null);
     const panelRef = useRef(null);
+    
+    // Drag resize handling refs
+    const isDraggingRef = useRef(false);
+    const dragStartYRef = useRef(null);
+    const initialHeightRef = useRef(null);
+    const [panelHeight, setPanelHeight] = useState(null);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -169,17 +175,99 @@ function ContextualPanel({
         };
     }, [onNavigatePrev, onNavigateNext]);
 
-    // Touch event handlers for swipe gestures
+    // Drag handle event handlers
+    const handleDragStart = useCallback((e) => {
+        if (!isMobile()) return; // Only enable on mobile
+        
+        e.preventDefault();
+        isDraggingRef.current = true;
+        
+        const clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+        dragStartYRef.current = clientY;
+        
+        if (panelRef.current) {
+            const rect = panelRef.current.getBoundingClientRect();
+            initialHeightRef.current = rect.height;
+        }
+        
+        document.body.style.userSelect = 'none';
+    }, []);
+
+    const handleDragMove = useCallback((e) => {
+        if (!isDraggingRef.current || !isMobile()) return;
+        
+        e.preventDefault();
+        const clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+        const deltaY = dragStartYRef.current - clientY; // Inverted because we're dragging from top
+        const newHeight = initialHeightRef.current + deltaY;
+        
+        // Get viewport height and calculate constraints
+        const vh = window.innerHeight;
+        const minHeight = vh * 0.3; // 30vh minimum
+        const maxHeight = vh * 0.8; // 80vh maximum
+        
+        // Clamp the height within bounds
+        const clampedHeight = Math.max(minHeight, Math.min(maxHeight, newHeight));
+        const heightVh = (clampedHeight / vh) * 100;
+        
+        setPanelHeight(`${heightVh}vh`);
+    }, []);
+
+    const handleDragEnd = useCallback(() => {
+        if (!isDraggingRef.current) return;
+        
+        isDraggingRef.current = false;
+        dragStartYRef.current = null;
+        initialHeightRef.current = null;
+        document.body.style.userSelect = '';
+    }, []);
+
+    // Set up drag event listeners
+    useEffect(() => {
+        const handleMouseMove = (e) => handleDragMove(e);
+        const handleMouseUp = () => handleDragEnd();
+        const handleTouchMove = (e) => handleDragMove(e);
+        const handleTouchEnd = () => handleDragEnd();
+
+        if (isDraggingRef.current) {
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
+        }
+
+        return () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, [handleDragMove, handleDragEnd]);
+
+    // Touch event handlers for swipe gestures (modified to work with drag)
     const handleTouchStart = useCallback((e) => {
+        // Check if touch started on drag handle
+        const target = e.target.closest(`.${styles.dragHandle}`);
+        if (target) {
+            handleDragStart(e);
+            return;
+        }
+        
         const touch = e.touches[0];
         touchStartRef.current = {
             x: touch.clientX,
             y: touch.clientY
         };
         touchStartTimeRef.current = Date.now();
-    }, []);
+    }, [handleDragStart]);
 
     const handleTouchEnd = useCallback((e) => {
+        // If we were dragging, handle drag end
+        if (isDraggingRef.current) {
+            handleDragEnd();
+            return;
+        }
+        
         if (!touchStartRef.current) return;
 
         const touch = e.changedTouches[0];
@@ -216,7 +304,7 @@ function ContextualPanel({
         // Reset touch tracking
         touchStartRef.current = null;
         touchStartTimeRef.current = null;
-    }, [onNavigatePrev, onNavigateNext, onClose]);
+    }, [onNavigatePrev, onNavigateNext, onClose, handleDragEnd]);
 
     // --- Function to Setup Points and Connections ---
     // Wrapped in useCallback to keep its identity stable unless dependencies change (none here)
@@ -428,6 +516,9 @@ function ContextualPanel({
 
     // Combine base CSS module class with any external class names passed via props
     const combinedClassName = `${styles.contextualPanel} ${className}`;
+    
+    // Apply dynamic height if set by dragging
+    const panelStyle = panelHeight ? { height: panelHeight } : {};
 
     // JSX structure for the panel
     return (
@@ -435,6 +526,7 @@ function ContextualPanel({
             <aside 
                 ref={panelRef}
                 className={combinedClassName} 
+                style={panelStyle}
                 aria-labelledby="contextual-panel-title" 
                 aria-modal="true" 
                 role="dialog" 
@@ -442,6 +534,14 @@ function ContextualPanel({
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
             >
+                {/* Drag handle for mobile resizing */}
+                <div 
+                    className={styles.dragHandle}
+                    onMouseDown={handleDragStart}
+                    onTouchStart={handleDragStart}
+                    aria-label="Drag to resize panel"
+                />
+                
                 {/* Canvas for background */}
                 <canvas ref={canvasRef} className={styles.generativeBackground} aria-hidden="true" />
 
