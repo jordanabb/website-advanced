@@ -259,18 +259,6 @@
       "disciplines": ["Geo", "Data Sci", "Soc"]
     },
     {
-      "id": "edu007",
-      "type": "education",
-      "title": "My Beautiful Girlfriend's Hometown",
-      "institution": "",
-      "location": "Dallas, TX",
-      "lat": 32.8928432,
-      "lon": -96.8712358,
-      "startDate": "2021-11",
-      "endDate": "Present",
-      "disciplines": ["Girlfriend", "Love"]
-    },
-    {
       "id": "pub003",
       "type": "publication",
       "title": "Computational Approaches to Measuring Spatial Inequity",
@@ -282,7 +270,7 @@
       "url": "https://doi.org/10.xxxx/yyyyyy", 
       "disciplines": ["Geo", "Data Sci", "CS"]
     },
-    {
+     {
       "id": "conf003", 
       "type": "conference",
       "title": "Crossing the Line: Segregation and Resource Inequality America's Schools",
@@ -292,5 +280,65 @@
       "lon": -117.1611,
       "date": "2025-07",
       "relatedItems": ["proj001"]
+     },
+     {
+      "id": "article001",
+      "type": "article",
+      "title": "The Hidden Geography of Educational Inequality",
+      "publication": "The Atlantic",
+      "date": "2024-03-15",
+      "url": "https://www.theatlantic.com/education/archive/2024/03/hidden-geography-educational-inequality/677890/",
+      "description": "An exploration of how municipal boundaries and local governance structures create invisible barriers to educational equity, drawing on research from California's Bay Area school districts.",
+      "topics": ["Education Policy", "Urban Geography", "Inequality", "School Funding"]
+     },
+     {
+      "id": "article002",
+      "type": "article",
+      "title": "Why Your ZIP Code Still Determines Your Child's Education",
+      "publication": "Washington Post",
+      "date": "2023-11-08",
+      "url": "https://www.washingtonpost.com/education/2023/11/08/zip-code-education-inequality/",
+      "description": "A data-driven analysis of how residential segregation and local tax policies continue to shape educational opportunities across American communities.",
+      "topics": ["Residential Segregation", "Tax Policy", "Education Access", "Data Analysis"]
+     },
+     {
+      "id": "article003",
+      "type": "article",
+      "title": "The Future of Fair Housing: A Computational Approach",
+      "publication": "CityLab",
+      "date": "2024-01-22",
+      "url": "https://www.bloomberg.com/news/articles/2024-01-22/computational-approach-fair-housing",
+      "description": "How machine learning and spatial analysis can help identify and address housing discrimination patterns in real-time.",
+      "topics": ["Fair Housing", "Machine Learning", "Spatial Analysis", "Policy Innovation"]
+     },
+     {
+      "id": "media001",
+      "type": "media",
+      "title": "Stanford Researcher Reveals How School District Boundaries Perpetuate Inequality",
+      "outlet": "NPR Education",
+      "date": "2024-02-14",
+      "url": "https://www.npr.org/2024/02/14/school-district-boundaries-inequality",
+      "description": "Interview discussing research findings on how school district boundaries contribute to educational segregation.",
+      "context": "Featured as expert guest discussing implications of school boundary research for policy reform."
+     },
+     {
+      "id": "media002",
+      "type": "media",
+      "title": "The Data Behind Educational Equity",
+      "outlet": "PBS NewsHour",
+      "date": "2023-09-28",
+      "url": "https://www.pbs.org/newshour/education/data-behind-educational-equity",
+      "description": "Television segment on using computational methods to measure and address educational inequities.",
+      "context": "Provided expert commentary on the role of data science in education policy research."
+     },
+     {
+      "id": "media003",
+      "type": "media",
+      "title": "Young Researchers Tackle Housing and Education Policy",
+      "outlet": "Stanford News",
+      "date": "2024-05-10",
+      "url": "https://news.stanford.edu/2024/05/10/young-researchers-housing-education/",
+      "description": "Profile piece highlighting doctoral research on the intersection of housing policy and educational outcomes.",
+      "context": "Featured in university spotlight on graduate student research making policy impact."
      }
   ]

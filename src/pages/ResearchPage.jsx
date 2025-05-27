@@ -26,7 +26,7 @@ function ProjectsListPage() {
   return (
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
-        <Heading level={1}>Projects</Heading>
+        <Heading level={1}>Reseach & Projects</Heading>
         <Text type="body">
 
         </Text>

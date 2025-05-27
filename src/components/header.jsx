@@ -46,6 +46,7 @@ const MobileMenu = ({ isOpen, closeMenu }) => {
         <li><Link to="/cv" className={styles.menuLink}>CV</Link></li>
         <li><Link to="/research" className={styles.menuLink}>Research</Link></li>
         <li><Link to="/software" className={styles.menuLink}>Software</Link></li>
+        <li><Link to="/writing" className={styles.menuLink}>Writing</Link></li>
         <li><Link to="/contact" className={styles.menuLink}>Contact</Link></li>
       </ul>
     </nav>
@@ -97,7 +98,7 @@ function Header() {
       {/* Left side content */}
       <div className={styles.leftContent}>
         <div className={styles.name}>Jordan Abbott</div>
-        <div className={styles.title}>PhD Candidate | Computational Social Science</div>
+        <div className={styles.title}>Senior Data Scientist | Education Funding Equity Initiative</div>
       </div>
 
       {/* Right side content - Theme Toggle and Hamburger Button */}

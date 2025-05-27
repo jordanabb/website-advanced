@@ -15,6 +15,7 @@ import CVPage from './pages/CvPage'; // Corrected case
 import ContactPage from './pages/ContactPage';
 import ResearchPage from './pages/ResearchPage';
 import SoftwarePage from './pages/SoftwarePage';
+import WritingMediaPage from './pages/WritingMediaPage';
 
 // Import your Header component
 import Header from './components/header'; // Corrected casing
@@ -39,6 +40,7 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/research" element={<ResearchPage />} />
             <Route path="/software" element={<SoftwarePage />} />
+            <Route path="/writing" element={<WritingMediaPage />} />
             <Route path="*" element={
               <div style={{ padding: '40px', textAlign: 'center' }}>
                 <h2>404 Not Found</h2>
