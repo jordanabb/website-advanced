@@ -12,6 +12,14 @@ const typeColors = {
     conference: '#A371F7'
 };
 
+// Define display labels for filter types
+const typeLabels = {
+    education: 'Education',
+    work: 'Work',
+    publication: 'Publication',
+    conference: 'Presentation'
+};
+
 
 // Props expected:
 // - activeFilters: An array of currently active type strings (e.g., ['project', 'publication'])
@@ -36,8 +44,8 @@ function MapFilters({ activeFilters, onFilterChange }) {
                         style={buttonStyle} // Apply dynamic style
                         aria-pressed={isActive} // Accessibility
                     >
-                        {/* Capitalize first letter for display */}
-                        {type.charAt(0).toUpperCase() + type.slice(1)}
+                        {/* Use custom label mapping */}
+                        {typeLabels[type] || type.charAt(0).toUpperCase() + type.slice(1)}
                     </button>
                 );
             })}

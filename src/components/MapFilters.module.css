@@ -3,8 +3,8 @@
     display: flex;
     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
     justify-content: center; /* Center the filter buttons */
-    gap: 8px; /* Space between buttons */
-    padding: 8px;
+    gap: 6px; /* Reduced space between buttons */
+    padding: 6px; /* Reduced padding */
     background-color: var(--color-bg-code);
     border-radius: var(--border-radius);
     transition: background-color 0.3s ease;
@@ -31,9 +31,9 @@
     transition: background-color 0.2s ease, color 0.2s ease;
     background-color: transparent; /* Default background */
     color: var(--color-text-primary);
-    /* Ensure minimum touch target size */
-    min-height: 32px;
-    min-width: 32px;
+    /* Smaller size for desktop */
+    min-height: 24px;
+    min-width: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
