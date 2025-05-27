@@ -4,8 +4,9 @@
     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
     gap: 8px; /* Space between buttons */
     padding: 8px;
-    background-color: rgba(13, 17, 23, 0.8); /* Semi-transparent dark background */
-    border-radius: 4px;
+    background-color: var(--color-bg-code);
+    border-radius: var(--border-radius);
+    transition: background-color 0.3s ease;
   }
   
   /* Optional Label Style */
@@ -18,7 +19,7 @@
   
   .filterButton {
     /* Inherit font */
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     font-size: 12px;
     font-weight: 500;
     padding: 4px 10px;
@@ -28,11 +29,13 @@
     cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
     background-color: transparent; /* Default background */
+    color: var(--color-text-primary);
   }
   
   .filterButton:hover {
     /* Subtle hover effect - maybe lighten background slightly */
-     background-color: rgba(205, 217, 229, 0.1); /* Light grey subtle hover */
+     background-color: var(--color-border-subtle);
+     opacity: 0.7;
   }
   
   /* Style applied dynamically via style prop now */

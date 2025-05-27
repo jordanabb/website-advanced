@@ -3,9 +3,10 @@
 
 /* Base styles if needed, though often set globally */
 .base {
-  font-family: 'Inter', sans-serif;
-  color: #CDD9E5; /* Primary text */
+  font-family: var(--font-sans);
+  color: var(--color-text-primary);
   margin: 0; /* Reset default margins often */
+  transition: color 0.3s ease;
 }
 
 /* Headings */
@@ -53,7 +54,7 @@
   font-weight: 400;
   font-size: 13px;
   line-height: 1.5;
-  color: #7D8590; /* Secondary text color */
+  color: var(--color-text-secondary);
 }
 
 .metadata {

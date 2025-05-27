@@ -21,6 +21,12 @@ if (!MAPBOX_TOKEN) {
     console.error("Mapbox token is not set. Please set VITE_MAPBOX_TOKEN environment variable.");
 }
 
+// Map style URLs for different themes
+const MAP_STYLES = {
+    dark: 'mapbox://styles/jordanabb/cm9n5p7g600cg01rz8drw4kx2', // Existing dark mode style
+    light: 'mapbox://styles/jordanabb/cmb5puoou002f01qt4r796okw' // New light mode style
+};
+
 // Animation duration constants
 const FADE_DURATION = 500; // ms for fade animations
 const GLOW_TRANSITION_DURATION = 150; // ms for glow appearing/disappearing smoothly
@@ -38,17 +44,27 @@ function convertToGeoJSON(data) {
             return null;
         }
         const featureId = typeof item.id === 'number' ? item.id : String(item.id);
-        return { type: 'Feature', id: featureId, geometry: { type: 'Point', coordinates: [item.lon, item.lat] }, properties: { ...item } };
+        let coordinates = [item.lon, item.lat];
+        // Apply jittering to the coordinates
+        coordinates = jitterCoordinates(coordinates);
+        return { type: 'Feature', id: featureId, geometry: { type: 'Point', coordinates: coordinates }, properties: { ...item } };
     }).filter(feature => feature !== null);
     return { type: 'FeatureCollection', features: features };
+}
+
+// Function to add a small random jitter to coordinates
+function jitterCoordinates(coordinates, amount = 0.05) {
+    const lng = coordinates[0] + (Math.random() - 0.5) * amount;
+    const lat = coordinates[1] + (Math.random() - 0.5) * amount;
+    return [lng, lat];
 }
 
 // Layer Definitions - NO BLUR
 const nodeLayersConfig = [
     { id: 'nodes-education', type: 'education', color: '#F0B917', radius: 5, hoverRadius: 7, glowColor: '#F0B917', glowRadius: 9, glowBlur: 0, glowOpacity: 0, hoverGlowOpacity: 0.5, },
-    { id: 'nodes-project', type: 'project', color: 'transparent', strokeColor: '#58A6FF', strokeWidth: 1.5, radius: 5, hoverRadius: 7, hoverStrokeWidth: 2, glowColor: '#58A6FF', glowRadius: 10, glowBlur: 0, glowOpacity: 0, hoverGlowOpacity: 0.5, },
+    { id: 'nodes-work', type: 'work', color: '#3FB950', radius: 5, hoverRadius: 7, glowColor: '#3FB950', glowRadius: 10, glowBlur: 0, glowOpacity: 0, hoverGlowOpacity: 0.5, },
     { id: 'nodes-publication', type: 'publication', color: '#58A6FF', radius: 4, hoverRadius: 6, glowColor: '#58A6FF', glowRadius: 9, glowBlur: 0, glowOpacity: 0, hoverGlowOpacity: 0.5, },
-    { id: 'nodes-conference', type: 'conference', color: 'transparent', strokeColor: '#F0B917', strokeWidth: 1.5, radius: 6, hoverRadius: 8, hoverStrokeWidth: 2, glowColor: '#F0B917', glowRadius: 11, glowBlur: 0, glowOpacity: 0, hoverGlowOpacity: 0.5, }
+    { id: 'nodes-conference', type: 'conference', color: 'transparent', strokeColor: '#A371F7', strokeWidth: 1.5, radius: 6, hoverRadius: 8, hoverStrokeWidth: 2, glowColor: '#A371F7', glowRadius: 11, glowBlur: 0, glowOpacity: 0, hoverGlowOpacity: 0.5, }
 ];
 
 // --- Component Start ---
@@ -57,21 +73,336 @@ function SpatialResumeMap() {
     const mapRef = useRef(null);
     const popupRef = useRef(null);
     const hoveredStateIdRef = useRef(null);
+    const selectedNodeIdRef = useRef(null); // Track selected node ID for click comparison
     const layerOpacityRef = useRef(1.0);
     const previousFilteredDataRef = useRef(null);
     const sliderValueRef = useRef(null);
     const stateClearTimeoutIdRef = useRef(null); // Ref for fade-in cleanup timeout
 
-    const [initialViewState] = useState({ longitude: -98.5795, latitude: 39.8283, zoom: 3.5 });
+    const [initialViewState] = useState({ longitude: -98.5795, latitude: 39.8283, zoom: 3.0 });
     const [isMapLoaded, setIsMapLoaded] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [selectedNodeData, setSelectedNodeData] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected node in filtered list
+    const [currentTheme, setCurrentTheme] = useState('dark'); // Track current theme
+
+    // Function to detect current theme from body classes
+    const detectCurrentTheme = useCallback(() => {
+        const body = document.body;
+        if (body.classList.contains('light-mode')) {
+            return 'light';
+        } else {
+            return 'dark'; // Default to dark
+        }
+    }, []);
+
+    // Function to add all layers and sources to the map
+    const addMapLayers = useCallback((map, currentFilteredData) => {
+        // 1. Add Source (initially empty, promoteId needed for feature state)
+        map.addSource('resume-points', { type: 'geojson', data: { type: 'FeatureCollection', features: [] }, promoteId: 'id', cluster: true, clusterMaxZoom: 14, clusterRadius: 50 });
+
+        // 2. Add Cluster Layers (Rendered underneath node layers)
+        map.addLayer({ id: 'clusters', type: 'circle', source: 'resume-points', filter: ['has', 'point_count'], paint: { 'circle-color': ['step',['get','point_count'],'#51bbd6',10,'#f1f075',30,'#f28cb1'], 'circle-radius': ['step',['get','point_count'],18,10,22,30,28], 'circle-stroke-width': 1, 'circle-stroke-color': '#fff', 'circle-opacity': layerOpacityRef.current, 'circle-opacity-transition': { duration: FADE_DURATION } } });
+        map.addLayer({ id: 'cluster-count', type: 'symbol', source: 'resume-points', filter: ['has', 'point_count'], layout: { 'text-field': '{point_count_abbreviated}', 'text-font': ['DIN Offc Pro Medium','Arial Unicode MS Bold'], 'text-size': 12, 'text-allow-overlap': true, 'text-ignore-placement': true }, paint: { 'text-color': '#fff', 'text-opacity': layerOpacityRef.current, 'text-opacity-transition': { duration: FADE_DURATION } } });
+
+        // 3. Add Node Layers (Main + Glow) and Interactions
+        nodeLayersConfig.forEach(lc => { // Use 'lc' for layerConfig
+            const commonFilter = ['all', ['!', ['has', 'point_count']], ['==', ['get', 'type'], lc.type]];
+            const mainId = lc.id; const glowId = `${lc.id}-glow`;
+
+            // Add MAIN Layer
+            map.addLayer({ id: mainId, type: 'circle', source: 'resume-points', filter: commonFilter, paint: {
+                'circle-radius': ['case',['boolean',['feature-state','hover'],false], lc.hoverRadius ?? lc.radius, lc.radius],
+                'circle-color': lc.color,
+                'circle-stroke-color': lc.strokeColor ?? 'transparent',
+                'circle-stroke-width': ['case',['boolean',['feature-state','hover'],false], lc.hoverStrokeWidth ?? lc.strokeWidth ?? 0, lc.strokeWidth ?? 0],
+                'circle-opacity': ['case',['boolean',['feature-state','fade-in'],false], 0, layerOpacityRef.current], // Handle fade-in
+                'circle-stroke-opacity': ['case',['boolean',['feature-state','fade-in'],false], 0, layerOpacityRef.current], // Handle fade-in
+                'circle-radius-transition': {duration:150},
+                'circle-stroke-width-transition': {duration:150},
+                'circle-opacity-transition': {duration:FADE_DURATION},
+                'circle-stroke-opacity-transition': {duration:FADE_DURATION} }
+            });
+
+            // Add GLOW Layer (No Blur) BEFORE Main Layer
+            map.addLayer({ id: glowId, type: 'circle', source: 'resume-points', filter: commonFilter, paint: {
+                'circle-radius': lc.glowRadius,
+                'circle-color': lc.glowColor,
+                'circle-blur': lc.glowBlur, // Should be 0
+                'circle-opacity': ['case',['boolean',['feature-state','fade-in'],false], 0, // Handle fade-in
+                                     ['boolean',['feature-state','hover'],false], lc.hoverGlowOpacity, // Handle hover
+                                     lc.glowOpacity], // Default (0)
+                'circle-opacity-transition': {duration:Math.max(FADE_DURATION, GLOW_TRANSITION_DURATION)} }
+            }, mainId); // Add before main layer
+
+            // Setup Interactions for the MAIN layer
+            map.on('mousemove', mainId, e => { if(isTransitioning) return; if(e.features?.length > 0){ const currentId=e.features[0].id; if(hoveredStateIdRef.current !== currentId){ if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false});}catch(e){} hoveredStateIdRef.current=currentId; try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:true});}catch(e){}}} else { if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){} }});
+            map.on('mouseleave', mainId, () => { if(isTransitioning) return; if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){} popupRef.current?.remove(); map.getCanvas().style.cursor=''; });
+            map.on('mouseenter', mainId, e => { if(isTransitioning) return; map.getCanvas().style.cursor='pointer'; const f=e.features?.[0]; if(!f?.geometry?.coordinates || !f?.properties) return; const co=f.geometry.coordinates.slice(); while(Math.abs(e.lngLat.lng-co[0])>180){co[0]+=e.lngLat.lng>co[0]?360:-360;} const p=f.properties; const d=`<strong>${p.title||'Untitled'}</strong><br>Type: ${p.type||'N/A'}<br>Loc: ${p.location||'N/A'}${p.startDate?`<br>Start: ${p.startDate}`:''}${p.endDate && p.endDate !== "Present" ?`<br>End: ${p.endDate}`:''}${p.endDate === "Present" ? `<br>Ongoing`:''}${p.date&&!p.startDate?`<br>Date: ${p.date}`:''}`; if(popupRef.current?.setLngLat){popupRef.current.setLngLat(co).setHTML(d).addTo(map);} });
+            // Inside map.once('load', ...) -> nodeLayersConfig.forEach(...)
+map.on('click', mainId, (e) => {
+    const feature = e.features?.[0];
+    if (feature?.properties) {
+        const clickedId = feature.id; // Use feature.id which is promoted
+        
+        // Check if the same icon is clicked again - if so, close the panel
+        if (selectedNodeIdRef.current === clickedId) {
+            console.log(`Same node clicked again: ID=${clickedId}, closing panel`);
+            setSelectedNodeData(null);
+            setSelectedIndex(-1);
+            selectedNodeIdRef.current = null;
+            return;
+        }
+        
+        // Get current filtered data from the map source or use the current state
+        let currentFeatures = [];
+        try {
+            const mapSource = map.getSource('resume-points');
+            if (mapSource && mapSource._data && mapSource._data.features) {
+                currentFeatures = mapSource._data.features;
+            }
+        } catch (e) {
+            // Fallback to using the current filtered data state
+            currentFeatures = filteredGeojsonData.features || [];
+        }
+        
+        const index = currentFeatures.findIndex(f => f.id === clickedId);
+
+        console.log(`Node clicked: ID=${clickedId}, Index=${index}`); // Log which node and its index
+
+        if (index !== -1) {
+            // Get the complete data from the original source to ensure all properties are included
+            const originalData = resumeData.find(item => item.id === clickedId);
+            setSelectedNodeData(originalData || feature.properties);
+            setSelectedIndex(index);
+            selectedNodeIdRef.current = clickedId; // Update ref with selected ID
+        } else {
+            // Even if not found in current features, still show the panel with the clicked data
+            console.warn(`Clicked feature ID ${clickedId} not found in current features, but showing panel anyway.`);
+            const originalData = resumeData.find(item => item.id === clickedId);
+            setSelectedNodeData(originalData || feature.properties);
+            setSelectedIndex(0); // Set to 0 as fallback
+            selectedNodeIdRef.current = clickedId; // Update ref with selected ID
+        }
+    } else {
+        setSelectedNodeData(null);
+        setSelectedIndex(-1);
+    }
+});
+        });
+        map.on('click', (e) => {
+            // Check if the click originated on one of your node layers
+            const nodeLayerIds = nodeLayersConfig.map(lc => lc.id);
+            const features = map.queryRenderedFeatures(e.point, { layers: nodeLayerIds });
+        
+            // If the click was NOT on one of your nodes (i.e., on the map background)
+            if (!features.length) {
+                 console.log("Map background clicked, closing panel.");
+                 setSelectedNodeData(null);
+                 setSelectedIndex(-1); // Reset index when closing panel
+                 selectedNodeIdRef.current = null; // Clear ref
+            }
+            // If click WAS on a node, the layer-specific handler above already ran/will run
+        });
+
+        // Setup Cluster Interactions
+        map.on('click', 'clusters', e => { if(isTransitioning) return; const f=map.queryRenderedFeatures(e.point,{layers:['clusters']}); if(!f.length) return; const cId=f[0].properties.cluster_id; const src=map.getSource('resume-points'); if(src?.getClusterExpansionZoom){src.getClusterExpansionZoom(cId,(err,zoom)=>{ if(err)return; map.easeTo({center:f[0].geometry.coordinates,zoom:Math.min(zoom+0.5,map.getMaxZoom()),duration:2500}); });}else{map.easeTo({center:f[0].geometry.coordinates,zoom:Math.min(map.getZoom()+1.5,map.getMaxZoom()),duration:600});} });
+        map.on('mouseenter', 'clusters', () => map.getCanvas().style.cursor='pointer');
+        map.on('mouseleave', 'clusters', () => map.getCanvas().style.cursor='');
+
+        // 4. Add Permanent Icons (Home & Hometown)
+        // Add source for permanent icons
+        map.addSource('permanent-icons', {
+            type: 'geojson',
+            data: {
+                type: 'FeatureCollection',
+                features: [
+                    {
+                        type: 'Feature',
+                        id: 'home-dc',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [-77.0369, 38.9072] // Washington DC
+                        },
+                        properties: {
+                            type: 'home',
+                            title: 'Home',
+                            location: 'Washington, DC',
+                            icon: 'home'
+                        }
+                    },
+                    {
+                        type: 'Feature',
+                        id: 'hometown-pgh',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [-79.9959, 40.4406] // Pittsburgh
+                        },
+                        properties: {
+                            type: 'hometown',
+                            title: 'Hometown',
+                            location: 'Pittsburgh, PA',
+                            icon: 'star'
+                        }
+                    }
+                ]
+            }
+        });
+
+        // Add home circle layer
+        map.addLayer({
+            id: 'home-circle',
+            type: 'circle',
+            source: 'permanent-icons',
+            filter: ['==', ['get', 'type'], 'home'],
+            paint: {
+                'circle-radius': 8,
+                'circle-color': '#58A6FF',
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#ffffff',
+                'circle-opacity': 0.9,
+                'circle-stroke-opacity': 1
+            }
+        });
+
+        // Add home text layer
+        map.addLayer({
+            id: 'home-text',
+            type: 'symbol',
+            source: 'permanent-icons',
+            filter: ['==', ['get', 'type'], 'home'],
+            layout: {
+                'text-field': '🏠',
+                'text-size': 16,
+                'text-allow-overlap': true,
+                'text-ignore-placement': true
+            },
+            paint: {
+                'text-color': '#ffffff',
+                'text-opacity': 1
+            }
+        });
+
+        // Add hometown circle layer
+        map.addLayer({
+            id: 'hometown-circle',
+            type: 'circle',
+            source: 'permanent-icons',
+            filter: ['==', ['get', 'type'], 'hometown'],
+            paint: {
+                'circle-radius': 8,
+                'circle-color': '#F0B917',
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#ffffff',
+                'circle-opacity': 0.9,
+                'circle-stroke-opacity': 1
+            }
+        });
+
+        // Add hometown text layer
+        map.addLayer({
+            id: 'hometown-text',
+            type: 'symbol',
+            source: 'permanent-icons',
+            filter: ['==', ['get', 'type'], 'hometown'],
+            layout: {
+                'text-field': '⭐',
+                'text-size': 16,
+                'text-allow-overlap': true,
+                'text-ignore-placement': true
+            },
+            paint: {
+                'text-color': '#ffffff',
+                'text-opacity': 1
+            }
+        });
+
+        // Add hover interactions for permanent icons
+        map.on('mouseenter', 'home-circle', (e) => {
+            map.getCanvas().style.cursor = 'pointer';
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = '<strong>Home</strong><br>Washington, DC';
+            if (popupRef.current?.setLngLat) {
+                popupRef.current.setLngLat(coordinates).setHTML(description).addTo(map);
+            }
+        });
+
+        map.on('mouseleave', 'home-circle', () => {
+            map.getCanvas().style.cursor = '';
+            popupRef.current?.remove();
+        });
+
+        map.on('mouseenter', 'hometown-circle', (e) => {
+            map.getCanvas().style.cursor = 'pointer';
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const description = '<strong>Hometown</strong><br>Pittsburgh, PA';
+            if (popupRef.current?.setLngLat) {
+                popupRef.current.setLngLat(coordinates).setHTML(description).addTo(map);
+            }
+        });
+
+        map.on('mouseleave', 'hometown-circle', () => {
+            map.getCanvas().style.cursor = '';
+            popupRef.current?.remove();
+        });
+    }, [isTransitioning]);
 
     // Initialize Popup ref safely after mount
     useEffect(() => {
         popupRef.current = new mapboxgl.Popup({ closeButton: false, closeOnClick: false, offset: 15 });
     }, []);
+
+    // Effect to listen for theme changes and update map style
+    useEffect(() => {
+        // Set initial theme
+        const initialTheme = detectCurrentTheme();
+        setCurrentTheme(initialTheme);
+
+        // Function to handle theme changes
+        const handleThemeChange = (event) => {
+            const newTheme = event.detail.theme;
+            console.log(`Theme changed to: ${newTheme}`);
+            setCurrentTheme(newTheme);
+
+            // Update map style if map is loaded
+            if (mapRef.current && isMapLoaded) {
+                const newStyleUrl = MAP_STYLES[newTheme];
+                if (newStyleUrl) {
+                    console.log(`Updating map style to: ${newStyleUrl}`);
+                    
+                    // Store current data before style change
+                    const currentData = mapRef.current.getSource('resume-points')?._data;
+                    
+                    // Listen for style load to re-add layers and data
+                    const handleStyleLoad = () => {
+                        console.log('New style loaded, re-adding layers and data...');
+                        addMapLayers(mapRef.current);
+                        
+                        // Restore data
+                        if (currentData) {
+                            const source = mapRef.current.getSource('resume-points');
+                            if (source) {
+                                source.setData(currentData);
+                            }
+                        }
+                        
+                        mapRef.current.off('styledata', handleStyleLoad);
+                    };
+                    
+                    mapRef.current.on('styledata', handleStyleLoad);
+                    mapRef.current.setStyle(newStyleUrl);
+                }
+            }
+        };
+
+        // Listen for theme change events
+        document.addEventListener('themeChanged', handleThemeChange);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('themeChanged', handleThemeChange);
+        };
+    }, [isMapLoaded]);
 
     // Calculate date range from data
     const { minYear, maxYear } = useMemo(() => {
@@ -89,7 +420,7 @@ function SpatialResumeMap() {
     // State for filters and timeline control
     const [currentYear, setCurrentYear] = useState(maxYear); // Year used for filtering data
     const [displayYear, setDisplayYear] = useState(maxYear); // Year displayed on slider (updates instantly)
-    const [activeFilters, setActiveFilters] = useState(['education', 'project', 'publication', 'conference']); // Currently active type filters
+    const [activeFilters, setActiveFilters] = useState(['education', 'work', 'publication', 'conference']); // Currently active type filters
     const [filtersVisible, setFiltersVisible] = useState(true); // UI state for controls panel
     const [isSliderDragging, setIsSliderDragging] = useState(false);
 
@@ -110,7 +441,7 @@ function SpatialResumeMap() {
 
     // Calculate GeoJSON data for the initial map view
     const initialFilteredGeojsonData = useMemo(() => {
-        const initialActiveFilters = ['education', 'project', 'publication', 'conference']; const initialYear = maxYear;
+        const initialActiveFilters = ['education', 'work', 'publication', 'conference']; const initialYear = maxYear;
         const filteredData = resumeData.filter(item => { const typeMatch = initialActiveFilters.includes(item.type); const dateStr = item.startDate || item.date || ''; const yearMatch = dateStr.match(/^(\d{4})/); const year = yearMatch ? parseInt(yearMatch[1], 10) : NaN; const dateMatch = !isNaN(year) && year <= initialYear; return typeMatch && dateMatch; });
         return convertToGeoJSON(filteredData);
      }, [maxYear]); // Depends only on maxYear
@@ -119,7 +450,15 @@ function SpatialResumeMap() {
     const filteredGeojsonData = useMemo(() => {
         if (activeFilters.length === 0) return convertToGeoJSON([]); // Handle case with no filters selected
         const filteredData = resumeData.filter(item => { const typeMatch = activeFilters.includes(item.type); const dateStr = item.startDate || item.date || ''; const yearMatch = dateStr.match(/^(\d{4})/); const year = yearMatch ? parseInt(yearMatch[1], 10) : NaN; const dateMatch = !isNaN(year) && year <= currentYear; return typeMatch && dateMatch; });
-        return convertToGeoJSON(filteredData);
+        
+        // Sort chronologically (most recent first) for consistent navigation
+        const sortedData = filteredData.sort((a, b) => {
+            const yearA = parseInt((a.startDate || a.date || '').match(/^(\d{4})/)?.[1] || '0');
+            const yearB = parseInt((b.startDate || b.date || '').match(/^(\d{4})/)?.[1] || '0');
+            return yearB - yearA; // Most recent first
+        });
+        
+        return convertToGeoJSON(sortedData);
     }, [activeFilters, currentYear]);
 
     // --- Effect for Map Initialization ---
@@ -128,9 +467,14 @@ function SpatialResumeMap() {
 
         console.log("Initializing Mapbox map...");
         mapboxgl.accessToken = MAPBOX_TOKEN;
+        
+        // Use the correct initial theme for map creation
+        const initialTheme = detectCurrentTheme();
+        const initialStyleUrl = MAP_STYLES[initialTheme];
+        
         const map = new mapboxgl.Map({
             container: mapContainerRef.current,
-            style: 'mapbox://styles/jordanabb/cm9n5p7g600cg01rz8drw4kx2', // Your custom style URL
+            style: initialStyleUrl, // Use theme-appropriate style
             center: [initialViewState.longitude, initialViewState.latitude], zoom: initialViewState.zoom,
             renderWorldCopies: false, antialias: true,
         });
@@ -138,91 +482,9 @@ function SpatialResumeMap() {
 
         map.once('load', () => {
             console.log('Map loaded. Adding source, layers...');
-            // 1. Add Source (initially empty, promoteId needed for feature state)
-            map.addSource('resume-points', { type: 'geojson', data: { type: 'FeatureCollection', features: [] }, promoteId: 'id', cluster: true, clusterMaxZoom: 14, clusterRadius: 50 });
+            addMapLayers(map);
 
-            // 2. Add Cluster Layers (Rendered underneath node layers)
-            map.addLayer({ id: 'clusters', type: 'circle', source: 'resume-points', filter: ['has', 'point_count'], paint: { 'circle-color': ['step',['get','point_count'],'#51bbd6',10,'#f1f075',30,'#f28cb1'], 'circle-radius': ['step',['get','point_count'],18,10,22,30,28], 'circle-stroke-width': 1, 'circle-stroke-color': '#fff', 'circle-opacity': layerOpacityRef.current, 'circle-opacity-transition': { duration: FADE_DURATION } } });
-            map.addLayer({ id: 'cluster-count', type: 'symbol', source: 'resume-points', filter: ['has', 'point_count'], layout: { 'text-field': '{point_count_abbreviated}', 'text-font': ['DIN Offc Pro Medium','Arial Unicode MS Bold'], 'text-size': 12, 'text-allow-overlap': true, 'text-ignore-placement': true }, paint: { 'text-color': '#fff', 'text-opacity': layerOpacityRef.current, 'text-opacity-transition': { duration: FADE_DURATION } } });
-
-            // 3. Add Node Layers (Main + Glow) and Interactions
-            nodeLayersConfig.forEach(lc => { // Use 'lc' for layerConfig
-                const commonFilter = ['all', ['!', ['has', 'point_count']], ['==', ['get', 'type'], lc.type]];
-                const mainId = lc.id; const glowId = `${lc.id}-glow`;
-
-                // Add MAIN Layer
-                map.addLayer({ id: mainId, type: 'circle', source: 'resume-points', filter: commonFilter, paint: {
-                    'circle-radius': ['case',['boolean',['feature-state','hover'],false], lc.hoverRadius ?? lc.radius, lc.radius],
-                    'circle-color': lc.color,
-                    'circle-stroke-color': lc.strokeColor ?? 'transparent',
-                    'circle-stroke-width': ['case',['boolean',['feature-state','hover'],false], lc.hoverStrokeWidth ?? lc.strokeWidth ?? 0, lc.strokeWidth ?? 0],
-                    'circle-opacity': ['case',['boolean',['feature-state','fade-in'],false], 0, layerOpacityRef.current], // Handle fade-in
-                    'circle-stroke-opacity': ['case',['boolean',['feature-state','fade-in'],false], 0, layerOpacityRef.current], // Handle fade-in
-                    'circle-radius-transition': {duration:150},
-                    'circle-stroke-width-transition': {duration:150},
-                    'circle-opacity-transition': {duration:FADE_DURATION},
-                    'circle-stroke-opacity-transition': {duration:FADE_DURATION} }
-                });
-
-                // Add GLOW Layer (No Blur) BEFORE Main Layer
-                map.addLayer({ id: glowId, type: 'circle', source: 'resume-points', filter: commonFilter, paint: {
-                    'circle-radius': lc.glowRadius,
-                    'circle-color': lc.glowColor,
-                    'circle-blur': lc.glowBlur, // Should be 0
-                    'circle-opacity': ['case',['boolean',['feature-state','fade-in'],false], 0, // Handle fade-in
-                                         ['boolean',['feature-state','hover'],false], lc.hoverGlowOpacity, // Handle hover
-                                         lc.glowOpacity], // Default (0)
-                    'circle-opacity-transition': {duration:Math.max(FADE_DURATION, GLOW_TRANSITION_DURATION)} }
-                }, mainId); // Add before main layer
-
-                // Setup Interactions for the MAIN layer
-                map.on('mousemove', mainId, e => { if(isTransitioning) return; if(e.features?.length > 0){ const currentId=e.features[0].id; if(hoveredStateIdRef.current !== currentId){ if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false});}catch(e){} hoveredStateIdRef.current=currentId; try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:true});}catch(e){}}} else { if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){} }});
-                map.on('mouseleave', mainId, () => { if(isTransitioning) return; if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){} popupRef.current?.remove(); map.getCanvas().style.cursor=''; });
-                map.on('mouseenter', mainId, e => { if(isTransitioning) return; map.getCanvas().style.cursor='pointer'; const f=e.features?.[0]; if(!f?.geometry?.coordinates || !f?.properties) return; const co=f.geometry.coordinates.slice(); while(Math.abs(e.lngLat.lng-co[0])>180){co[0]+=e.lngLat.lng>co[0]?360:-360;} const p=f.properties; const d=`<strong>${p.title||'Untitled'}</strong><br>Type: ${p.type||'N/A'}<br>Loc: ${p.location||'N/A'}${p.startDate?`<br>Start: ${p.startDate}`:''}${p.endDate && p.endDate !== "Present" ?`<br>End: ${p.endDate}`:''}${p.endDate === "Present" ? `<br>Ongoing`:''}${p.date&&!p.startDate?`<br>Date: ${p.date}`:''}`; if(popupRef.current?.setLngLat){popupRef.current.setLngLat(co).setHTML(d).addTo(map);} });
-                // Inside map.once('load', ...) -> nodeLayersConfig.forEach(...)
-map.on('click', mainId, (e) => {
-    const feature = e.features?.[0];
-    if (feature?.properties) {
-        const clickedId = feature.id; // Use feature.id which is promoted
-        const currentFeatures = filteredGeojsonData.features; // Use the currently filtered data
-        const index = currentFeatures.findIndex(f => f.id === clickedId);
-
-        console.log(`Node clicked: ID=${clickedId}, Index=${index}`); // Log which node and its index
-
-        if (index !== -1) {
-            setSelectedNodeData(feature.properties);
-            setSelectedIndex(index);
-        } else {
-            console.warn(`Clicked feature ID ${clickedId} not found in filteredGeojsonData.`);
-            setSelectedNodeData(null);
-            setSelectedIndex(-1);
-        }
-    } else {
-        setSelectedNodeData(null);
-        setSelectedIndex(-1);
-    }
-});
-            });
-            map.on('click', (e) => {
-                // Check if the click originated on one of your node layers
-                const nodeLayerIds = nodeLayersConfig.map(lc => lc.id);
-                const features = map.queryRenderedFeatures(e.point, { layers: nodeLayerIds });
-            
-                // If the click was NOT on one of your nodes (i.e., on the map background)
-                if (!features.length) {
-                     console.log("Map background clicked, closing panel.");
-                     setSelectedNodeData(null);
-                     setSelectedIndex(-1); // Reset index when closing panel
-                }
-                // If click WAS on a node, the layer-specific handler above already ran/will run
-            });
-
-            // Setup Cluster Interactions
-            map.on('click', 'clusters', e => { if(isTransitioning) return; const f=map.queryRenderedFeatures(e.point,{layers:['clusters']}); if(!f.length) return; const cId=f[0].properties.cluster_id; const src=map.getSource('resume-points'); if(src?.getClusterExpansionZoom){src.getClusterExpansionZoom(cId,(err,zoom)=>{ if(err)return; map.easeTo({center:f[0].geometry.coordinates,zoom:Math.min(zoom+0.5,map.getMaxZoom()),duration:2500}); });}else{map.easeTo({center:f[0].geometry.coordinates,zoom:Math.min(map.getZoom()+1.5,map.getMaxZoom()),duration:600});} });
-            map.on('mouseenter', 'clusters', () => map.getCanvas().style.cursor='pointer');
-            map.on('mouseleave', 'clusters', () => map.getCanvas().style.cursor='');
-
-            // 4. Set Initial Data
+            // 5. Set Initial Data
             const source = map.getSource('resume-points');
             if (source) source.setData(initialFilteredGeojsonData);
             previousFilteredDataRef.current = JSON.stringify(initialFilteredGeojsonData);
@@ -367,18 +629,55 @@ map.on('click', mainId, (e) => {
 
         const newFeature = currentFeatures[newIndex];
         if (newFeature?.properties) {
-            setSelectedNodeData(newFeature.properties);
+            // Get the complete data from the original source to ensure all properties are included
+            const originalData = resumeData.find(item => item.id === newFeature.id);
+            setSelectedNodeData(originalData || newFeature.properties);
             setSelectedIndex(newIndex);
             // Optional: Fly to the new point on the map
             if (mapRef.current && newFeature.geometry?.coordinates) {
+                // Check if the point is clustered
+                const isClustered = newFeature.properties.point_count > 1;
+
+                // Adjust zoom level based on whether the point is clustered
+                const zoomLevel = isClustered ? Math.max(mapRef.current.getZoom(), 8) : 12;
+
                 mapRef.current.flyTo({
                     center: newFeature.geometry.coordinates,
-                    zoom: Math.max(mapRef.current.getZoom(), 8), // Zoom in if needed, but not too far
-                    duration: 2500 // Animation duration in ms
+                    zoom: zoomLevel, // Zoom in if needed, but not too far
+                    duration: 4500 // Animation duration in ms
                 });
             }
         }
     }, [filteredGeojsonData.features, selectedIndex]);
+
+    // --- Effect for applying hover style to selected node ---
+    useEffect(() => {
+        if (mapRef.current && selectedNodeData) {
+            // Clear any existing hover state
+            if (hoveredStateIdRef.current !== null) {
+                try {
+                    mapRef.current.setFeatureState(
+                        { source: 'resume-points', id: hoveredStateIdRef.current },
+                        { hover: false }
+                    );
+                } catch (e) {
+                    console.error("Error clearing hover state:", e);
+                }
+            }
+
+            // Set hover state for the selected node
+            hoveredStateIdRef.current = selectedNodeData.id;
+            try {
+                mapRef.current.setFeatureState(
+                    { source: 'resume-points', id: selectedNodeData.id },
+                    { hover: true }
+                );
+            } catch (e) {
+                console.error("Error setting hover state:", e);
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedNodeData]);
 
     const handleNavigatePrev = useCallback(() => handleNavigate('prev'), [handleNavigate]);
     const handleNavigateNext = useCallback(() => handleNavigate('next'), [handleNavigate]);
@@ -396,7 +695,7 @@ map.on('click', mainId, (e) => {
         });
 
         // Reset filters
-        setActiveFilters(['education', 'project', 'publication', 'conference']);
+        setActiveFilters(['education', 'work', 'publication', 'conference']);
 
         // Reset timeline
         setDisplayYear(maxYear);
@@ -412,6 +711,26 @@ map.on('click', mainId, (e) => {
         setSelectedIndex(-1);
 
     }, [initialViewState, maxYear, debouncedYearChange]); // Dependencies - Restored
+
+    // --- Effect for Esc key to close contextual panel ---
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape' && selectedNodeData) {
+                console.log('Esc key pressed, closing contextual panel');
+                setSelectedNodeData(null);
+                setSelectedIndex(-1);
+                selectedNodeIdRef.current = null; // Clear ref
+            }
+        };
+
+        // Add event listener
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [selectedNodeData]); // Only depend on selectedNodeData
 
     // --- JSX Rendering ---
     return (

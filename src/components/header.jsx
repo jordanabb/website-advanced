@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom'; // Need Link and useLocation here
 import styles from './Header.module.css'; // Use ONLY this CSS module
+import ThemeToggle from './ui/ThemeToggle/ThemeToggle';
 
 // --- Define Hamburger Button Component INSIDE Header ---
 const HamburgerButton = ({ isOpen, toggleMenu }) => {
@@ -43,8 +44,9 @@ const MobileMenu = ({ isOpen, closeMenu }) => {
         <li><Link to="/" className={styles.menuLink}>Map (Home)</Link></li>
         <li><Link to="/about" className={styles.menuLink}>About</Link></li>
         <li><Link to="/cv" className={styles.menuLink}>CV</Link></li>
+        <li><Link to="/research" className={styles.menuLink}>Research</Link></li>
+        <li><Link to="/software" className={styles.menuLink}>Software</Link></li>
         <li><Link to="/contact" className={styles.menuLink}>Contact</Link></li>
-        {/* Add Projects/Publications links here later */}
       </ul>
     </nav>
   );
@@ -98,9 +100,10 @@ function Header() {
         <div className={styles.title}>PhD Candidate | Computational Social Science</div>
       </div>
 
-      {/* Right side content - Hamburger Button */}
+      {/* Right side content - Theme Toggle and Hamburger Button */}
       {/* Assign ref to the direct parent div of the button */}
       <div className={styles.rightContent} ref={buttonRef}>
+        <ThemeToggle />
         <HamburgerButton isOpen={isOpen} toggleMenu={toggleMenu} />
       </div>
 

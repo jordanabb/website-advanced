@@ -4,21 +4,23 @@
   align-items: center;
   gap: 12px;
   padding: 10px 15px;
-  background-color: rgba(13, 17, 23, 0.8);
-  border-radius: 4px;
+  background-color: var(--color-bg-code);
+  border-radius: var(--border-radius);
   width: 100%; /* Make it take available width */
   max-width: 500px; /* Optional max width */
+  transition: background-color 0.3s ease;
 }
 
 .slider {
   flex-grow: 1; /* Allow slider to take up available space */
   cursor: pointer;
   height: 4px; /* Height of the track */
-  background: #30363D; /* Track color */
+  background: var(--color-border-subtle);
   border-radius: 2px;
   /* Reset appearance for cross-browser styling */
   -webkit-appearance: none;
   appearance: none;
+  transition: background-color 0.3s ease;
 }
 
 /* --- Slider Thumb Styling (Cross-browser) --- */
@@ -27,41 +29,42 @@
   appearance: none;
   width: 14px; /* Thumb width */
   height: 14px; /* Thumb height */
-  background: #58A6FF; /* Thumb color (Primary Accent) */
+  background: var(--color-accent-primary);
   border-radius: 50%; /* Make it circular */
   cursor: pointer;
-  border: 2px solid #0D1117; /* Border matching background for contrast */
+  border: 2px solid var(--color-bg-primary);
   margin-top: -5px; /* Adjust vertical centering */
 }
 
 .slider::-moz-range-thumb {
   width: 14px;
   height: 14px;
-  background: #58A6FF;
+  background: var(--color-accent-primary);
   border-radius: 50%;
   cursor: pointer;
-  border: 2px solid #0D1117;
+  border: 2px solid var(--color-bg-primary);
 }
 
 /* Optional: Style track progress (more complex, often JS needed for cross-browser) */
 
 
 .yearLabel {
-  color: #7D8590;
+  color: var(--color-text-secondary);
   font-size: 12px;
   min-width: 30px; /* Ensure space for year */
   text-align: center;
+  transition: color 0.3s ease;
 }
 
 .currentYearDisplay {
-  color: #CDD9E5;
-  font-size: 14px;
+  color: var(--color-text-primary);
+  font-size: 12px;
   font-weight: 500;
-  min-width: 40px; /* Ensure space for year */
+  min-width: 36px; /* Ensure space for year */
   text-align: center;
-  background-color: #30363D;
-  padding: 2px 6px;
+  background-color: var(--color-border-subtle);
+  padding: 2px 5px;
   border-radius: 3px;
+  margin-left: -10px; /* Move it to the left to prevent cutoff */
+  transition: color 0.3s ease, background-color 0.3s ease;
 }
-
-

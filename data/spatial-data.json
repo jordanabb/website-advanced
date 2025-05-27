@@ -1,38 +1,159 @@
 [
     {
-      "id": "edu001",
-      "type": "education",
-      "title": "B.A. Sociology & Urban Studies",
-      "institution": "University of Chicago",
-      "location": "Chicago, IL",
-      "lat": 41.7886,
-      "lon": -87.5987,
-      "startDate": "2014-09",
-      "endDate": "2018-06",
-      "disciplines": ["Soc", "Geo"]
-    },
-    {
-      "id": "edu002",
-      "type": "education",
-      "title": "M.S. Public Policy & Data Science",
-      "institution": "New York University",
-      "location": "New York, NY",
-      "lat": 40.7295,
-      "lon": -73.9965,
-      "startDate": "2018-09",
-      "endDate": "2020-05",
-      "disciplines": ["Policy", "Data Sci", "Soc"]
-    },
-    {
-      "id": "edu003",
-      "type": "education",
-      "title": "PhD Candidate, Computational Social Science",
+      "id": "work001",
+      "type": "work",
+      "title": "PhD Student & Research Assistant",
       "institution": "Stanford University",
       "location": "Stanford, CA",
       "lat": 37.4275,
       "lon": -122.1697,
       "startDate": "2020-09",
       "endDate": "Present",
+      "description": "Conducting doctoral research in urban policy and spatial analysis. Teaching assistant for undergraduate courses in economics and public policy. Leading research projects on housing policy impacts and demographic modeling.",
+      "disciplines": ["Policy", "Geo", "Data Sci", "Soc"],
+      "projects": [
+        {
+          "id": "proj001",
+          "title": "Housing Policy Impacts on School Resource Allocation in California",
+          "description": "Analyzing causal links between local housing policies (zoning, affordability mandates) and K-12 school funding disparities using econometric models and spatial analysis.",
+          "startDate": "2021-01",
+          "endDate": "Present",
+          "status": "Ongoing",
+          "url": "https://example.com/housing-policy-research"
+        },
+        {
+          "id": "proj002", 
+          "title": "Modeling Demographic Futures & Municipal Services in the Sun Belt",
+          "description": "Developing agent-based models informed by census data and sociological theory to simulate population shifts and predict strain on municipal resources (schools, infrastructure) under different policy scenarios.",
+          "startDate": "2022-06",
+          "endDate": "2025-03",
+          "status": "Ongoing",
+          "url": "https://example.com/demographic-modeling"
+        }
+      ]
+    },
+    {
+      "id": "work002",
+      "type": "work",
+      "title": "Senior Data Scientist, Education Funding Equity Initiative",
+      "institution": "New America",
+      "location": "Washington, DC",
+      "lat": 38.9072,
+      "lon": -77.0369,
+      "startDate": "2022-08",
+      "endDate": "Present",
+      "description": "Analyzed state and local school funding policies using econometric methods. Developed spatial analysis tools for measuring educational opportunity gaps. Authored policy reports on student segregation and resource inequity.",
+      "disciplines": ["Policy", "Data Sci", "Geo", "Soc"],
+      "projects": [
+        {
+          "id": "proj004",
+          "title": "Crossing the Line: Segregation and Resource Inequality Between America's School Districts",
+          "description": "Highlighting the most racially and economically segregating school district boundaries and measuring their funding inequity using spatial and econometric analysis.",
+          "startDate": "2023-09",
+          "endDate": "2024-02",
+          "status": "Completed",
+          "url": "https://www.newamerica.org/education-policy/reports/segregation-and-resource-inequality-between-americas-school-districts/"
+        },
+        {
+          "id": "proj005",
+          "title": "Segregation Between America's School Districts in the Twenty-First Century: Mapping Where Students of Different Races Live and Learn Today",
+          "description": "Analyzing how demographic changes in the 21st century have shifted patterns of racial segregation.", 
+          "startDate": "2024-04",
+          "endDate": "2024-05",
+          "status": "Completed",
+          "url": "https://www.newamerica.org/education-policy/reports/segregation-between-americas-school-districts-in-the-21st-century/"
+        },
+        {
+          "id": "proj006",
+          "title": "ECHO Data Dashboard",
+          "description": "Education and Housing policy advocates often use data available in different geographic units. This dashboard reestimates ACS, Demographic, School Finance, Environmental and Public Health data at several at all levels to facilitate cross-sector collaboration and advocacy.", 
+          "startDate": "2025-01",
+          "endDate": "2024-09",
+          "status": "Completed",
+          "url": "https://www.newamerica.org/education-policy/reports/education-community-and-housing-open-data-dashboard/"
+        }
+      ]
+    },
+    {
+      "id": "work003",
+      "type": "work",
+      "title": "Research Assistant, Office of the Executive Director for Canada",
+      "institution": "Inter-American Development Bank",
+      "location": "Washington, DC",
+      "lat": 38.9042,
+      "lon": -77.0204,
+      "startDate": "2020-03",
+      "endDate": "2023-08",
+      "description": "Led comparative analysis of US-Mexico border tax policies and education funding. Coordinated binational research team. Presented findings at international conferences and policy forums.",
+      "disciplines": ["Policy", "Geo", "Data Sci"],
+      "projects": [
+        {
+          "id": "proj003",
+          "title": "Gender and Diversity Action Plan",
+          "description": "Helped develop the Bank's first institutionalized gender and diversity guidelines and initiatives.",
+          "startDate": "2021-09",
+          "endDate": "2023-01",
+          "status": "Completed",
+          "url": "https://www.iadb.org/en/who-we-are/topics/gender-and-diversity#gender-action-plan"
+        }
+      ]
+    },
+    {
+      "id": "edu001",
+      "type": "education",
+      "title": "B.S. Economics & Statistics,\nB.A. Political Science\nMinor, Hispanic Languages and Literature",
+      "institution": "University of Pittsburgh",
+      "location": "Pittsburgh, PA",
+      "lat": 40.4414,
+      "lon": -79.9546,
+      "startDate": "2016-09",
+      "endDate": "2019-04",
+      "disciplines": ["Soc", "Geo"],
+      "thesis": {
+        "title": "Spatial Econometrics of Urban Inequality: A Comparative Analysis of Municipal Resource Allocation",
+        "advisor": "Dr. Emily Rodriguez",
+        "publications": ["pub003"]
+      }
+    },
+    {
+      "id": "edu003",
+      "type": "education",
+      "title": "M.S. Data Science and Policy\nConcentration, Statistical Methods",
+      "institution": "Johns Hopkins University",
+      "location": "Baltimore, MD",
+      "lat": 39.3299,
+      "lon": -76.6205,
+      "startDate": "2022-01",
+      "endDate": "2024-12",
+      "disciplines": ["Policy", "Data Sci", "Soc"],
+      "thesis": {
+        "title": "Computational Methods for Measuring Spatial Inequity in Urban Environments",
+        "advisor": "Dr. Michael Chen",
+        "publications": ["pub002"]
+      }
+    },
+    {
+      "id": "edu002",
+      "type": "education",
+      "title": "Student Fellow, División de Economia y Ciencia Política",
+      "institution": "CIDE",
+      "location": "Mexico City, Mexico",
+      "lat": 19.3743,
+      "lon": -99.2636,
+      "startDate": "2019-09",
+      "endDate": "2020-03",
+      "disciplines": ["CS", "Data Sci", "Soc", "Policy", "Geo"]
+    },
+    {
+      "id": "edu005",
+      "type": "education",
+      "title": "Summer Program",
+      "institution": "Universidad de La Habana, Facultad de Periodismo",
+      "location": "Havana, Cuba",
+      "lat": 23.1368,
+      "lon": -82.3815,
+      "startDate": "2019-05",
+      "endDate": "2019-08",
       "disciplines": ["CS", "Data Sci", "Soc", "Policy", "Geo"]
     },
     {
@@ -46,7 +167,8 @@
       "startDate": "2021-01",
       "endDate": "Present",
       "description": "Analyzing causal links between local housing policies (zoning, affordability mandates) and K-12 school funding disparities using econometric models and spatial analysis.",
-      "disciplines": ["Policy", "Geo", "Data Sci", "Soc"]
+      "disciplines": ["Policy", "Geo", "Data Sci", "Soc"],
+      "relatedWork": "work001"
     },
     {
       "id": "pub001",
@@ -72,7 +194,8 @@
       "startDate": "2022-06",
       "endDate": "2025-03",
       "description": "Developing agent-based models informed by census data and sociological theory to simulate population shifts and predict strain on municipal resources (schools, infrastructure) under different policy scenarios.",
-      "disciplines": ["CS", "Data Sci", "Soc", "Geo", "Policy"]
+      "disciplines": ["CS", "Data Sci", "Soc", "Geo", "Policy"],
+      "relatedWork": "work001"
     },
     {
       "id": "pub002",
@@ -90,12 +213,12 @@
     {
       "id": "conf001",
       "type": "conference",
-      "title": "Presented: Simulating Urban Growth and Resource Equity",
-      "venue": "Computational Social Science Conference",
-      "location": "Chicago, IL",
-      "lat": 41.8781,
-      "lon": -87.6298,
-      "date": "2023-10",
+      "title": "Presented: From Art to Enforcement: Amplifying your Fair Housing Message ",
+      "venue": "National Fair Housing Association",
+      "location": "Washington, DC",
+      "lat": 38.8993973,
+      "lon": -77.0291186,
+      "date": "2022-07",
       "relatedItems": ["pub002", "proj002"]
     },
      {
@@ -109,30 +232,43 @@
       "startDate": "2022-09",
       "endDate": "2024-01",
       "description": "Comparative analysis of municipal and state/federal tax policies in US and Mexican border cities and their differential impacts on public school funding.",
-      "disciplines": ["Policy", "Geo", "Data Sci"]
+      "disciplines": ["Policy", "Geo", "Data Sci"],
+      "relatedWork": "work003"
     },
      {
       "id": "conf002",
       "type": "conference",
-      "title": "Invited Talk: Fiscal Federalism and School Equity on the US-Mexico Border",
-      "venue": "North American Regional Science Council (NARSC)",
-      "location": "Toronto, ON",
-      "lat": 43.6532,
-      "lon": -79.3832,
-      "date": "2023-11",
+      "title": "Examaning the impact of racial and economic segregation on school funding",
+      "venue": "Journal of Urban Affairs",
+      "location": "New York, NY",
+      "lat": 40.7586,
+      "lon": -73.9858,
+      "date": "2024-04",
       "relatedItems": ["proj003"]
     },
     {
       "id": "edu004",
       "type": "education",
-      "title": "Summer Institute: GIS for Social Scientists",
-      "institution": "University of British Columbia",
-      "location": "Vancouver, BC",
-      "lat": 49.2606,
-      "lon": -123.2460,
-      "startDate": "2019-07",
-      "endDate": "2019-08",
+      "title": "ED Fund Research Cohort",
+      "institution": "ED Fund",
+      "location": "Washington, DC",
+      "lat": 38.9072,
+      "lon": -77.0369,
+      "startDate": "2025-07",
+      "endDate": "Present",
       "disciplines": ["Geo", "Data Sci", "Soc"]
+    },
+    {
+      "id": "edu007",
+      "type": "education",
+      "title": "My Beautiful Girlfriend's Hometown",
+      "institution": "",
+      "location": "Dallas, TX",
+      "lat": 32.8928432,
+      "lon": -96.8712358,
+      "startDate": "2021-11",
+      "endDate": "Present",
+      "disciplines": ["Girlfriend", "Love"]
     },
     {
       "id": "pub003",
@@ -149,12 +285,12 @@
     {
       "id": "conf003", 
       "type": "conference",
-      "title": "Presented: Housing Policy & School Funding in California",
-      "venue": "American Sociological Association Annual Meeting",
-      "location": "Los Angeles, CA",
-      "lat": 34.0522,
-      "lon": -118.2437,
-      "date": "2022-08",
+      "title": "Crossing the Line: Segregation and Resource Inequality America's Schools",
+      "venue": "Esri User Conference",
+      "location": "San Diego, CA",
+      "lat": 32.7157,
+      "lon": -117.1611,
+      "date": "2025-07",
       "relatedItems": ["proj001"]
      }
   ]

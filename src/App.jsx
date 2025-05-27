@@ -13,6 +13,8 @@ import SpatialResumeMap from './components/SpatialResumeMap';
 import AboutPage from './pages/AboutPage';
 import CVPage from './pages/CvPage'; // Corrected case
 import ContactPage from './pages/ContactPage';
+import ResearchPage from './pages/ResearchPage';
+import SoftwarePage from './pages/SoftwarePage';
 
 // Import your Header component
 import Header from './components/Header'; // Corrected casing
@@ -35,6 +37,8 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/cv" element={<CVPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/research" element={<ResearchPage />} />
+            <Route path="/software" element={<SoftwarePage />} />
             <Route path="*" element={
               <div style={{ padding: '40px', textAlign: 'center' }}>
                 <h2>404 Not Found</h2>

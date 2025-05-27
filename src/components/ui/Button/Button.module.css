@@ -4,8 +4,8 @@
     align-items: center;
     justify-content: center;
     padding: 8px 16px; /* Base padding for 'medium' */
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+    border-radius: var(--border-radius);
+    font-family: var(--font-sans);
     font-weight: 500; /* Medium weight */
     font-size: 14px;
     cursor: pointer;
@@ -16,7 +16,7 @@
   }
   
   .button:focus-visible { /* Modern focus outline */
-     outline: 2px solid #58A6FF; /* Primary Accent */
+     outline: 2px solid var(--color-accent-primary);
      outline-offset: 2px;
   }
   .button:disabled {
@@ -26,9 +26,9 @@
   
   /* Primary */
   .primary {
-    background-color: #58A6FF; /* Primary Accent */
-    color: #0D1117; /* Dark background for contrast */
-    border-color: #58A6FF;
+    background-color: var(--color-accent-primary);
+    color: #FFFFFF; /* White text for good contrast on blue */
+    border-color: var(--color-accent-primary);
   }
   .primary:not(:disabled):hover {
     background-color: #7AB1FF; /* Lighter blue */
@@ -42,8 +42,8 @@
   /* Secondary (Outline) */
   .secondary {
     background-color: transparent;
-    color: #58A6FF; /* Primary Accent */
-    border-color: #58A6FF;
+    color: var(--color-link);
+    border-color: var(--color-link);
   }
    .secondary:not(:disabled):hover {
      background-color: rgba(88, 166, 255, 0.1); /* Subtle blue background */
@@ -59,7 +59,7 @@
   /* Text (Link-like) */
   .text {
     background-color: transparent;
-    color: #58A6FF; /* Primary Accent */
+    color: var(--color-link);
     border-color: transparent;
     padding: 8px 10px; /* Adjust padding maybe */
   }

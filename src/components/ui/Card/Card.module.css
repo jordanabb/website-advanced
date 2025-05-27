@@ -1,17 +1,17 @@
 /* src/components/ui/Card/Card.module.css */
 .card {
-    background-color: #161B22; /* Darker Grey BG */
+    background-color: var(--color-bg-panel);
     padding: 20px 24px;
-    border-radius: 6px;
-    border: 1px solid #30363D; /* Subtle border */
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border-subtle);
     display: block; /* Behave like a block */
     text-decoration: none; /* Reset link default */
     color: inherit; /* Inherit text color */
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
   }
   
   .linkCard:hover { /* Subtle hover for clickable cards */
-    border-color: #58A6FF; /* Primary Accent */
+    border-color: var(--color-accent-primary);
     /* Optional: subtle shadow */
     /* box-shadow: 0 0 15px rgba(88, 166, 255, 0.1); */
   }
@@ -20,19 +20,20 @@
     /* Uses Heading component styles, maybe override margin */
     margin-top: 0;
     margin-bottom: 4px !important; /* Tighter spacing for card title */
-    color: #CDD9E5; /* Ensure color */
+    color: var(--color-text-primary);
   }
   
   .metadata {
     /* Uses Text component styles, maybe override margin */
      margin-bottom: 12px !important;
      display: block; /* Ensure it takes space */
+     color: var(--color-text-secondary);
   }
   
   .content {
     /* Styles for children passed to card */
     margin-bottom: 16px;
-    color: #CDD9E5; /* Ensure content text color */
+    color: var(--color-text-primary);
   }
   .content > *:last-child {
      margin-bottom: 0; /* Remove margin from last element in content */
@@ -46,10 +47,10 @@
   
   .tag {
     display: inline-block;
-    background-color: #30363D; /* Subtle background */
-    color: #7D8590; /* Muted text */
+    background-color: var(--color-bg-code);
+    color: var(--color-text-secondary);
     padding: 3px 8px;
     border-radius: 12px; /* Pill shape */
     font-size: 12px;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
   }

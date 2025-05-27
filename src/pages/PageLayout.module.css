@@ -14,3 +14,203 @@
        padding: 0 15px;
     }
   }
+
+/* Projects Page Styles */
+.pageContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.pageHeader {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.pageContent {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.workSection {
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: 40px;
+  transition: border-color 0.3s ease;
+}
+
+.workSection:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.workHeader {
+  margin-bottom: 32px;
+}
+
+.workMeta {
+  margin: 8px 0 16px 0 !important;
+  color: var(--color-text-secondary);
+  transition: color 0.3s ease;
+}
+
+.workDescription {
+  margin: 0 !important;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.projectCard {
+  padding: 24px;
+  background-color: var(--color-bg-panel);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--border-radius);
+  transition: border-color 0.2s ease, background-color 0.3s ease;
+}
+
+.projectCard:hover {
+  border-color: var(--color-accent-primary);
+}
+
+.projectHeader {
+  margin-bottom: 16px;
+}
+
+.projectLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.projectLink:hover .projectTitle {
+  color: var(--color-accent-primary);
+}
+
+.projectTitle {
+  margin: 0 0 8px 0 !important;
+  color: var(--color-text-primary);
+  font-size: 18px !important;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.projectMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.projectTiming {
+  margin: 0 !important;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  transition: color 0.3s ease;
+}
+
+.projectStatus {
+  margin: 0 !important;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-size: 11px !important;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+.projectDescription {
+  margin: 0 0 16px 0 !important;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+.projectActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.noProjects {
+  margin: 0 !important;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 32px;
+  transition: color 0.3s ease;
+}
+
+/* Software Page Styles */
+.softwareGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.softwareCard {
+  padding: 24px;
+  background-color: var(--color-bg-panel);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--border-radius);
+  transition: border-color 0.2s ease, background-color 0.3s ease;
+}
+
+.softwareCard:hover {
+  border-color: var(--color-accent-primary);
+}
+
+.softwareHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.softwareIcon {
+  font-size: 24px;
+  color: var(--color-text-primary);
+  transition: color 0.3s ease;
+}
+
+.softwareTitle {
+  margin: 0 !important;
+  color: var(--color-text-primary);
+  font-size: 20px !important;
+  transition: color 0.3s ease;
+}
+
+.softwareDescription {
+  margin: 0 0 20px 0 !important;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  transition: color 0.3s ease;
+}
+
+.softwareActions {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 20px 15px;
+  }
+  
+  .projectsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .softwareGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .softwareActions {
+    flex-direction: column;
+  }
+}

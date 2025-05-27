@@ -8,13 +8,14 @@
   width: 100%; /* Full width */
   padding: 12px 24px; /* Overall header padding */
   z-index: 100; /* Header needs high z-index */
-  background-color: rgb(13, 17, 23); /* Dark background */
-  border-bottom: 1px solid #30363D; /* Optional subtle border */
+  background-color: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 
   /* --- Flexbox for Layout --- */
   display: flex;
   align-items: center; /* Vertically center items */
-  justify-content: flex-start; /* <<< CHANGED: Align left content to the start */
+  justify-content: space-between; /* Space between left and right content */
   box-sizing: border-box; /* Include padding in width */
 }
 
@@ -27,40 +28,42 @@
   /* margin-right: 50px; */
 }
 
-/* --- Right Side Container (Not strictly needed for layout anymore) --- */
-/* .rightContent can be removed or left empty if div still exists in JSX */
-/* .rightContent { } */
-
+/* --- Right Side Container --- */
+.rightContent {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Space between theme toggle and hamburger button */
+  position: fixed; /* Fixed positioning to ensure it stays on the far right */
+  right: 24px; /* Match header padding */
+  top: 24px; /* Center within header: 12px padding + 12px to center */
+  transform: translateY(-50%); /* Center vertically */
+  z-index: 101; /* Ensure it's above other elements */
+}
 
 /* --- Name and Title Styles --- */
 .name {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 20px;
   font-weight: 700;
-  color: #CDD9E5;
+  color: var(--color-text-primary);
   margin: 0; /* Remove default margin */
   margin-right: 16px; /* Space between name and title */
   white-space: nowrap; /* Prevent wrapping */
+  transition: color 0.3s ease;
 }
 
 .title {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 400;
-  color: #7D8590;
+  color: var(--color-text-secondary);
   margin: 0; /* Remove default margin */
   white-space: nowrap; /* Prevent wrapping */
+  transition: color 0.3s ease;
 }
 
 /* --- Hamburger Button Styles --- */
 .hamburgerButton {
-  /* --- Positioning --- */
-  position: fixed; /* Position relative to the viewport */
-  top: 12px;       /* Match header's top padding (adjust if needed) */
-  right: 24px;      /* Match header's right padding (adjust if needed) */
-  z-index: 101;    /* Ensure it's above header background/overlay */
-  /* --- End Positioning --- */
-
   /* Visuals & Interaction */
   display: flex;
   flex-direction: column;
@@ -72,13 +75,14 @@
   cursor: pointer;
   padding: 0;
   box-sizing: border-box;
+  position: relative; /* Changed from fixed to relative since it's now in rightContent */
 }
 
 .hamburgerButton:focus {
   outline: none;
 }
 .hamburgerButton:focus-visible {
-  outline: 2px solid #58A6FF; /* Focus color */
+  outline: 2px solid var(--color-accent-primary);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -86,7 +90,7 @@
 .hamburgerLine {
   width: 100%;
   height: 3px;
-  background-color: #CDD9E5; /* Line color */
+  background-color: var(--color-text-primary);
   border-radius: 2px;
   transition: all 0.3s linear;
   transform-origin: 1px;
@@ -112,23 +116,23 @@
   width: 280px;
   max-width: 80%;
   height: 100vh;
-  background-color: #161B22; /* Panel background */
-  border-left: 1px solid #30363D;
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+  background-color: var(--color-bg-panel);
+  border-left: 1px solid var(--color-border-subtle);
+  box-shadow: var(--shadow-subtle);
   padding: 70px 20px 20px 20px; /* Adjust top padding if needed due to fixed button */
   box-sizing: border-box;
   z-index: 100; /* Below button, above overlay */
   transform: translateX(100%); /* Off-screen */
   opacity: 0;
   visibility: hidden;
-  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0.3s, background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .mobileMenu.open {
   transform: translateX(0); /* Slide in */
   opacity: 1;
   visibility: visible;
-  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0s linear 0s, background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .menuList {
@@ -143,18 +147,18 @@
 .menuLink {
   display: block;
   padding: 10px 15px;
-  color: #CDD9E5;
+  color: var(--color-text-primary);
   text-decoration: none;
   font-size: 18px;
   font-weight: 500;
-  border-radius: 4px;
+  border-radius: var(--border-radius);
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .menuLink:hover,
 .menuLink:focus {
   background-color: rgba(88, 166, 255, 0.1);
-  color: #A0FCF7; /* Accent color */
+  color: var(--color-accent-primary);
   outline: none;
 }
 
@@ -200,8 +204,8 @@
   }
 
   /* Adjust fixed button position for smaller padding */
-  .hamburgerButton {
-     top: 10px;    /* Match new padding-top */
-     right: 16px;   /* Match new padding-right */
+  .rightContent {
+     right: 16px; /* Match new padding-right */
+     top: 20px; /* Center within smaller header: 10px padding + 10px to center */
   }
 }

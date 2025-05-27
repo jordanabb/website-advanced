@@ -11,7 +11,14 @@ import Icon from '../ui/Icon/Icon';
 import styles from './ContextualPanel.module.css'; // Import CSS Module
 
 // --- Configuration for Canvas Pattern ---
-const LINE_COLOR = "rgba(255, 215, 0, 0.3)"; // Gold color @ 70% opacity
+// Function to get the current line color based on theme
+const getLineColor = () => {
+    const isLightMode = document.body.classList.contains('light-mode');
+    return isLightMode 
+        ? "rgba(88, 166, 255, 0.25)" // More blue for light mode
+        : "rgba(255, 215, 0, 0.3)";  // Gold color for dark mode
+};
+
 const LINE_WIDTH = .35;                     // Thin lines (try 1 if needed)
 const NUM_POINTS = 60;                      // Number of "cell centers"
 const CONNECTION_RADIUS = 200;              // Max distance to connect points
@@ -87,7 +94,7 @@ const animateDrawing = (canvas, startTime, connections) => {
     ctx.restore(); // Restore previous state (includes dpr scaling)
 
     // Set styles and draw the subset of lines
-    ctx.strokeStyle = LINE_COLOR;
+    ctx.strokeStyle = getLineColor(); // Use dynamic color based on theme
     ctx.lineWidth = LINE_WIDTH;
     ctx.beginPath();
     linesToDraw.forEach(line => {
@@ -249,6 +256,20 @@ function ContextualPanel({
         }, 250);
         window.addEventListener('resize', handleResize);
 
+        // Theme change handler - restart animation with new colors
+        const handleThemeChange = () => {
+            if(canvasRef.current && connectionsRef.current.length > 0) {
+                // Cancel existing animation
+                if (animationFrameIdRef.current) cancelAnimationFrame(animationFrameIdRef.current);
+                // Restart animation with new theme colors
+                const startTime = performance.now();
+                animationFrameIdRef.current = requestAnimationFrame(() => {
+                     animationFrameIdRef.current = animateDrawing(canvasRef.current, startTime, connectionsRef.current);
+                });
+            }
+        };
+        document.addEventListener('themeChanged', handleThemeChange);
+
         // Cleanup function for the effect
         return () => {
             // console.log(`Cleaning up canvas effect for data ID: ${data?.id}`);
@@ -256,6 +277,7 @@ function ContextualPanel({
             clearTimeout(retryTimeoutId);   // Clear any pending retry timeout
             if (animationFrameIdRef.current) cancelAnimationFrame(animationFrameIdRef.current); // Cancel animation frame
             window.removeEventListener('resize', handleResize); // Remove listener
+            document.removeEventListener('themeChanged', handleThemeChange); // Remove theme listener
             handleResize.cancel(); // Cancel pending debounced calls
         };
     // Rerun effect if the data prop changes, triggering a new pattern/animation
@@ -286,6 +308,46 @@ function ContextualPanel({
                 {data.venue && <Text type="caption" className={styles.panelVenue}>Venue: {data.venue}</Text>}
                 <Text type="body" className={styles.panelDescription}>{data.description || data.title || 'No further details available.'}</Text>
                 {Array.isArray(data.disciplines) && data.disciplines.length > 0 && (<div className={styles.panelTags}>{data.disciplines.map((tag, index) => (<span key={`${data.id}-tag-${index}`} className={styles.panelTag}>{tag}</span>))}</div>)}
+                
+                {/* Thesis Section for Education Items */}
+                {data.type === 'education' && data.thesis && (
+                    <div className={styles.thesisSection}>
+                        <Heading level={4} className={styles.thesisHeading}>Thesis</Heading>
+                        <div className={styles.thesisDetails}>
+                            <Text type="body-bold" className={styles.thesisTitle}>{data.thesis.title}</Text>
+                            {data.thesis.advisor && (
+                                <Text type="caption" className={styles.thesisAdvisor}>Advisor: {data.thesis.advisor}</Text>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Projects Section for Work Items */}
+                {data.type === 'work' && Array.isArray(data.projects) && data.projects.length > 0 && (
+                    <div className={styles.projectsSection}>
+                        <Heading level={4} className={styles.projectsHeading}>Associated Projects</Heading>
+                        <div className={styles.projectsList}>
+                            {data.projects.map((project, index) => (
+                                <div key={`${data.id}-project-${index}`} className={`${styles.projectItem} ${project.url ? styles.clickable : ''}`}>
+                                    <div className={styles.projectHeader}>
+                                        {project.url ? (
+                                            <a href={project.url} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
+                                                <Text type="body-bold" className={styles.projectTitle}>{project.title}</Text>
+                                            </a>
+                                        ) : (
+                                            <Text type="body-bold" className={styles.projectTitle}>{project.title}</Text>
+                                        )}
+                                        <Text type="caption" className={styles.projectTiming}>
+                                            {project.status && project.status.toLowerCase() !== 'completed' && `${project.status} `}
+                                            {project.startDate}{project.endDate && project.endDate !== 'Present' ? ` - ${project.endDate}` : project.endDate === 'Present' ? ' - Present' : ''}
+                                        </Text>
+                                    </div>
+                                    <Text type="body" className={styles.projectDescription}>{project.description}</Text>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </>
         );
     };

@@ -1,16 +1,76 @@
 /* Example for index.css or similar global file */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'); 
 
+:root {
+  /* --- Dark Mode Colors (Default) --- */
+  --color-bg-primary: #0D1117;
+  --color-bg-panel: #161B22;
+  --color-bg-code: #161B22; /* Same as panel in dark mode */
+  --color-bg-code-rgb: 22, 27, 34; /* RGB values for transparency */
+  --color-text-primary: #CDD9E5;
+  --color-text-secondary: #7D8590;
+  --color-link: #58A6FF; /* Link color for dark mode */
+  --color-border-subtle: #30363D;
+
+  /* --- Shared Accent Colors --- */
+  --color-accent-primary: #58A6FF; /* Use this for non-text accents if link color differs */
+  --color-accent-secondary: #F0B917;
+
+  /* --- Other shared variables --- */
+  --font-sans: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* --- Spacing, Radii, etc. --- */
+  --border-radius: 6px;
+  --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Light Mode Overrides --- */
+/* Apply this class to <html> or <body> to switch themes */
+.light-mode {
+  --color-bg-primary: #F4F6F8;
+  --color-bg-panel: #FFFFFF;
+  --color-bg-code: #E9EDF0;
+  --color-bg-code-rgb: 233, 237, 240; /* RGB values for transparency */
+  --color-text-primary: #0F1419; /* Darker text for better readability */
+  --color-text-secondary: #4A5568; /* Darker secondary text */
+  --color-link: #1C6FD8; /* Specific link color for light mode */
+  --color-border-subtle: #D1D9E6;
+  --color-generative-lines: #6A778B; /* Generative lines color for light mode */
+
+  /* Shared accents remain the same, they are defined in :root and not overridden here unless needed */
+  --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 body {
   margin: 0; /* Basic reset */
-  font-family: 'Inter', sans-serif; /* Default font */
-  background-color: #0D1117; /* Dark background */
-  color: #CDD9E5; /* Default text color */
+  font-family: var(--font-sans); /* Use CSS variable */
+  background-color: var(--color-bg-primary); /* Use CSS variable */
+  color: var(--color-text-primary); /* Use CSS variable */
   -webkit-font-smoothing: antialiased; /* Improves font rendering */
   -moz-osx-font-smoothing: grayscale;
+  padding-top: 80px; /* Add top padding to prevent header from covering content */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
 }
 
 /* Add other global resets or base styles if needed */
 * {
    box-sizing: border-box;
+}
+
+/* Global link styles */
+a {
+  color: var(--color-link);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
 }
