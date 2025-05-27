@@ -180,6 +180,7 @@ function ContextualPanel({
         if (!isMobile()) return; // Only enable on mobile
         
         e.preventDefault();
+        e.stopPropagation();
         isDraggingRef.current = true;
         
         const clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
@@ -222,19 +223,18 @@ function ContextualPanel({
         document.body.style.userSelect = '';
     }, []);
 
-    // Set up drag event listeners
+    // Set up drag event listeners - always listen, check dragging state in handlers
     useEffect(() => {
         const handleMouseMove = (e) => handleDragMove(e);
         const handleMouseUp = () => handleDragEnd();
         const handleTouchMove = (e) => handleDragMove(e);
         const handleTouchEnd = () => handleDragEnd();
 
-        if (isDraggingRef.current) {
-            document.addEventListener('mousemove', handleMouseMove);
-            document.addEventListener('mouseup', handleMouseUp);
-            document.addEventListener('touchmove', handleTouchMove, { passive: false });
-            document.addEventListener('touchend', handleTouchEnd);
-        }
+        // Always add listeners
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
 
         return () => {
             document.removeEventListener('mousemove', handleMouseMove);

@@ -2,6 +2,7 @@
 .filterContainer {
     display: flex;
     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    justify-content: center; /* Center the filter buttons */
     gap: 8px; /* Space between buttons */
     padding: 8px;
     background-color: var(--color-bg-code);
