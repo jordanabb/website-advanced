@@ -17,7 +17,7 @@ import ResearchPage from './pages/ResearchPage';
 import SoftwarePage from './pages/SoftwarePage';
 
 // Import your Header component
-import Header from './components/Header'; // Corrected casing
+import Header from './components/header'; // Corrected casing
 
 // Optional: Import global styles
 import './App.module.css'; // Or your global CSS entry point
