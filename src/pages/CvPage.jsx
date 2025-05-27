@@ -4,7 +4,7 @@ import { Heading, Text } from '../components/ui/Typography/Typography';
 import Button from '../components/ui/Button/Button';
 import Icon from '../components/ui/Icon/Icon';
 import styles from './PageLayout.module.css'; // Optional: Common page layout
-import cvStyles from './CVPage.module.css'; // Specific styles for CV layout
+import cvStyles from './CvPage.module.css'; // Specific styles for CV layout
 
 // Placeholder for the actual PDF file path
 const cvPdfPath = '/path/to/your/CV.pdf';
