@@ -158,6 +158,8 @@ function ContextualPanel({
     const dragStartYRef = useRef(null);
     const initialHeightRef = useRef(null);
     const [panelHeight, setPanelHeight] = useState(null);
+    const rafIdRef = useRef(null);
+    const lastUpdateTimeRef = useRef(0);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -198,24 +200,43 @@ function ContextualPanel({
         if (!isDraggingRef.current || !isMobile()) return;
         
         e.preventDefault();
-        const clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
-        const deltaY = dragStartYRef.current - clientY; // Inverted because we're dragging from top
-        const newHeight = initialHeightRef.current + deltaY;
         
-        // Get viewport height and calculate constraints
-        const vh = window.innerHeight;
-        const minHeight = vh * 0.3; // 30vh minimum
-        const maxHeight = vh * 0.8; // 80vh maximum
+        // Throttle updates using requestAnimationFrame
+        if (rafIdRef.current) {
+            cancelAnimationFrame(rafIdRef.current);
+        }
         
-        // Clamp the height within bounds
-        const clampedHeight = Math.max(minHeight, Math.min(maxHeight, newHeight));
-        const heightVh = (clampedHeight / vh) * 100;
-        
-        setPanelHeight(`${heightVh}vh`);
+        rafIdRef.current = requestAnimationFrame(() => {
+            const clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+            const deltaY = dragStartYRef.current - clientY; // Inverted because we're dragging from top
+            const newHeight = initialHeightRef.current + deltaY;
+            
+            // Get viewport height and calculate constraints
+            const vh = window.innerHeight;
+            const minHeight = vh * 0.3; // 30vh minimum
+            const maxHeight = vh * 0.8; // 80vh maximum
+            
+            // Clamp the height within bounds
+            const clampedHeight = Math.max(minHeight, Math.min(maxHeight, newHeight));
+            const heightVh = (clampedHeight / vh) * 100;
+            
+            // Only update if there's a meaningful change (reduce unnecessary re-renders)
+            const currentTime = performance.now();
+            if (currentTime - lastUpdateTimeRef.current > 8) { // ~120fps throttle
+                setPanelHeight(`${heightVh}vh`);
+                lastUpdateTimeRef.current = currentTime;
+            }
+        });
     }, []);
 
     const handleDragEnd = useCallback(() => {
         if (!isDraggingRef.current) return;
+        
+        // Cancel any pending animation frame
+        if (rafIdRef.current) {
+            cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = null;
+        }
         
         isDraggingRef.current = false;
         dragStartYRef.current = null;
@@ -438,6 +459,7 @@ function ContextualPanel({
             clearTimeout(initialTimeoutId); // Clear initial setup timeout
             clearTimeout(retryTimeoutId);   // Clear any pending retry timeout
             if (animationFrameIdRef.current) cancelAnimationFrame(animationFrameIdRef.current); // Cancel animation frame
+            if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current); // Cancel drag animation frame
             window.removeEventListener('resize', handleResize); // Remove listener
             document.removeEventListener('themeChanged', handleThemeChange); // Remove theme listener
             handleResize.cancel(); // Cancel pending debounced calls
