@@ -1,18 +1,10 @@
 /* src/pages/CVPage.module.css */
-.cvHeader {
-    display: flex;
-    justify-content: space-between;
+.downloadButton {
+    display: inline-flex;
     align-items: center;
-    flex-wrap: wrap; /* Allow button to wrap on small screens */
-    gap: 20px;
-    margin-bottom: 40px; /* Space below header */
-    padding-bottom: 20px;
-    border-bottom: 1px solid #30363D; /* Blueprint line */
-  }
-  
-  /* Ensure button doesn't shrink too much */
-  .downloadButton {
+    gap: 8px;
     flex-shrink: 0;
+    margin-left: auto;
   }
   
   .cvSection {
@@ -20,9 +12,8 @@
   }
   
   .cvSectionTitle {
-    /* Uses Heading h2 styles, maybe override margin */
     margin-bottom: 15px !important;
-    color: #CDD9E5; /* Ensure color */
+    color: var(--color-text-primary);
   }
   
   .cvEntry {
@@ -30,16 +21,15 @@
   }
   
   .cvEntryTitle {
-     /* Uses Heading h3 styles */
      margin-top: 0 !important;
-     margin-bottom: 2px !important; /* Tight spacing to metadata */
-     color: #CDD9E5;
+     margin-bottom: 2px !important;
+     color: var(--color-text-primary);
   }
   
   .cvEntryMeta {
-     /* Uses Text metadata styles */
      margin-bottom: 8px !important;
-     display: block; /* Ensure it takes space */
+     display: block;
+     color: var(--color-text-secondary);
   }
   
   .cvEntryDescription {
@@ -58,12 +48,29 @@
   }
   .cvPublication a,
   .cvPresentation a {
-    color: #58A6FF; /* Link color */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-link);
     text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
   .cvPublication a:hover,
   .cvPresentation a:hover {
-    text-decoration: underline;
+    color: var(--color-link);
+    background-color: color-mix(in srgb, var(--color-link) 10%, transparent);
+    text-decoration: none;
   }
   
-  /* Add more specific styles as needed for lists, skills layout etc. */
+  /* Skills section styling */
+  .cvSkillsList {
+    margin-top: 10px;
+    padding-left: 1em;
+    color: var(--color-text-primary);
+  }
+
+  .cvSkillsList li {
+    margin-bottom: 8px;
+  }

@@ -6,7 +6,9 @@ import styles from './PageLayout.module.css';
 function ContactPage() {
   return (
     <main className={styles.mainContent}>
-      <Heading level={1}>Contact</Heading>
+      <div className={styles.pageHeader}>
+        <Heading level={1} className={styles.pageTitle}>Contact</Heading>
+      </div>
       
       <Text type="body" style={{ marginBottom: '40px' }}>
         I'm always interested in connecting with fellow researchers, policymakers, and practitioners 

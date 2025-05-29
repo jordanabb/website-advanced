@@ -1,6 +1,8 @@
 import React from 'react';
 import { Heading, Text } from '../components/ui/Typography/Typography';
-import { Card, CardHeader, CardBody } from '../components/ui/Card/Card';
+import Card from '../components/ui/Card/Card';
+import Button from '../components/ui/Button/Button';
+import Icon from '../components/ui/Icon/Icon';
 import styles from './PageLayout.module.css';
 
 // Import the data - we'll update this file to include writing and media data
@@ -11,163 +13,191 @@ function WritingMediaPage() {
   const articles = spatialData.filter(item => item.type === 'article');
   const mediaMentions = spatialData.filter(item => item.type === 'media');
 
+  // Function to format date
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
   const ArticleCard = ({ article }) => (
-    <Card style={{ marginBottom: '20px' }}>
-      <CardHeader>
-        <Heading level={3} style={{ margin: '0 0 8px 0' }}>
-          {article.url ? (
-            <a 
-              href={article.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{ 
-                color: 'var(--color-text-primary)', 
-                textDecoration: 'none',
-                borderBottom: '1px solid var(--color-accent)',
-                paddingBottom: '2px'
+    <Card className={styles.projectCard}>
+      <div className={styles.projectHeader}>
+        {article.url ? (
+          <a 
+            href={article.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className={styles.projectLink}
+          >
+            <Heading level={3} className={styles.projectTitle}>
+              {article.title}
+            </Heading>
+          </a>
+        ) : (
+          <Heading level={3} className={styles.projectTitle}>
+            {article.title}
+          </Heading>
+        )}
+        
+        <div className={styles.projectMeta}>
+          <Text type="caption" className={styles.projectTiming}>
+            {article.publication} • {formatDate(article.date)}
+          </Text>
+        </div>
+      </div>
+
+      <Text type="body" className={styles.projectDescription}>
+        {article.description}
+      </Text>
+
+      {article.topics && article.topics.length > 0 && (
+        <div style={{ marginBottom: '16px' }}>
+          {article.topics.map((topic, index) => (
+            <span 
+              key={index}
+              style={{
+                display: 'inline-block',
+                backgroundColor: 'var(--color-surface-secondary)',
+                color: 'var(--color-text-secondary)',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                fontSize: '0.85em',
+                marginRight: '8px',
+                marginBottom: '4px'
               }}
             >
-              {article.title}
-            </a>
-          ) : (
-            article.title
-          )}
-        </Heading>
-        <Text type="caption" style={{ color: 'var(--color-text-secondary)' }}>
-          {article.publication} • {new Date(article.date).toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}
-        </Text>
-      </CardHeader>
-      <CardBody>
-        <Text type="body">{article.description}</Text>
-        {article.topics && article.topics.length > 0 && (
-          <div style={{ marginTop: '12px' }}>
-            {article.topics.map((topic, index) => (
-              <span 
-                key={index}
-                style={{
-                  display: 'inline-block',
-                  backgroundColor: 'var(--color-surface-secondary)',
-                  color: 'var(--color-text-secondary)',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  fontSize: '0.85em',
-                  marginRight: '8px',
-                  marginBottom: '4px'
-                }}
-              >
-                {topic}
-              </span>
-            ))}
-          </div>
-        )}
-      </CardBody>
+              {topic}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {article.url && (
+        <div className={styles.projectActions}>
+          <Button
+            variant="secondary"
+            size="small"
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read Article <Icon name="ExternalLink" size={14} />
+          </Button>
+        </div>
+      )}
     </Card>
   );
 
   const MediaCard = ({ mention }) => (
-    <Card style={{ marginBottom: '20px' }}>
-      <CardHeader>
-        <Heading level={3} style={{ margin: '0 0 8px 0' }}>
-          {mention.url ? (
-            <a 
-              href={mention.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{ 
-                color: 'var(--color-text-primary)', 
-                textDecoration: 'none',
-                borderBottom: '1px solid var(--color-accent)',
-                paddingBottom: '2px'
-              }}
-            >
+    <Card className={styles.projectCard}>
+      <div className={styles.projectHeader}>
+        {mention.url ? (
+          <a 
+            href={mention.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className={styles.projectLink}
+          >
+            <Heading level={3} className={styles.projectTitle}>
               {mention.title}
-            </a>
-          ) : (
-            mention.title
-          )}
-        </Heading>
-        <Text type="caption" style={{ color: 'var(--color-text-secondary)' }}>
-          {mention.outlet} • {new Date(mention.date).toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}
-        </Text>
-      </CardHeader>
-      <CardBody>
-        <Text type="body">{mention.description}</Text>
-        {mention.context && (
-          <Text type="body" style={{ 
-            marginTop: '8px', 
-            fontStyle: 'italic',
-            color: 'var(--color-text-secondary)'
-          }}>
-            {mention.context}
-          </Text>
+            </Heading>
+          </a>
+        ) : (
+          <Heading level={3} className={styles.projectTitle}>
+            {mention.title}
+          </Heading>
         )}
-      </CardBody>
+        
+        <div className={styles.projectMeta}>
+          <Text type="caption" className={styles.projectTiming}>
+            {mention.outlet} • {formatDate(mention.date)}
+          </Text>
+        </div>
+      </div>
+
+      <Text type="body" className={styles.projectDescription}>
+        {mention.description}
+      </Text>
+
+      {mention.context && (
+        <Text type="body" className={styles.projectDescription} style={{ 
+          fontStyle: 'italic',
+          marginTop: '8px'
+        }}>
+          {mention.context}
+        </Text>
+      )}
+
+      {mention.url && (
+        <div className={styles.projectActions}>
+          <Button
+            variant="secondary"
+            size="small"
+            href={mention.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Coverage <Icon name="ExternalLink" size={14} />
+          </Button>
+        </div>
+      )}
     </Card>
   );
 
   return (
-    <main className={styles.mainContent}>
-      <Heading level={1}>Writing & Media Coverage</Heading>
-      
-      <Text type="body" style={{ marginBottom: '40px' }}>
-        A collection of my non-academic writing and media appearances discussing urban policy, 
-        education equity, and spatial analysis research.
-      </Text>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <Heading level={1}>Writing & Media Coverage</Heading>
+        <Text type="body">
+          A collection of my non-academic writing and media appearances discussing urban policy, 
+          education equity, and spatial analysis research.
+        </Text>
+      </div>
 
-      {/* Non-Academic Articles Section */}
-      <section style={{ marginBottom: '50px' }}>
-        <Heading level={2} style={{ 
-          marginBottom: '24px',
-          paddingBottom: '8px',
-          borderBottom: '2px solid var(--color-accent)'
-        }}>
-          Articles & Commentary
-        </Heading>
-        
-        {articles.length > 0 ? (
-          <div>
-            {articles.map(article => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
+      <div className={styles.pageContent}>
+        {/* Non-Academic Articles Section */}
+        <div className={styles.workSection}>
+          <div className={styles.workHeader}>
+            <Heading level={2}>Articles & Commentary</Heading>
           </div>
-        ) : (
-          <Text type="body" style={{ color: 'var(--color-text-secondary)' }}>
-            Articles and commentary pieces will be added here soon.
-          </Text>
-        )}
-      </section>
+          
+          {articles.length > 0 ? (
+            <div className={styles.projectsGrid}>
+              {articles.map(article => (
+                <ArticleCard key={article.id} article={article} />
+              ))}
+            </div>
+          ) : (
+            <Text type="body" className={styles.noProjects}>
+              Articles and commentary pieces will be added here soon.
+            </Text>
+          )}
+        </div>
 
-      {/* Media Mentions Section */}
-      <section>
-        <Heading level={2} style={{ 
-          marginBottom: '24px',
-          paddingBottom: '8px',
-          borderBottom: '2px solid var(--color-accent)'
-        }}>
-          Media Mentions
-        </Heading>
-        
-        {mediaMentions.length > 0 ? (
-          <div>
-            {mediaMentions.map(mention => (
-              <MediaCard key={mention.id} mention={mention} />
-            ))}
+        {/* Media Mentions Section */}
+        <div className={styles.workSection}>
+          <div className={styles.workHeader}>
+            <Heading level={2}>Media Mentions</Heading>
           </div>
-        ) : (
-          <Text type="body" style={{ color: 'var(--color-text-secondary)' }}>
-            Media coverage and mentions will be added here soon.
-          </Text>
-        )}
-      </section>
-    </main>
+          
+          {mediaMentions.length > 0 ? (
+            <div className={styles.projectsGrid}>
+              {mediaMentions.map(mention => (
+                <MediaCard key={mention.id} mention={mention} />
+              ))}
+            </div>
+          ) : (
+            <Text type="body" className={styles.noProjects}>
+              Media coverage and mentions will be added here soon.
+            </Text>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 

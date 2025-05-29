@@ -12,12 +12,12 @@ const cvPdfPath = '/path/to/your/CV.pdf';
 function CVPage() {
   return (
     <main className={styles.mainContent}>
-      <div className={cvStyles.cvHeader}>
-        <Heading level={1}>Curriculum Vitae</Heading>
+      <div className={styles.pageHeader}>
+        <Heading level={1} className={styles.pageTitle}>Curriculum Vitae</Heading>
         <Button
           href={cvPdfPath}
-          download // Suggests download to the browser
-          target="_blank" // Open PDF in new tab if download fails
+          download
+          target="_blank"
           rel="noopener noreferrer"
           variant="secondary"
           size="medium"
@@ -105,12 +105,13 @@ function CVPage() {
 
        <section className={cvStyles.cvSection}>
          <Heading level={2} className={cvStyles.cvSectionTitle}>Skills</Heading>
-         {/* Use Text or lists for skills */}
-          <Text type="body"><b>Programming:</b> Python (Pandas, GeoPandas, Scikit-learn, NetworkX, Mesa), R, SQL, JavaScript (React)</Text>
-          <Text type="body"><b>Spatial Analysis:</b> GIS (ArcGIS, QGIS), Spatial Statistics, Geovisualization (Mapbox GL JS, Leaflet, D3)</Text>
-          <Text type="body"><b>Data Science:</b> Machine Learning, Econometrics, Agent-Based Modeling, Network Analysis, Data Wrangling & Viz</Text>
-          <Text type="body"><b>Qualitative Methods:</b> (Placeholder if applicable, e.g., Interviewing, Content Analysis)</Text>
-          <Text type="body"><b>Languages:</b> (Placeholder if applicable, e.g., English (Native), Spanish (Fluent))</Text>
+         <ul className={cvStyles.cvSkillsList}>
+          <li><Text type="body"><b>Programming:</b> Python (Pandas, GeoPandas, Scikit-learn, NetworkX, Mesa), R, SQL, JavaScript (React)</Text></li>
+          <li><Text type="body"><b>Spatial Analysis:</b> GIS (ArcGIS, QGIS), Spatial Statistics, Geovisualization (Mapbox GL JS, Leaflet, D3)</Text></li>
+          <li><Text type="body"><b>Data Science:</b> Machine Learning, Econometrics, Agent-Based Modeling, Network Analysis, Data Wrangling & Viz</Text></li>
+          <li><Text type="body"><b>Qualitative Methods:</b> (Placeholder if applicable, e.g., Interviewing, Content Analysis)</Text></li>
+          <li><Text type="body"><b>Languages:</b> (Placeholder if applicable, e.g., English (Native), Spanish (Fluent))</Text></li>
+        </ul>
         </section>
 
       {/* Add other CV sections as needed (Awards, Teaching, Service, etc.) */}
