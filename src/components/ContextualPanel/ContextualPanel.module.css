@@ -122,9 +122,12 @@
   transition: opacity 0.2s ease, background-color 0.3s ease;
 }
 
-.dragHandle:hover::after {
-  opacity: 1;
-  background-color: var(--color-text-primary);
+/* Only show hover effects on devices that support hover (not touch devices) */
+@media (hover: hover) {
+  .dragHandle:hover::after {
+    opacity: 1;
+    background-color: var(--color-text-primary);
+  }
 }
 
 /* Hide drag handle on desktop */
@@ -207,9 +210,12 @@
   transition: color 0.2s, background-color 0.2s;
   flex-shrink: 0;
 }
-.closeButton:hover {
-  color: var(--color-text-primary);
-  background-color: rgba(88, 166, 255, 0.1);
+/* Only show hover effects on devices that support hover (not touch devices) */
+@media (hover: hover) {
+  .closeButton:hover {
+    color: var(--color-text-primary);
+    background-color: rgba(88, 166, 255, 0.1);
+  }
 }
 .closeButton:focus-visible {
    outline: 2px solid var(--color-accent-primary);
@@ -343,8 +349,11 @@
     transition: background-color 0.2s ease, border-color 0.3s ease;
 }
 
-.projectItem:hover {
+/* Only show hover effects on devices that support hover (not touch devices) */
+@media (hover: hover) {
+  .projectItem:hover {
     background-color: var(--color-border-subtle);
+  }
 }
 
 .projectHeader {
@@ -382,10 +391,13 @@
     cursor: pointer;
 }
 
-.projectItem.clickable:hover {
+/* Only show hover effects on devices that support hover (not touch devices) */
+@media (hover: hover) {
+  .projectItem.clickable:hover {
     background-color: var(--color-border-subtle);
     border-color: var(--color-accent-primary);
     opacity: 0.8;
+  }
 }
 
 .projectLink {
@@ -394,8 +406,11 @@
     display: block;
 }
 
-.projectLink:hover .projectTitle {
+/* Only show hover effects on devices that support hover (not touch devices) */
+@media (hover: hover) {
+  .projectLink:hover .projectTitle {
     color: #58A6FF;
+  }
 }
 
 .projectTiming {
