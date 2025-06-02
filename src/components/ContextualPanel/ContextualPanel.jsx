@@ -529,6 +529,9 @@ function ContextualPanel({
                                     if (hasArrows && onProjectHover) {
                                         // Pass the project and the source coordinates (the work location)
                                         onProjectHover(project, [data.lon, data.lat]);
+                                    } else if (!hasArrows && onDescriptionHover) {
+                                        // For projects without case study data, return to work node extent
+                                        onDescriptionHover();
                                     }
                                 };
                                 
@@ -536,6 +539,8 @@ function ContextualPanel({
                                     if (hasArrows && onProjectLeave) {
                                         onProjectLeave();
                                     }
+                                    // No special leave behavior needed for projects without arrows
+                                    // as resetMapToWorkNode is a one-time action
                                 };
                                 
                                 return (

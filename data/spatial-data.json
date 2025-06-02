@@ -21,24 +21,7 @@
           "status": "Completed",
           "url": "https://pghpropertytax.org/index.html",
           "caseStudyLocations": [
-            {
-              "name": "East Liberty",
-              "lat": 40.4615,
-              "lon": -79.9248,
-              "description": "Neighborhood-level assessment analysis"
-            },
-            {
-              "name": "Homewood",
-              "lat": 40.4567,
-              "lon": -79.9065,
-              "description": "Comparative case study area"
-            },
-            {
-              "name": "Shadyside",
-              "lat": 40.4515,
-              "lon": -79.9342,
-              "description": "Control group neighborhood"
-            }
+            
           ]
         },
         {
@@ -54,7 +37,7 @@
               "name": "Hill District",
               "lat": 40.4456,
               "lon": -79.9731,
-              "description": "Historical redlining impact study"
+              "description": "Highting historical redlining"
             },
             {
               "name": "Lawrenceville",
@@ -63,10 +46,10 @@
               "description": "Gentrification assessment patterns"
             },
             {
-              "name": "Garfield",
-              "lat": 40.4598,
-              "lon": -79.9342,
-              "description": "Community displacement analysis"
+              "name": "East Liberty",
+              "lat": 40.4615,
+              "lon": -79.9248,
+              "description": "Two appraisals of a black-owned property conducted three days apart, the second of which removed all black-identifying objects from the house. The appraised value was $36,000 less."
             }
           ]
         }
@@ -152,24 +135,7 @@
           "status": "Completed",
           "url": "https://www.newamerica.org/education-policy/reports/education-community-and-housing-open-data-dashboard/",
           "caseStudyLocations": [
-            {
-              "name": "Chicago Metro Area",
-              "lat": 41.8781,
-              "lon": -87.6298,
-              "description": "Multi-jurisdictional data integration"
-            },
-            {
-              "name": "Los Angeles Metro Area",
-              "lat": 34.0522,
-              "lon": -118.2437,
-              "description": "Cross-sector policy coordination"
-            },
-            {
-              "name": "Houston Metro Area",
-              "lat": 29.7604,
-              "lon": -95.3698,
-              "description": "Regional data standardization"
-            }
+            
           ]
         }
       ]
