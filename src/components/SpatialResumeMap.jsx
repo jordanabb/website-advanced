@@ -44,9 +44,7 @@ function convertToGeoJSON(data) {
             return null;
         }
         const featureId = typeof item.id === 'number' ? item.id : String(item.id);
-        let coordinates = [item.lon, item.lat];
-        // Apply jittering to the coordinates
-        coordinates = jitterCoordinates(coordinates, 0.05, item.id);
+        const coordinates = [item.lon, item.lat];
         return { type: 'Feature', id: featureId, geometry: { type: 'Point', coordinates: coordinates }, properties: { ...item } };
     }).filter(feature => feature !== null);
     return { type: 'FeatureCollection', features: features };
@@ -763,7 +761,7 @@ map.on('click', mainId, (e) => {
                         id: 'home-dc',
                         geometry: {
                             type: 'Point',
-                            coordinates: [-77.0369, 38.9072] // Washington DC
+                            coordinates: [-78.0904984, 38.9210639] // Washington DC
                         },
                         properties: {
                             type: 'home',
@@ -1295,11 +1293,11 @@ map.on('click', mainId, (e) => {
                 
                 // Fly to the node on the map if it exists
                 if (mapRef.current && nodeData.lon && nodeData.lat) {
-                    // Apply jittering to match the displayed coordinates
-                    const jitteredCoords = jitterCoordinates([nodeData.lon, nodeData.lat], 0.05, nodeData.id);
+                    // Use the hardcoded coordinates from the data
+                    const nodeCoords = [nodeData.lon, nodeData.lat];
                     
                     mapRef.current.flyTo({
-                        center: jitteredCoords,
+                        center: nodeCoords,
                         zoom: 12,
                         duration: 2000
                     });
