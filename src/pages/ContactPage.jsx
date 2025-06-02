@@ -27,7 +27,7 @@ function ContactPage() {
           <Text type="body" style={{ marginBottom: '16px' }}>
             <strong>LinkedIn:</strong>{' '}
             <a 
-              href="https://www.linkedin.com/in/jordan-abbott" 
+              href="https://www.linkedin.com/in/jordan-abbott-idb" 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ 
@@ -36,11 +36,11 @@ function ContactPage() {
                 borderBottom: '1px solid var(--color-accent)'
               }}
             >
-              linkedin.com/in/jordan-abbott
+              linkedin.com/in/jordan-abbott-idb
             </a>
           </Text>
           <Text type="body">
-            <strong>Location:</strong> Stanford, CA / Washington, DC
+            <strong>Location:</strong> Washington, DC
           </Text>
         </CardBody>
       </Card>

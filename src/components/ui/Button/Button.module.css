@@ -11,7 +11,7 @@
     cursor: pointer;
     text-decoration: none;
     border: 1px solid transparent; /* Base border */
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     white-space: nowrap;
   }
   
@@ -71,6 +71,27 @@
       color: #4A96E8;
   }
   
+  /* Social Media Buttons */
+  .social {
+    background-color: var(--color-bg-panel);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-subtle);
+    gap: 8px; /* Space between icon and text */
+    font-weight: 500;
+    box-shadow: var(--shadow-subtle);
+  }
+  .social:not(:disabled):hover {
+    background-color: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: #FFFFFF;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  .social:not(:disabled):active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-subtle);
+  }
+
   /* Optional Sizes */
   .small { padding: 4px 10px; font-size: 12px; }
   .large { padding: 12px 24px; font-size: 16px; }

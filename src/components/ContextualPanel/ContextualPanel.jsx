@@ -141,7 +141,11 @@ function ContextualPanel({
     onNavigatePrev,
     onNavigateNext,
     currentIndex,
-    totalItems
+    totalItems,
+    // Arrow animation props
+    onProjectHover,
+    onProjectLeave,
+    onDescriptionHover
 }) {
     const canvasRef = useRef(null);
     const animationFrameIdRef = useRef(null);
@@ -490,7 +494,13 @@ function ContextualPanel({
                 {data.institution && <Text type="caption" className={styles.panelInstitution}>{data.institution}</Text>}
                 {data.publisher && <Text type="caption" className={styles.panelPublisher}>{data.publisher}</Text>}
                 {data.venue && <Text type="caption" className={styles.panelVenue}>Venue: {data.venue}</Text>}
-                <Text type="body" className={styles.panelDescription}>{data.description || data.title || 'No further details available.'}</Text>
+                <Text 
+                    type="body" 
+                    className={styles.panelDescription}
+                    onMouseEnter={onDescriptionHover}
+                >
+                    {data.description || data.title || 'No further details available.'}
+                </Text>
                 {Array.isArray(data.disciplines) && data.disciplines.length > 0 && (<div className={styles.panelTags}>{data.disciplines.map((tag, index) => (<span key={`${data.id}-tag-${index}`} className={styles.panelTag}>{tag}</span>))}</div>)}
                 
                 {/* Thesis Section for Education Items */}
@@ -511,24 +521,50 @@ function ContextualPanel({
                     <div className={styles.projectsSection}>
                         <Heading level={4} className={styles.projectsHeading}>Associated Projects</Heading>
                         <div className={styles.projectsList}>
-                            {data.projects.map((project, index) => (
-                                <div key={`${data.id}-project-${index}`} className={`${styles.projectItem} ${project.url ? styles.clickable : ''}`}>
-                                    <div className={styles.projectHeader}>
-                                        {project.url ? (
-                                            <a href={project.url} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
+                            {data.projects.map((project, index) => {
+                                // Check if this project has case study locations
+                                const hasArrows = project.caseStudyLocations && project.caseStudyLocations.length > 0;
+                                
+                                const handleProjectHover = () => {
+                                    if (hasArrows && onProjectHover) {
+                                        // Pass the project and the source coordinates (the work location)
+                                        onProjectHover(project, [data.lon, data.lat]);
+                                    }
+                                };
+                                
+                                const handleProjectLeave = () => {
+                                    if (hasArrows && onProjectLeave) {
+                                        onProjectLeave();
+                                    }
+                                };
+                                
+                                return (
+                                    <div 
+                                        key={`${data.id}-project-${index}`} 
+                                        className={`${styles.projectItem} ${project.url ? styles.clickable : ''} ${hasArrows ? styles.hasArrows : ''}`}
+                                        onMouseEnter={handleProjectHover}
+                                        onMouseLeave={handleProjectLeave}
+                                    >
+                                        <div className={styles.projectHeader}>
+                                            {project.url ? (
+                                                <a href={project.url} target="_blank" rel="noopener noreferrer" className={styles.projectLink}>
+                                                    <Text type="body-bold" className={styles.projectTitle}>{project.title}</Text>
+                                                </a>
+                                            ) : (
                                                 <Text type="body-bold" className={styles.projectTitle}>{project.title}</Text>
-                                            </a>
-                                        ) : (
-                                            <Text type="body-bold" className={styles.projectTitle}>{project.title}</Text>
+                                            )}
+                                            <Text type="caption" className={styles.projectTiming}>
+                                                {project.status && project.status.toLowerCase() !== 'completed' && `${project.status} `}
+                                                {project.startDate}{project.endDate && project.endDate !== 'Present' ? ` - ${project.endDate}` : project.endDate === 'Present' ? ' - Present' : ''}
+                                            </Text>
+                                        </div>
+                                        <Text type="body" className={styles.projectDescription}>{project.description}</Text>
+                                        {hasArrows && (
+                                            <Text type="caption" className={styles.arrowHint}>Hover to see case study locations</Text>
                                         )}
-                                        <Text type="caption" className={styles.projectTiming}>
-                                            {project.status && project.status.toLowerCase() !== 'completed' && `${project.status} `}
-                                            {project.startDate}{project.endDate && project.endDate !== 'Present' ? ` - ${project.endDate}` : project.endDate === 'Present' ? ' - Present' : ''}
-                                        </Text>
                                     </div>
-                                    <Text type="body" className={styles.projectDescription}>{project.description}</Text>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 )}

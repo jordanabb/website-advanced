@@ -476,3 +476,35 @@
     font-size: 12px !important;
     transition: color 0.3s ease;
 }
+
+/* Arrow hint styles */
+.arrowHint {
+    margin: 8px 0 0 0 !important;
+    color: var(--color-accent-primary);
+    font-size: 11px !important;
+    font-style: italic;
+    opacity: 0.8;
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Enhanced styles for projects with arrows */
+.projectItem.hasArrows {
+    position: relative;
+    border-color: rgba(88, 166, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Only show hover effects on devices that support hover (not touch devices) */
+@media (hover: hover) {
+  .projectItem.hasArrows:hover {
+    background-color: rgba(88, 166, 255, 0.1);
+    border-color: var(--color-accent-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
+  }
+  
+  .projectItem.hasArrows:hover .arrowHint {
+    opacity: 1;
+    color: var(--color-accent-primary);
+  }
+}

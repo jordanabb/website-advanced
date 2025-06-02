@@ -1,6 +1,8 @@
 import React from 'react';
 import { Heading, Text } from '../components/ui/Typography/Typography';
-import styles from './PageLayout.module.css'; 
+import Button from '../components/ui/Button/Button';
+import Icon from '../components/ui/Icon/Icon';
+import styles from './PageLayout.module.css';
 import aboutStyles from './AboutPage.module.css';
 
 function AboutPage() {
@@ -12,11 +14,59 @@ function AboutPage() {
 
       <div className={aboutStyles.aboutLayout}>
         <div className={aboutStyles.headshotContainer}>
-           <img
-             src="/headshot.jpg"
-             alt="Headshot of Jordan Abbott"
-             className={aboutStyles.headshot}
-           />
+          <img
+            src="/headshot.jpg" // Make sure this path is correct
+            alt="Headshot of Jordan Abbott"
+            className={aboutStyles.headshot}
+          />
+          {/* START: Professional Social Links */}
+          <div className={aboutStyles.socialLinks}>
+            <Button
+              href="https://www.newamerica.org/our-people/jordan-abbott/" // <-- Replace with your actual link
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="social"
+              size="medium"
+              className={aboutStyles.socialButton}
+            >
+              <Icon name="Building2" size={18} />
+              New America Bio
+            </Button>
+            <Button
+              href="https://github.com/jordanabb/" // <-- Replace with your actual link
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="social"
+              size="medium"
+              className={aboutStyles.socialButton}
+            >
+              <Icon name="Github" size={18} />
+              GitHub
+            </Button>
+            <Button
+              href="https://www.linkedin.com/in/jordan-abbott-idb/" // <-- Replace with your actual link
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="social"
+              size="medium"
+              className={aboutStyles.socialButton}
+            >
+              <Icon name="Linkedin" size={18} />
+              LinkedIn
+            </Button>
+            <Button
+              href="https://scholar.google.com/citations?user=6FYYVt8AAAAJ&hl=en" // <-- Replace with your actual link
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="social"
+              size="medium"
+              className={aboutStyles.socialButton}
+            >
+              <Icon name="GraduationCap" size={18} />
+              Google Scholar
+            </Button>
+          </div>
+          {/* END: Professional Social Links */}
         </div>
         <div className={aboutStyles.aboutText}>
             <Text type="body">
@@ -28,7 +78,7 @@ function AboutPage() {
             </Text>
 
             <Text type="body">
-            Specifically, my doctoral research investigates how local municipal governance – encompassing school finance formulas, zoning regulations, tax structures, and housing affordability mandates – differentially impacts opportunities and outcomes across diverse communities. I utilize methods ranging from econometric modeling and causal inference to geospatial analysis (GIS) and agent-based modeling to simulate urban dynamics and policy effects. By integrating large-scale administrative data, census records, and spatial datasets, I aim to uncover the often hidden mechanisms that link policy decisions to tangible inequalities on the ground.
+            Specifically, my anticipated doctoral research investigates how local municipal governance – encompassing school finance formulas, zoning regulations, tax structures, and housing affordability mandates – differentially impacts opportunities and outcomes across diverse communities. I utilize methods ranging from econometric modeling and causal inference to geospatial analysis (GIS) and agent-based modeling to simulate urban dynamics and policy effects. By integrating large-scale administrative data, census records, and spatial datasets, I aim to uncover the often hidden mechanisms that link policy decisions to tangible inequalities on the ground.
             </Text>
 
             <Text type="body">

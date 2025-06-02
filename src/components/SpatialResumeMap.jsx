@@ -46,17 +46,117 @@ function convertToGeoJSON(data) {
         const featureId = typeof item.id === 'number' ? item.id : String(item.id);
         let coordinates = [item.lon, item.lat];
         // Apply jittering to the coordinates
-        coordinates = jitterCoordinates(coordinates);
+        coordinates = jitterCoordinates(coordinates, 0.05, item.id);
         return { type: 'Feature', id: featureId, geometry: { type: 'Point', coordinates: coordinates }, properties: { ...item } };
     }).filter(feature => feature !== null);
     return { type: 'FeatureCollection', features: features };
 }
 
-// Function to add a small random jitter to coordinates
-function jitterCoordinates(coordinates, amount = 0.05) {
-    const lng = coordinates[0] + (Math.random() - 0.5) * amount;
-    const lat = coordinates[1] + (Math.random() - 0.5) * amount;
+// Function to add a small deterministic jitter to coordinates based on ID
+function jitterCoordinates(coordinates, amount = 0.05, seed = null) {
+    // Use a simple hash function to create deterministic "random" values based on coordinates
+    // This ensures the same coordinates always get the same jitter
+    let hash = 0;
+    if (seed !== null) {
+        // Use seed (like node ID) for deterministic jittering
+        const str = seed.toString();
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+    } else {
+        // Fallback: use coordinates as seed
+        const str = coordinates[0].toString() + coordinates[1].toString();
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+    }
+    
+    // Convert hash to pseudo-random values between -0.5 and 0.5
+    const pseudoRandom1 = ((hash % 1000) / 1000) - 0.5;
+    const pseudoRandom2 = (((hash >> 10) % 1000) / 1000) - 0.5;
+    
+    const lng = coordinates[0] + pseudoRandom1 * amount;
+    const lat = coordinates[1] + pseudoRandom2 * amount;
     return [lng, lat];
+}
+
+// Function to create a curved arrow path between two points
+function createCurvedArrow(startCoords, endCoords, baseCurvature = 0.2) {
+    const [startLng, startLat] = startCoords;
+    const [endLng, endLat] = endCoords;
+    
+    // Calculate distance and adjust curvature based on distance
+    const deltaLng = endLng - startLng;
+    const deltaLat = endLat - startLat;
+    const distance = Math.sqrt(deltaLng * deltaLng + deltaLat * deltaLat);
+    
+    // Adaptive curvature: reduce curvature for very long distances
+    // This prevents extreme distortion on long-distance arrows
+    let curvature = baseCurvature;
+    if (distance > 50) { // Very long distance (e.g., cross-continental)
+        curvature = Math.max(0.05, baseCurvature * (20 / distance));
+    } else if (distance > 20) { // Long distance
+        curvature = Math.max(0.1, baseCurvature * (10 / distance));
+    } else if (distance > 10) { // Medium distance
+        curvature = Math.max(0.15, baseCurvature * (5 / distance));
+    }
+    
+    // Calculate midpoint
+    const midLng = (startLng + endLng) / 2;
+    const midLat = (startLat + endLat) / 2;
+    
+    // Create control point for curve with adaptive offset
+    // Use a more conservative offset calculation for long distances
+    const offsetLng = -deltaLat * curvature;
+    const offsetLat = deltaLng * curvature;
+    
+    const controlLng = midLng + offsetLng;
+    const controlLat = midLat + offsetLat;
+    
+    // Increase number of points for longer distances to ensure smooth drawing
+    const numPoints = Math.max(20, Math.min(50, Math.floor(distance * 2)));
+    
+    // Generate points along the curve using quadratic Bézier formula
+    const points = [];
+    for (let i = 0; i <= numPoints; i++) {
+        const t = i / numPoints;
+        const lng = (1 - t) * (1 - t) * startLng + 2 * (1 - t) * t * controlLng + t * t * endLng;
+        const lat = (1 - t) * (1 - t) * startLat + 2 * (1 - t) * t * controlLat + t * t * endLat;
+        points.push([lng, lat]);
+    }
+    
+    return points;
+}
+
+// Function to find projects associated with a node
+function findAssociatedProjects(nodeData) {
+    const projects = [];
+    
+    // Check if the node itself is a project with case study locations
+    if (nodeData.type === 'project' && nodeData.caseStudyLocations) {
+        projects.push({
+            ...nodeData,
+            sourceCoords: [nodeData.lon, nodeData.lat]
+        });
+    }
+    
+    // Check if the node has nested projects (work/education entries)
+    if (nodeData.projects && Array.isArray(nodeData.projects)) {
+        nodeData.projects.forEach(project => {
+            if (project.caseStudyLocations) {
+                projects.push({
+                    ...project,
+                    sourceCoords: [nodeData.lon, nodeData.lat]
+                });
+            }
+        });
+    }
+    
+    return projects;
 }
 
 // Layer Definitions - NO BLUR
@@ -78,6 +178,7 @@ function SpatialResumeMap() {
     const previousFilteredDataRef = useRef(null);
     const sliderValueRef = useRef(null);
     const stateClearTimeoutIdRef = useRef(null); // Ref for fade-in cleanup timeout
+    const currentArrowsRef = useRef([]); // Track current arrow layers for cleanup
 
     const [initialViewState] = useState({ longitude: -98.5795, latitude: 39.8283, zoom: 3.0 });
     const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -95,6 +196,412 @@ function SpatialResumeMap() {
             return 'dark'; // Default to dark
         }
     }, []);
+
+    // Function to clean up existing arrows and popups
+    const cleanupArrows = useCallback(() => {
+        const map = mapRef.current;
+        if (!map) return;
+
+        currentArrowsRef.current.forEach(layerId => {
+            // Handle popup cleanup
+            if (layerId.startsWith('popup-')) {
+                // Find and remove the popup by class
+                const popups = document.querySelectorAll('.case-study-popup');
+                popups.forEach(popupElement => {
+                    // Remove the popup element directly
+                    if (popupElement && popupElement.remove) {
+                        popupElement.remove();
+                    }
+                });
+                return;
+            }
+            
+            // Handle layer and source cleanup
+            if (map.getLayer(layerId)) {
+                map.removeLayer(layerId);
+            }
+            if (map.getSource(layerId)) {
+                map.removeSource(layerId);
+            }
+        });
+        
+        // Also remove any remaining case study popups using a more direct approach
+        const allCaseStudyPopups = document.querySelectorAll('.case-study-popup');
+        allCaseStudyPopups.forEach(popupElement => {
+            if (popupElement && popupElement.remove) {
+                popupElement.remove();
+            }
+        });
+        
+        currentArrowsRef.current = [];
+    }, []);
+
+    // Function to calculate optimal bounds for viewing arrows
+    const calculateArrowBounds = useCallback((sourceCoords, caseStudyLocations) => {
+        const allCoords = [sourceCoords, ...caseStudyLocations.map(loc => [loc.lon, loc.lat])];
+        
+        const lngs = allCoords.map(coord => coord[0]);
+        const lats = allCoords.map(coord => coord[1]);
+        
+        const minLng = Math.min(...lngs);
+        const maxLng = Math.max(...lngs);
+        const minLat = Math.min(...lats);
+        const maxLat = Math.max(...lats);
+        
+        // Add padding (10% of the range)
+        const lngRange = maxLng - minLng;
+        const latRange = maxLat - minLat;
+        const padding = 0.1;
+        
+        return {
+            sw: [minLng - lngRange * padding, minLat - latRange * padding],
+            ne: [maxLng + lngRange * padding, maxLat + latRange * padding]
+        };
+    }, []);
+
+    // Function to reset map view to the work experience node
+    const resetMapToWorkNode = useCallback(() => {
+        const map = mapRef.current;
+        if (!map || !selectedNodeData) return;
+
+        // Clean up any existing arrows and popups first
+        cleanupArrows();
+
+        // Get the coordinates of the selected work experience node
+        const nodeCoords = [selectedNodeData.lon, selectedNodeData.lat];
+        
+        // Find the actual jittered coordinates from the map source data
+        let actualNodeCoords = nodeCoords;
+        try {
+            const mapSource = map.getSource('resume-points');
+            if (mapSource && mapSource._data && mapSource._data.features) {
+                const sourceFeatureFromData = mapSource._data.features.find(f => 
+                    f.properties && f.properties.id === selectedNodeData.id
+                );
+                if (sourceFeatureFromData && sourceFeatureFromData.geometry && sourceFeatureFromData.geometry.coordinates) {
+                    actualNodeCoords = sourceFeatureFromData.geometry.coordinates;
+                }
+            }
+        } catch (e) {
+            console.warn('Error finding jittered coordinates for reset:', e);
+        }
+
+        // Fly to the work experience node with appropriate zoom
+        map.flyTo({
+            center: actualNodeCoords,
+            zoom: 12, // Increased zoom level to focus more closely on the work location
+            duration: 2000 // Increased from original 1500ms to 2000ms for slower animation
+        });
+    }, [selectedNodeData, cleanupArrows]);
+
+    // Function to create animated arrows for a specific project
+    const createAnimatedArrowsForProject = useCallback((project, sourceCoords) => {
+        const map = mapRef.current;
+        if (!map || !project || !project.caseStudyLocations || !sourceCoords) return;
+
+        // Clean up existing arrows first
+        cleanupArrows();
+
+        // Find the actual jittered coordinates from the map source data
+        let actualSourceCoords = sourceCoords;
+        try {
+            // Get the coordinates from the map source data which contains the jittered positions
+            const mapSource = map.getSource('resume-points');
+            if (mapSource && mapSource._data && mapSource._data.features) {
+                const sourceFeatureFromData = mapSource._data.features.find(f => 
+                    f.properties && f.properties.id === selectedNodeData?.id
+                );
+                if (sourceFeatureFromData && sourceFeatureFromData.geometry && sourceFeatureFromData.geometry.coordinates) {
+                    actualSourceCoords = sourceFeatureFromData.geometry.coordinates;
+                    console.log('Found jittered coordinates from map source:', actualSourceCoords);
+                } else {
+                    console.warn('Could not find feature in map source data, using original coordinates');
+                }
+            } else {
+                console.warn('Map source not available, using original coordinates');
+            }
+        } catch (e) {
+            console.warn('Error finding jittered coordinates:', e);
+        }
+
+        // Calculate optimal bounds and smoothly zoom to fit all arrows
+        const bounds = calculateArrowBounds(actualSourceCoords, project.caseStudyLocations);
+        
+        // Animate to the optimal view with extra padding for contextual panel
+        map.fitBounds([bounds.sw, bounds.ne], {
+            padding: { 
+                top: 80, 
+                bottom: 80, 
+                left: 80, 
+                right: 520 // Extra padding for contextual panel on desktop
+            },
+            duration: 3000, // Increased from original 2500ms to 3000ms for slower zoom
+            essential: true // This animation is essential and won't be interrupted
+        });
+
+        // Get theme-appropriate colors
+        const theme = detectCurrentTheme();
+        const arrowColor = theme === 'light' ? '#2563eb' : '#60a5fa'; // Blue variants
+        const markerColor = theme === 'light' ? '#dc2626' : '#f87171'; // Red variants
+
+        // Track all animation promises to know when all arrows are complete
+        const animationPromises = [];
+
+        project.caseStudyLocations.forEach((location, locationIndex) => {
+            const layerId = `arrow-${project.id}-${locationIndex}`;
+            const markerId = `marker-${project.id}-${locationIndex}`;
+            
+            // Create curved arrow path using the actual jittered coordinates
+            const fullArrowPath = createCurvedArrow(
+                actualSourceCoords,
+                [location.lon, location.lat],
+                0.2 // curvature
+            );
+
+            // Add arrow line source (initially with just the start point)
+            map.addSource(layerId, {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: [fullArrowPath[0]] // Start with just the first point
+                    }
+                }
+            });
+
+            map.addLayer({
+                id: layerId,
+                type: 'line',
+                source: layerId,
+                paint: {
+                    'line-color': arrowColor,
+                    'line-width': 3,
+                    'line-opacity': 0.9
+                }
+            });
+
+            // No arrowheads - lines will extend all the way to case study locations
+
+            // Add case study location marker (initially hidden)
+            map.addSource(markerId, {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [location.lon, location.lat]
+                    },
+                    properties: {
+                        name: location.name,
+                        description: location.description
+                    }
+                }
+            });
+
+            map.addLayer({
+                id: markerId,
+                type: 'circle',
+                source: markerId,
+                paint: {
+                    'circle-radius': 5,
+                    'circle-color': markerColor,
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff',
+                    'circle-opacity': 0 // Start hidden
+                }
+            });
+
+            // Track layers for cleanup
+            currentArrowsRef.current.push(layerId, markerId);
+
+            // Create animation promise for this arrow
+            const animationPromise = new Promise((resolve) => {
+                // Animate the arrow drawing
+                const animationDuration = 1000; // 1 second
+                const steps = 30;
+                const stepDuration = animationDuration / steps;
+                
+                let currentStep = 0;
+                const animateArrow = () => {
+                    if (currentStep >= steps || !map.getSource(layerId)) {
+                        // Animation complete - ensure the full path is shown and show the marker
+                        const source = map.getSource(layerId);
+                        if (source) {
+                            source.setData({
+                                type: 'Feature',
+                                geometry: {
+                                    type: 'LineString',
+                                    coordinates: fullArrowPath // Ensure full path is displayed
+                                }
+                            });
+                        }
+                        if (map.getLayer(markerId)) {
+                            map.setPaintProperty(markerId, 'circle-opacity', 0.9);
+                        }
+                        
+                        // Resolve the promise when this arrow animation is complete
+                        resolve({ location, markerId });
+                        return;
+                    }
+
+                    const progress = currentStep / steps;
+                    const pointsToShow = Math.max(1, Math.floor(progress * fullArrowPath.length));
+                    const currentPath = fullArrowPath.slice(0, pointsToShow);
+
+                    // Update the line with more points
+                    const source = map.getSource(layerId);
+                    if (source) {
+                        source.setData({
+                            type: 'Feature',
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: currentPath
+                            }
+                        });
+                    }
+
+                    currentStep++;
+                    setTimeout(animateArrow, stepDuration);
+                };
+
+                // Start the animation after a small delay
+                setTimeout(animateArrow, 100);
+            });
+
+            animationPromises.push(animationPromise);
+        });
+
+        // Wait for all arrows to finish, then show popups
+        Promise.all(animationPromises).then((completedAnimations) => {
+            // Check if the map still exists and arrows haven't been cleaned up
+            if (!mapRef.current || currentArrowsRef.current.length === 0) {
+                return; // Don't show popups if cleanup already happened
+            }
+            
+            // Add a small delay before showing popups
+            setTimeout(() => {
+                // Double-check that we still have arrows (user might have stopped hovering)
+                if (!mapRef.current || currentArrowsRef.current.length === 0) {
+                    return;
+                }
+                
+                completedAnimations.forEach(({ location, markerId }) => {
+                    // Create and show popup for each case study location
+                    const popup = new mapboxgl.Popup({
+                        closeButton: true,
+                        closeOnClick: false,
+                        offset: 15,
+                        className: 'case-study-popup'
+                    })
+                    .setLngLat([location.lon, location.lat])
+                    .setHTML(`
+                        <div class="case-study-popup-content">
+                            <h4 class="case-study-popup-title">${location.name}</h4>
+                            <p class="case-study-popup-description">${location.description}</p>
+                        </div>
+                    `)
+                    .addTo(map);
+
+                    // Track popup for cleanup
+                    currentArrowsRef.current.push(`popup-${markerId}`);
+                    
+                    // Store popup reference for cleanup
+                    popup._caseStudyPopup = true;
+                    popup._popupId = `popup-${markerId}`;
+                });
+            }, 300); // Small delay after arrows complete
+        });
+    }, [cleanupArrows, detectCurrentTheme]);
+
+    // Function to create arrows for a hovered node (kept for compatibility)
+    const createArrowsForNode = useCallback((nodeData) => {
+        const map = mapRef.current;
+        if (!map || !nodeData) return;
+
+        // Clean up existing arrows first
+        cleanupArrows();
+
+        // Find associated projects
+        const projects = findAssociatedProjects(nodeData);
+        if (projects.length === 0) return;
+
+        // Get theme-appropriate colors
+        const theme = detectCurrentTheme();
+        const arrowColor = theme === 'light' ? '#2563eb' : '#60a5fa'; // Blue variants
+        const markerColor = theme === 'light' ? '#dc2626' : '#f87171'; // Red variants
+
+        projects.forEach((project, projectIndex) => {
+            if (!project.caseStudyLocations) return;
+
+            project.caseStudyLocations.forEach((location, locationIndex) => {
+                const layerId = `arrow-${nodeData.id}-${projectIndex}-${locationIndex}`;
+                const markerId = `marker-${nodeData.id}-${projectIndex}-${locationIndex}`;
+                
+                // Create curved arrow path
+                const arrowPath = createCurvedArrow(
+                    project.sourceCoords,
+                    [location.lon, location.lat],
+                    0.2 // curvature
+                );
+
+                // Add arrow line source and layer
+                map.addSource(layerId, {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'LineString',
+                            coordinates: arrowPath
+                        }
+                    }
+                });
+
+                map.addLayer({
+                    id: layerId,
+                    type: 'line',
+                    source: layerId,
+                    paint: {
+                        'line-color': arrowColor,
+                        'line-width': 2,
+                        'line-opacity': 0.8
+                    }
+                });
+
+                // Add case study location marker
+                map.addSource(markerId, {
+                    type: 'geojson',
+                    data: {
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [location.lon, location.lat]
+                        },
+                        properties: {
+                            name: location.name,
+                            description: location.description
+                        }
+                    }
+                });
+
+                map.addLayer({
+                    id: markerId,
+                    type: 'circle',
+                    source: markerId,
+                    paint: {
+                        'circle-radius': 4,
+                        'circle-color': markerColor,
+                        'circle-stroke-width': 1,
+                        'circle-stroke-color': '#ffffff',
+                        'circle-opacity': 0.9
+                    }
+                });
+
+                // Track layers for cleanup
+                currentArrowsRef.current.push(layerId, markerId);
+            });
+        });
+    }, [cleanupArrows, detectCurrentTheme]);
 
     // Function to add all layers and sources to the map
     const addMapLayers = useCallback((map, currentFilteredData) => {
@@ -136,9 +643,42 @@ function SpatialResumeMap() {
             }, mainId); // Add before main layer
 
             // Setup Interactions for the MAIN layer
-            map.on('mousemove', mainId, e => { if(isTransitioning) return; if(e.features?.length > 0){ const currentId=e.features[0].id; if(hoveredStateIdRef.current !== currentId){ if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false});}catch(e){} hoveredStateIdRef.current=currentId; try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:true});}catch(e){}}} else { if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){} }});
-            map.on('mouseleave', mainId, () => { if(isTransitioning) return; if(hoveredStateIdRef.current !== null) try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){} popupRef.current?.remove(); map.getCanvas().style.cursor=''; });
-            map.on('mouseenter', mainId, e => { if(isTransitioning) return; map.getCanvas().style.cursor='pointer'; const f=e.features?.[0]; if(!f?.geometry?.coordinates || !f?.properties) return; const co=f.geometry.coordinates.slice(); while(Math.abs(e.lngLat.lng-co[0])>180){co[0]+=e.lngLat.lng>co[0]?360:-360;} const p=f.properties; const d=`<strong>${p.title||'Untitled'}</strong><br>Type: ${p.type||'N/A'}<br>Loc: ${p.location||'N/A'}${p.startDate?`<br>Start: ${p.startDate}`:''}${p.endDate && p.endDate !== "Present" ?`<br>End: ${p.endDate}`:''}${p.endDate === "Present" ? `<br>Ongoing`:''}${p.date&&!p.startDate?`<br>Date: ${p.date}`:''}`; if(popupRef.current?.setLngLat){popupRef.current.setLngLat(co).setHTML(d).addTo(map);} });
+            map.on('mousemove', mainId, e => { 
+                if(isTransitioning) return; 
+                if(e.features?.length > 0){ 
+                    const currentId=e.features[0].id; 
+                    if(hoveredStateIdRef.current !== currentId){ 
+                        if(hoveredStateIdRef.current !== null) {
+                            try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false});}catch(e){}
+                        }
+                        hoveredStateIdRef.current=currentId; 
+                        try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:true});}catch(e){}
+                    }
+                } else { 
+                    if(hoveredStateIdRef.current !== null) {
+                        try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){}
+                    }
+                }
+            });
+            map.on('mouseleave', mainId, () => { 
+                if(isTransitioning) return; 
+                if(hoveredStateIdRef.current !== null) {
+                    try{map.setFeatureState({source:'resume-points',id:hoveredStateIdRef.current},{hover:false}); hoveredStateIdRef.current=null;}catch(e){}
+                }
+                popupRef.current?.remove(); 
+                map.getCanvas().style.cursor=''; 
+            });
+            map.on('mouseenter', mainId, e => { 
+                if(isTransitioning) return; 
+                map.getCanvas().style.cursor='pointer'; 
+                const f=e.features?.[0]; 
+                if(!f?.geometry?.coordinates || !f?.properties) return; 
+                const co=f.geometry.coordinates.slice(); 
+                while(Math.abs(e.lngLat.lng-co[0])>180){co[0]+=e.lngLat.lng>co[0]?360:-360;} 
+                const p=f.properties; 
+                const d=`<strong>${p.title||'Untitled'}</strong><br>Type: ${p.type||'N/A'}<br>Loc: ${p.location||'N/A'}${p.startDate?`<br>Start: ${p.startDate}`:''}${p.endDate && p.endDate !== "Present" ?`<br>End: ${p.endDate}`:''}${p.endDate === "Present" ? `<br>Ongoing`:''}${p.date&&!p.startDate?`<br>Date: ${p.date}`:''}`; 
+                if(popupRef.current?.setLngLat){popupRef.current.setLngLat(co).setHTML(d).addTo(map);} 
+            });
             // Inside map.once('load', ...) -> nodeLayersConfig.forEach(...)
 map.on('click', mainId, (e) => {
     const feature = e.features?.[0];
@@ -198,6 +738,7 @@ map.on('click', mainId, (e) => {
             // If the click was NOT on one of your nodes (i.e., on the map background)
             if (!features.length) {
                  console.log("Map background clicked, closing panel.");
+                 cleanupArrows(); // Clean up case studies when panel closes
                  setSelectedNodeData(null);
                  setSelectedIndex(-1); // Reset index when closing panel
                  selectedNodeIdRef.current = null; // Clear ref
@@ -493,7 +1034,7 @@ map.on('click', mainId, (e) => {
         }); // End map.once('load')
 
         map.on('error', e => console.error("Mapbox Error:", e.error?.message || e));
-        return () => { if (mapRef.current) { console.log("Cleaning up map."); popupRef.current?.remove(); mapRef.current.remove(); mapRef.current = null; setIsMapLoaded(false); hoveredStateIdRef.current = null; if(stateClearTimeoutIdRef.current) clearTimeout(stateClearTimeoutIdRef.current); } }; // Cleanup timeout too
+        return () => { if (mapRef.current) { console.log("Cleaning up map."); cleanupArrows(); popupRef.current?.remove(); mapRef.current.remove(); mapRef.current = null; setIsMapLoaded(false); hoveredStateIdRef.current = null; if(stateClearTimeoutIdRef.current) clearTimeout(stateClearTimeoutIdRef.current); } }; // Cleanup timeout too
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialViewState, initialFilteredGeojsonData]); // Init effect
 
@@ -620,6 +1161,9 @@ map.on('click', mainId, (e) => {
         const currentFeatures = filteredGeojsonData.features;
         if (!currentFeatures || currentFeatures.length === 0 || selectedIndex === -1) return;
 
+        // Clean up arrows when navigating to a different panel
+        cleanupArrows();
+
         let newIndex;
         if (direction === 'prev') {
             newIndex = selectedIndex > 0 ? selectedIndex - 1 : currentFeatures.length - 1; // Wrap around
@@ -648,7 +1192,7 @@ map.on('click', mainId, (e) => {
                 });
             }
         }
-    }, [filteredGeojsonData.features, selectedIndex]);
+    }, [filteredGeojsonData.features, selectedIndex, cleanupArrows]);
 
     // --- Effect for applying hover style to selected node ---
     useEffect(() => {
@@ -717,6 +1261,7 @@ map.on('click', mainId, (e) => {
         const handleKeyDown = (event) => {
             if (event.key === 'Escape' && selectedNodeData) {
                 console.log('Esc key pressed, closing contextual panel');
+                cleanupArrows(); // Clean up case studies when panel closes
                 setSelectedNodeData(null);
                 setSelectedIndex(-1);
                 selectedNodeIdRef.current = null; // Clear ref
@@ -730,7 +1275,46 @@ map.on('click', mainId, (e) => {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [selectedNodeData]); // Only depend on selectedNodeData
+    }, [selectedNodeData, cleanupArrows]); // Include cleanupArrows in dependencies
+
+    // --- Effect to listen for header title click events ---
+    useEffect(() => {
+        const handleOpenContextualPanel = (event) => {
+            const { nodeData } = event.detail;
+            if (nodeData) {
+                console.log('Opening contextual panel from header click:', nodeData.id);
+                
+                // Find the index of this node in the current filtered data
+                const currentFeatures = filteredGeojsonData.features;
+                const index = currentFeatures.findIndex(f => f.id === nodeData.id);
+                
+                // Set the selected node data and index
+                setSelectedNodeData(nodeData);
+                setSelectedIndex(index !== -1 ? index : 0); // Use 0 as fallback
+                selectedNodeIdRef.current = nodeData.id;
+                
+                // Fly to the node on the map if it exists
+                if (mapRef.current && nodeData.lon && nodeData.lat) {
+                    // Apply jittering to match the displayed coordinates
+                    const jitteredCoords = jitterCoordinates([nodeData.lon, nodeData.lat], 0.05, nodeData.id);
+                    
+                    mapRef.current.flyTo({
+                        center: jitteredCoords,
+                        zoom: 12,
+                        duration: 2000
+                    });
+                }
+            }
+        };
+
+        // Add event listener
+        document.addEventListener('openContextualPanel', handleOpenContextualPanel);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('openContextualPanel', handleOpenContextualPanel);
+        };
+    }, [filteredGeojsonData.features]); // Re-run when filtered data changes
 
     // --- JSX Rendering ---
     return (
@@ -799,12 +1383,17 @@ map.on('click', mainId, (e) => {
                     onClose={() => {
                         setSelectedNodeData(null);
                         setSelectedIndex(-1); // Reset index on close
+                        cleanupArrows(); // Clean up arrows when closing panel
                     }}
                     // Navigation Props
                     onNavigatePrev={handleNavigatePrev}
                     onNavigateNext={handleNavigateNext}
                     currentIndex={selectedIndex}
                     totalItems={filteredGeojsonData.features.length}
+                    // Arrow animation props
+                    onProjectHover={createAnimatedArrowsForProject}
+                    onProjectLeave={() => {}} // Don't cleanup on hover leave - popups should persist
+                    onDescriptionHover={resetMapToWorkNode} // Reset map view when hovering over description
                 />
             )}
             {/* --- End Contextual Panel --- */}

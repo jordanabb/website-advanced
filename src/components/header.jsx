@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom'; // Need Link and useLocation here
 import styles from './Header.module.css'; // Use ONLY this CSS module
 import ThemeToggle from './ui/ThemeToggle/ThemeToggle';
+import resumeData from '../../data/spatial-data.json';
 
 // --- Define Hamburger Button Component INSIDE Header ---
 const HamburgerButton = ({ isOpen, toggleMenu }) => {
@@ -59,6 +60,7 @@ function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null); // Ref for the menu panel
   const buttonRef = useRef(null); // Ref for the button
+  const location = useLocation(); // Get current location
 
   const toggleMenu = useCallback(() => { // useCallback prevents unnecessary re-renders of button/menu
     setIsOpen(prev => !prev);
@@ -67,6 +69,28 @@ function Header() {
   const closeMenu = useCallback(() => {
     setIsOpen(false);
   }, []);
+
+  // Check if we're on the spatial resume page (home page)
+  const isOnSpatialResumePage = location.pathname === '/';
+
+  // Handler for clicking the title when on spatial resume page
+  const handleTitleClick = useCallback(() => {
+    if (isOnSpatialResumePage) {
+      // Find the New America work experience data
+      const newAmericaWork = resumeData.find(item => 
+        item.id === 'work002' && 
+        item.institution === 'New America'
+      );
+      
+      if (newAmericaWork) {
+        // Dispatch a custom event to communicate with SpatialResumeMap
+        const event = new CustomEvent('openContextualPanel', {
+          detail: { nodeData: newAmericaWork }
+        });
+        document.dispatchEvent(event);
+      }
+    }
+  }, [isOnSpatialResumePage]);
 
   // Effect to handle closing menu on click outside
   useEffect(() => {
@@ -98,7 +122,27 @@ function Header() {
       {/* Left side content */}
       <div className={styles.leftContent}>
         <div className={styles.name}>Jordan Abbott</div>
-        <div className={styles.title}>Senior Data Scientist | Education Funding Equity Initiative</div>
+        <div 
+          className={`${styles.title} ${isOnSpatialResumePage ? styles.clickable : ''}`}
+          onClick={handleTitleClick}
+          style={{
+            cursor: isOnSpatialResumePage ? 'pointer' : 'default',
+            transition: 'opacity 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            if (isOnSpatialResumePage) {
+              e.target.style.opacity = '0.7';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (isOnSpatialResumePage) {
+              e.target.style.opacity = '1';
+            }
+          }}
+          title={isOnSpatialResumePage ? 'Click to view New America work experience' : ''}
+        >
+          Senior Data Scientist | Education Funding Equity Initiative
+        </div>
       </div>
 
       {/* Right side content - Theme Toggle and Hamburger Button */}

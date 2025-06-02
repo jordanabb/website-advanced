@@ -2,33 +2,73 @@
     {
       "id": "work001",
       "type": "work",
-      "title": "PhD Student & Research Assistant",
-      "institution": "Stanford University",
-      "location": "Stanford, CA",
-      "lat": 37.4275,
-      "lon": -122.1697,
-      "startDate": "2020-09",
+      "title": "Independent Research & Visual Arts",
+      "institution": "Independent",
+      "location": "Pittsburgh, PA",
+      "lat": 40.4570619,
+      "lon": -80.0148114,
+      "startDate": "2020-03",
       "endDate": "Present",
-      "description": "Conducting doctoral research in urban policy and spatial analysis. Teaching assistant for undergraduate courses in economics and public policy. Leading research projects on housing policy impacts and demographic modeling.",
+      "description": "Conducting independent research in urban policy and spatial analysis.",
       "disciplines": ["Policy", "Geo", "Data Sci", "Soc"],
       "projects": [
         {
           "id": "proj001",
-          "title": "Housing Policy Impacts on School Resource Allocation in California",
-          "description": "Analyzing causal links between local housing policies (zoning, affordability mandates) and K-12 school funding disparities using econometric models and spatial analysis.",
+          "title": "Racial Inequity in Property Tax Assessments in Pittsburgh, PA",
+          "description": "Completed study to quantify racial disparity in property tax assessments using hedonic regression modeling.",
           "startDate": "2021-01",
-          "endDate": "Present",
-          "status": "Ongoing",
-          "url": "https://example.com/housing-policy-research"
+          "endDate": "2021-09",
+          "status": "Completed",
+          "url": "https://pghpropertytax.org/index.html",
+          "caseStudyLocations": [
+            {
+              "name": "East Liberty",
+              "lat": 40.4615,
+              "lon": -79.9248,
+              "description": "Neighborhood-level assessment analysis"
+            },
+            {
+              "name": "Homewood",
+              "lat": 40.4567,
+              "lon": -79.9065,
+              "description": "Comparative case study area"
+            },
+            {
+              "name": "Shadyside",
+              "lat": 40.4515,
+              "lon": -79.9342,
+              "description": "Control group neighborhood"
+            }
+          ]
         },
         {
           "id": "proj002", 
-          "title": "Modeling Demographic Futures & Municipal Services in the Sun Belt",
-          "description": "Developing agent-based models informed by census data and sociological theory to simulate population shifts and predict strain on municipal resources (schools, infrastructure) under different policy scenarios.",
-          "startDate": "2022-06",
-          "endDate": "2025-03",
-          "status": "Ongoing",
-          "url": "https://example.com/demographic-modeling"
+          "title": "Sed Valorem",
+          "description": "Collaborated with Pittsburgh artist to analyze and visualize disparities in property tax assessments and appraisals in Pittsburgh, PA. Our work was on exhibition at The Mattress Factory, a Pittsburgh-based contemporary art museum.",
+          "startDate": "2021-09",
+          "endDate": "2022-03",
+          "status": "Completed",
+          "url": "https://mattress.org/exhibition/sed-valorem/",
+          "caseStudyLocations": [
+            {
+              "name": "Hill District",
+              "lat": 40.4456,
+              "lon": -79.9731,
+              "description": "Historical redlining impact study"
+            },
+            {
+              "name": "Lawrenceville",
+              "lat": 40.4668,
+              "lon": -79.9603,
+              "description": "Gentrification assessment patterns"
+            },
+            {
+              "name": "Garfield",
+              "lat": 40.4598,
+              "lon": -79.9342,
+              "description": "Community displacement analysis"
+            }
+          ]
         }
       ]
     },
@@ -52,7 +92,27 @@
           "startDate": "2023-09",
           "endDate": "2024-02",
           "status": "Completed",
-          "url": "https://www.newamerica.org/education-policy/reports/segregation-and-resource-inequality-between-americas-school-districts/"
+          "url": "https://www.newamerica.org/education-policy/reports/segregation-and-resource-inequality-between-americas-school-districts/",
+          "caseStudyLocations": [
+            {
+              "name": "Detroit Metro Area",
+              "lat": 42.3314,
+              "lon": -83.0458,
+              "description": "Inter-district segregation analysis"
+            },
+            {
+              "name": "Atlanta Metro Area",
+              "lat": 33.7490,
+              "lon": -84.3880,
+              "description": "Suburban-urban funding disparities"
+            },
+            {
+              "name": "Dallas-Fort Worth",
+              "lat": 32.7767,
+              "lon": -96.7970,
+              "description": "Texas funding formula impact study"
+            }
+          ]
         },
         {
           "id": "proj005",
@@ -61,16 +121,56 @@
           "startDate": "2024-04",
           "endDate": "2024-05",
           "status": "Completed",
-          "url": "https://www.newamerica.org/education-policy/reports/segregation-between-americas-school-districts-in-the-21st-century/"
+          "url": "https://www.newamerica.org/education-policy/reports/segregation-between-americas-school-districts-in-the-21st-century/",
+          "caseStudyLocations": [
+            {
+              "name": "Phoenix Metro Area",
+              "lat": 33.4484,
+              "lon": -112.0740,
+              "description": "Rapid demographic change analysis"
+            },
+            {
+              "name": "Charlotte Metro Area",
+              "lat": 35.2271,
+              "lon": -80.8431,
+              "description": "Southern urbanization patterns"
+            },
+            {
+              "name": "Las Vegas Metro Area",
+              "lat": 36.1699,
+              "lon": -115.1398,
+              "description": "Western growth corridor study"
+            }
+          ]
         },
         {
           "id": "proj006",
-          "title": "ECHO Data Dashboard",
+          "title": "Education, Community, and Housing Open (ECHO) Data Dashboard",
           "description": "Education and Housing policy advocates often use data available in different geographic units. This dashboard reestimates ACS, Demographic, School Finance, Environmental and Public Health data at several at all levels to facilitate cross-sector collaboration and advocacy.", 
           "startDate": "2025-01",
           "endDate": "2024-09",
           "status": "Completed",
-          "url": "https://www.newamerica.org/education-policy/reports/education-community-and-housing-open-data-dashboard/"
+          "url": "https://www.newamerica.org/education-policy/reports/education-community-and-housing-open-data-dashboard/",
+          "caseStudyLocations": [
+            {
+              "name": "Chicago Metro Area",
+              "lat": 41.8781,
+              "lon": -87.6298,
+              "description": "Multi-jurisdictional data integration"
+            },
+            {
+              "name": "Los Angeles Metro Area",
+              "lat": 34.0522,
+              "lon": -118.2437,
+              "description": "Cross-sector policy coordination"
+            },
+            {
+              "name": "Houston Metro Area",
+              "lat": 29.7604,
+              "lon": -95.3698,
+              "description": "Regional data standardization"
+            }
+          ]
         }
       ]
     },
@@ -94,7 +194,27 @@
           "startDate": "2021-09",
           "endDate": "2023-01",
           "status": "Completed",
-          "url": "https://www.iadb.org/en/who-we-are/topics/gender-and-diversity#gender-action-plan"
+          "url": "https://www.iadb.org/en/who-we-are/topics/gender-and-diversity#gender-action-plan",
+          "caseStudyLocations": [
+            {
+              "name": "São Paulo, Brazil",
+              "lat": -23.5505,
+              "lon": -46.6333,
+              "description": "Urban gender equity programs"
+            },
+            {
+              "name": "Mexico City, Mexico",
+              "lat": 19.4326,
+              "lon": -99.1332,
+              "description": "Policy implementation assessment"
+            },
+            {
+              "name": "Bogotá, Colombia",
+              "lat": 4.7110,
+              "lon": -74.0721,
+              "description": "Regional coordination hub"
+            }
+          ]
         }
       ]
     },
@@ -168,21 +288,29 @@
       "endDate": "Present",
       "description": "Analyzing causal links between local housing policies (zoning, affordability mandates) and K-12 school funding disparities using econometric models and spatial analysis.",
       "disciplines": ["Policy", "Geo", "Data Sci", "Soc"],
-      "relatedWork": "work001"
+      "relatedWork": "work001",
+      "caseStudyLocations": [
+        {
+          "name": "San Francisco Bay Area",
+          "lat": 37.7749,
+          "lon": -122.4194,
+          "description": "High-cost housing market analysis"
+        },
+        {
+          "name": "Central Valley",
+          "lat": 36.7783,
+          "lon": -119.4179,
+          "description": "Agricultural community school funding"
+        },
+        {
+          "name": "Orange County",
+          "lat": 33.7175,
+          "lon": -117.8311,
+          "description": "Suburban zoning impact study"
+        }
+      ]
     },
-    {
-      "id": "pub001",
-      "type": "publication",
-      "title": "Spatial Mismatches: Zoning Laws and Educational Opportunity",
-      "publisher": "Journal of Urban Affairs",
-      "location": "Stanford, CA", 
-      "lat": 37.4275,
-      "lon": -122.1697,
-      "date": "2023-05",
-      "url": "https://doi.org/10.xxxx/xxxxxx", 
-      "disciplines": ["Policy", "Geo", "Soc"],
-      "relatedItems": ["proj001"]
-    },
+    
     {
       "id": "proj002",
       "type": "project",
@@ -195,25 +323,32 @@
       "endDate": "2025-03",
       "description": "Developing agent-based models informed by census data and sociological theory to simulate population shifts and predict strain on municipal resources (schools, infrastructure) under different policy scenarios.",
       "disciplines": ["CS", "Data Sci", "Soc", "Geo", "Policy"],
-      "relatedWork": "work001"
-    },
-    {
-      "id": "pub002",
-      "type": "publication",
-      "title": "An Agent-Based Framework for Simulating Urban Growth and Resource Equity",
-      "publisher": "Proceedings of the Computational Social Science Conference",
-      "location": "Chicago, IL", 
-      "lat": 41.8781,
-      "lon": -87.6298,
-      "date": "2023-10",
-      "url": "http://example.com/link-to-proceedings", 
-      "disciplines": ["CS", "Data Sci", "Soc"],
-      "relatedItems": ["proj002"]
+      "relatedWork": "work001",
+      "caseStudyLocations": [
+        {
+          "name": "Austin Metro Area",
+          "lat": 30.2672,
+          "lon": -97.7431,
+          "description": "Primary modeling location"
+        },
+        {
+          "name": "San Antonio",
+          "lat": 29.4241,
+          "lon": -98.4936,
+          "description": "Comparative growth patterns"
+        },
+        {
+          "name": "Raleigh-Durham",
+          "lat": 35.7796,
+          "lon": -78.6382,
+          "description": "Eastern Sun Belt comparison"
+        }
+      ]
     },
     {
       "id": "conf001",
       "type": "conference",
-      "title": "Presented: From Art to Enforcement: Amplifying your Fair Housing Message ",
+      "title": "Invited Panel: From Art to Enforcement: Amplifying your Fair Housing Message ",
       "venue": "National Fair Housing Association",
       "location": "Washington, DC",
       "lat": 38.8993973,
@@ -222,24 +357,10 @@
       "relatedItems": ["pub002", "proj002"]
     },
      {
-      "id": "proj003",
-      "type": "project",
-      "title": "Border Tax Structures & Education Funding: US-Mexico Comparative Analysis",
-      "institution": "Collaboration with El Colegio de México",
-      "location": "Mexico City, Mexico", 
-      "lat": 19.3288, 
-      "lon": -99.2053, 
-      "startDate": "2022-09",
-      "endDate": "2024-01",
-      "description": "Comparative analysis of municipal and state/federal tax policies in US and Mexican border cities and their differential impacts on public school funding.",
-      "disciplines": ["Policy", "Geo", "Data Sci"],
-      "relatedWork": "work003"
-    },
-     {
       "id": "conf002",
       "type": "conference",
-      "title": "Examaning the impact of racial and economic segregation on school funding",
-      "venue": "Journal of Urban Affairs",
+      "title": "Paper Presentation: Examaning the impact of racial and economic segregation on school funding",
+      "venue": "Journal of Urban Affairs (UAA)",
       "location": "New York, NY",
       "lat": 40.7586,
       "lon": -73.9858,
@@ -258,22 +379,10 @@
       "endDate": "Present",
       "disciplines": ["Geo", "Data Sci", "Soc"]
     },
-    {
-      "id": "pub003",
-      "type": "publication",
-      "title": "Computational Approaches to Measuring Spatial Inequity",
-      "publisher": "Annals of the American Association of Geographers",
-      "location": "Stanford, CA", 
-      "lat": 37.4275,
-      "lon": -122.1697,
-      "date": "2022-03",
-      "url": "https://doi.org/10.xxxx/yyyyyy", 
-      "disciplines": ["Geo", "Data Sci", "CS"]
-    },
      {
       "id": "conf003", 
       "type": "conference",
-      "title": "Crossing the Line: Segregation and Resource Inequality America's Schools",
+      "title": "Presentation: Crossing the Line: Segregation and Resource Inequality America's Schools",
       "venue": "Esri User Conference",
       "location": "San Diego, CA",
       "lat": 32.7157,
@@ -284,32 +393,22 @@
      {
       "id": "article001",
       "type": "article",
-      "title": "The Hidden Geography of Educational Inequality",
-      "publication": "The Atlantic",
-      "date": "2024-03-15",
-      "url": "https://www.theatlantic.com/education/archive/2024/03/hidden-geography-educational-inequality/677890/",
-      "description": "An exploration of how municipal boundaries and local governance structures create invisible barriers to educational equity, drawing on research from California's Bay Area school districts.",
+      "title": "When Students Get Lost in the Algorithm: The Problems with Nevada's AI School Funding Experiment",
+      "publication": "New America Ed Central",
+      "date": "2024-03-03",
+      "url": "https://www.newamerica.org/education-policy/edcentral/when-students-get-lost-in-the-algorithm-the-problems-with-nevadas-ai-school-funding-experiment/",
+      "description": "Nevada now uses a machine-learning model to drive its 'at-risk' school funding, but the new system is opaque and leaves many students out.",
       "topics": ["Education Policy", "Urban Geography", "Inequality", "School Funding"]
      },
      {
       "id": "article002",
       "type": "article",
-      "title": "Why Your ZIP Code Still Determines Your Child's Education",
-      "publication": "Washington Post",
-      "date": "2023-11-08",
-      "url": "https://www.washingtonpost.com/education/2023/11/08/zip-code-education-inequality/",
-      "description": "A data-driven analysis of how residential segregation and local tax policies continue to shape educational opportunities across American communities.",
-      "topics": ["Residential Segregation", "Tax Policy", "Education Access", "Data Analysis"]
-     },
-     {
-      "id": "article003",
-      "type": "article",
-      "title": "The Future of Fair Housing: A Computational Approach",
-      "publication": "CityLab",
-      "date": "2024-01-22",
-      "url": "https://www.bloomberg.com/news/articles/2024-01-22/computational-approach-fair-housing",
-      "description": "How machine learning and spatial analysis can help identify and address housing discrimination patterns in real-time.",
-      "topics": ["Fair Housing", "Machine Learning", "Spatial Analysis", "Policy Innovation"]
+      "title": "Inefficiency Multiplied: What Happens When Research and Data are Halted at U.S. Dept. of Ed",
+      "publication": "New America Ed Central",
+      "date": "2025-02-12",
+      "url": "https://www.newamerica.org/education-policy/edcentral/inefficiency-multiplied-what-happens-when-research-and-data-is-halted-at-us-dept-of-ed/",
+      "description": "The Institute of Education Sciences funds critical data and research on teaching and learning. Cuts are counterproductive.",
+      "topics": ["Data Preservation", "Education Access", "Data Analysis"]
      },
      {
       "id": "media001",
@@ -318,27 +417,27 @@
       "outlet": "New York Times",
       "date": "2024-10-11",
       "url": "https://www.nytimes.com/2024/10/11/us/nevada-ai-at-risk-students.html?partner=slack&smid=sl-share",
-      "description": "Interview discussing my article outlining Nevada’s use of AI tools to help identify and support at-risk students.",
+      "description": "Interview discussing my article outlining Nevada's use of AI tools to help identify and support at-risk students.",
       "context": "Quoted in a New York Times article, along with a link to my article."
      },
      {
       "id": "media002",
       "type": "media",
-      "title": "The Data Behind Educational Equity",
-      "outlet": "PBS NewsHour",
+      "title": "An Artist Tackles the Racial Wealth Gap, and Then Tries to Close It",
+      "outlet": "Bloomberg",
       "date": "2023-09-28",
-      "url": "https://www.pbs.org/newshour/education/data-behind-educational-equity",
-      "description": "Television segment on using computational methods to measure and address educational inequities.",
+      "url": "https://www.bloomberg.com/news/features/2022-04-06/artist-takes-activist-role-in-closing-racial-wealth-gap",
+      "description": "",
       "context": "Provided expert commentary on the role of data science in education policy research."
      },
      {
       "id": "media003",
       "type": "media",
-      "title": "Young Researchers Tackle Housing and Education Policy",
-      "outlet": "Stanford News",
+      "title": "A local art exhibit exposes the overtaxing and undervaluation of Black-owned homes in Pittsburgh",
+      "outlet": "NPR",
       "date": "2024-05-10",
-      "url": "https://news.stanford.edu/2024/05/10/young-researchers-housing-education/",
-      "description": "Profile piece highlighting doctoral research on the intersection of housing policy and educational outcomes.",
-      "context": "Featured in university spotlight on graduate student research making policy impact."
+      "url": "https://www.wesa.fm/arts-sports-culture/2022-03-30/a-local-art-exhibit-exposes-the-overtaxing-and-undervaluation-of-black-owned-homes-in-pittsburgh",
+      "description": "Profile piece highlighting highlighting how artists have raised awareness about racial disparity in property tax assessments and appraisals.",
+      "context": "Cited research and completed detailed interview with artist."
      }
   ]

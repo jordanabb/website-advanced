@@ -14,6 +14,7 @@
   .cvSectionTitle {
     margin-bottom: 15px !important;
     color: var(--color-text-primary);
+    font-family: var(--font-family-heading);
   }
   
   .cvEntry {
@@ -24,27 +25,42 @@
      margin-top: 0 !important;
      margin-bottom: 2px !important;
      color: var(--color-text-primary);
+     font-family: var(--font-family-heading);
+  }
+  
+  .cvMinorsTitle {
+     margin-top: 4px !important;
+     margin-bottom: 0 !important;
+     color: var(--color-text-secondary);
+     font-family: var(--font-family-body);
+     font-weight: normal;
   }
   
   .cvEntryMeta {
      margin-bottom: 8px !important;
      display: block;
      color: var(--color-text-secondary);
+     font-family: var(--font-family-body);
   }
   
   .cvEntryDescription {
-     /* Uses Text body styles */
-     margin-bottom: 5px !important; /* Adjust spacing for bullet points */
-     padding-left: 1em; /* Indent description/bullets */
+     margin-bottom: 5px !important;
+     padding-left: 1em;
+     font-family: var(--font-family-body);
   }
   .cvEntryDescription:last-child {
      margin-bottom: 0 !important;
   }
   
+  .cvEntryDescription li {
+     margin-bottom: 8px;
+     line-height: 1.5;
+  }
+  
   .cvPublication,
   .cvPresentation {
-     /* Uses Text body styles */
       margin-bottom: 10px !important;
+      font-family: var(--font-family-body);
   }
   .cvPublication a,
   .cvPresentation a {
@@ -56,6 +72,7 @@
     padding: 4px 8px;
     border-radius: 4px;
     transition: background-color 0.2s ease, color 0.2s ease;
+    font-family: var(--font-family-body);
   }
   .cvPublication a:hover,
   .cvPresentation a:hover {
@@ -69,8 +86,10 @@
     margin-top: 10px;
     padding-left: 1em;
     color: var(--color-text-primary);
+    font-family: var(--font-family-body);
   }
 
   .cvSkillsList li {
     margin-bottom: 8px;
+    line-height: 1.5;
   }

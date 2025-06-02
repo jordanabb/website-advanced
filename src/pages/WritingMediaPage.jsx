@@ -181,7 +181,7 @@ function WritingMediaPage() {
         {/* Media Mentions Section */}
         <div className={styles.workSection}>
           <div className={styles.workHeader}>
-            <Heading level={2}>Media Mentions</Heading>
+            <Heading level={2}>Selected Media Mentions</Heading>
           </div>
           
           {mediaMentions.length > 0 ? (
