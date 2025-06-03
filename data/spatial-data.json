@@ -49,7 +49,8 @@
               "name": "East Liberty",
               "lat": 40.4615,
               "lon": -79.9248,
-              "description": "Two appraisals of a black-owned property conducted three days apart, the second of which removed all black-identifying objects from the house. The appraised value was $36,000 less."
+              "description": "Two appraisals of a black-owned property conducted three days apart, the second of which removed all black-identifying objects from the house. The appraised value was $36,000 less.",
+              "url": "https://mattress.org/exhibition/sed-valorem/"
             }
           ]
         }
@@ -78,22 +79,39 @@
           "url": "https://www.newamerica.org/education-policy/reports/segregation-and-resource-inequality-between-americas-school-districts/",
           "caseStudyLocations": [
             {
-              "name": "Detroit Metro Area",
-              "lat": 42.3314,
-              "lon": -83.0458,
-              "description": "Inter-district segregation analysis"
+              "name": "Oglala-Lakota & Custer County",
+              "lat": 43.1769116,
+              "lon": -102.7813976,
+              "description": "Rural Native populations and resource inequity.",
+              "url": "https://storymaps.arcgis.com/stories/09464508a0894f0b863bfcbef0a2b748#ref-n-06RgLz"
             },
             {
-              "name": "Atlanta Metro Area",
-              "lat": 33.7490,
-              "lon": -84.3880,
-              "description": "Suburban-urban funding disparities"
+              "name": "Wahluke & Kititas",
+              "lat": 46.7086338,
+              "lon": -119.552194,
+              "description": "Rural funding disparities and migrant communities.",
+              "url": "https://storymaps.arcgis.com/stories/09464508a0894f0b863bfcbef0a2b748#ref-n-FbW7bM"
             },
             {
-              "name": "Dallas-Fort Worth",
-              "lat": 32.7767,
-              "lon": -96.7970,
-              "description": "Texas funding formula impact study"
+              "name": "Dallas-Highland Park",
+              "lat": 32.8350345,
+              "lon": -96.8341212,
+              "description": "Resource hoarding and racial segregation.",
+              "url": "https://storymaps.arcgis.com/stories/09464508a0894f0b863bfcbef0a2b748#ref-n-8e2KsK"
+            },
+            {
+              "name": "Saginaw-Frankenmuth",
+              "lat": 43.424748,
+              "lon": -84.096159,
+              "description": "Enrollment decline and lack of opportunity.",
+              "url": "https://storymaps.arcgis.com/stories/09464508a0894f0b863bfcbef0a2b748#ref-n-aG2CQ8"
+            },
+            {
+              "name": "Utica & New Hartford, NY",
+              "lat": 43.0984472,
+              "lon": -75.2693005,
+              "description": "Diverse schools, disparate funding.",
+              "url": "https://storymaps.arcgis.com/stories/09464508a0894f0b863bfcbef0a2b748"
             }
           ]
         },
@@ -339,8 +357,8 @@
       "title": "EdFund Research Cohort",
       "institution": "EdFund",
       "location": "Washington, DC",
-      "lat": 38.9036101,
-      "lon": -77.042887,
+      "lat": 38.9165712,
+      "lon": -77.0454106,
       "startDate": "2025-07",
       "endDate": "Present",
       "disciplines": ["Geo", "Data Sci", "Soc"]

@@ -495,7 +495,10 @@ function SpatialResumeMap() {
                     .setLngLat([location.lon, location.lat])
                     .setHTML(`
                         <div class="case-study-popup-content">
-                            <h4 class="case-study-popup-title">${location.name}</h4>
+                            ${location.url ? 
+                                `<h4 class="case-study-popup-title"><a href="${location.url}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none; border: none; outline: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${location.name}</a></h4>` : 
+                                `<h4 class="case-study-popup-title">${location.name}</h4>`
+                            }
                             <p class="case-study-popup-description">${location.description}</p>
                         </div>
                     `)
@@ -1254,6 +1257,38 @@ map.on('click', mainId, (e) => {
 
     }, [initialViewState, maxYear, debouncedYearChange]); // Dependencies - Restored
 
+    // --- View Current Work Handler ---
+    const handleViewCurrentWork = useCallback(() => {
+        console.log("View Current Work Clicked");
+        
+        // Find the New America work experience in the data
+        const newAmericaWork = resumeData.find(item => 
+            item.id === 'work002' && item.institution === 'New America'
+        );
+        
+        if (newAmericaWork) {
+            // Find the index of this node in the current filtered data
+            const currentFeatures = filteredGeojsonData.features;
+            const index = currentFeatures.findIndex(f => f.id === newAmericaWork.id);
+            
+            // Set the selected node data and index
+            setSelectedNodeData(newAmericaWork);
+            setSelectedIndex(index !== -1 ? index : 0); // Use 0 as fallback
+            selectedNodeIdRef.current = newAmericaWork.id;
+            
+            // Fly to the New America location on the map
+            if (mapRef.current && newAmericaWork.lon && newAmericaWork.lat) {
+                mapRef.current.flyTo({
+                    center: [newAmericaWork.lon, newAmericaWork.lat],
+                    zoom: 12,
+                    duration: 4000
+                });
+            }
+        } else {
+            console.warn('New America work experience not found in data');
+        }
+    }, [filteredGeojsonData.features]);
+
     // --- Effect for Esc key to close contextual panel ---
     useEffect(() => {
         const handleKeyDown = (event) => {
@@ -1357,15 +1392,29 @@ map.on('click', mainId, (e) => {
                                 //  disabled={isTransitioning}
                                  isDragging={isSliderDragging}
                              />
-                             {/* Reset Button */}
-                             <Button
-                                 onClick={handleResetView}
-                                 variant="secondary" // Or choose another appropriate variant
-                                 size="small"
-                                 style={{ marginTop: 'var(--spacing-medium)', width: '100%' }} // Add some top margin and make full width
-                             >
-                                 <Icon name="RefreshCcw" size={14} style={{ marginRight: '6px' }} /> Reset View
-                             </Button>
+                             {/* Control Buttons Row */}
+                             <div style={{ 
+                                 display: 'flex', 
+                                 gap: '12px', 
+                                 marginTop: '16px' 
+                             }}>
+                                 <Button
+                                     onClick={handleResetView}
+                                     variant="secondary"
+                                     size="small"
+                                     style={{ flex: 1 }}
+                                 >
+                                     <Icon name="RefreshCcw" size={14} style={{ marginRight: '6px' }} /> Reset View
+                                 </Button>
+                                 <Button
+                                     onClick={handleViewCurrentWork}
+                                     variant="secondary"
+                                     size="small"
+                                     style={{ flex: 1 }}
+                                 >
+                                     <Icon name="Briefcase" size={14} style={{ marginRight: '6px' }} /> View Current Work
+                                 </Button>
+                             </div>
                          </>
                      ) : (
                          <p>Loading controls...</p> // Or a spinner
