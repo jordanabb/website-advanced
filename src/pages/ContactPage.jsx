@@ -111,8 +111,7 @@ function ContactPage() {
           fontStyle: 'italic'
         }}>
           This website was custom-built using React and Node.js, featuring interactive spatial 
-          visualizations and responsive design. The source code demonstrates my full-stack 
-          development capabilities alongside my research work.
+          visualizations built with MapBox GL and GSAP animations. The source code is intended to demonstrate my capabilities in advanced frontend development, data visualization, and interactive design.
         </Text>
       </div>
     </main>
