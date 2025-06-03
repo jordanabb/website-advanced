@@ -27,7 +27,7 @@
         {
           "id": "proj002", 
           "title": "Sed Valorem",
-          "description": "Collaborated with Pittsburgh artist to analyze and visualize disparities in property tax assessments and appraisals in Pittsburgh, PA. Our work was on exhibition at The Mattress Factory, a Pittsburgh-based contemporary art museum.",
+          "description": "Collaborated with Pittsburgh artist, Harrison K. Smith to analyze and visualize disparities in property tax assessments and appraisals in Pittsburgh, PA. Our work was on exhibition at The Mattress Factory, a Pittsburgh-based contemporary art museum.",
           "startDate": "2021-09",
           "endDate": "2022-03",
           "status": "Completed",
@@ -37,13 +37,13 @@
               "name": "Hill District",
               "lat": 40.4456,
               "lon": -79.9731,
-              "description": "Highting historical redlining"
+              "description": "Highting historical significance of redlining in present-day inequities."
             },
             {
               "name": "Lawrenceville",
               "lat": 40.4668,
               "lon": -79.9603,
-              "description": "Gentrification assessment patterns"
+              "description": "Mapping patterns of gentrification."
             },
             {
               "name": "East Liberty",
@@ -405,8 +405,8 @@
       "outlet": "Bloomberg",
       "date": "2023-09-28",
       "url": "https://www.bloomberg.com/news/features/2022-04-06/artist-takes-activist-role-in-closing-racial-wealth-gap",
-      "description": "",
-      "context": "Provided expert commentary on the role of data science in education policy research."
+      "description": "Profile piece covering how our research was used to redress racial bias in property tax assessments.",
+      "context": "Research cited."
      },
      {
       "id": "media003",
@@ -415,7 +415,7 @@
       "outlet": "NPR",
       "date": "2024-05-10",
       "url": "https://www.wesa.fm/arts-sports-culture/2022-03-30/a-local-art-exhibit-exposes-the-overtaxing-and-undervaluation-of-black-owned-homes-in-pittsburgh",
-      "description": "Profile piece highlighting highlighting how artists have raised awareness about racial disparity in property tax assessments and appraisals.",
-      "context": "Cited research and completed detailed interview with artist."
+      "description": "Profile piece highlighting how artists have raised awareness about racial disparity in property tax assessments and appraisals.",
+      "context": "Research cited and artist, Harrison K. Smith interviewed."
      }
   ]
