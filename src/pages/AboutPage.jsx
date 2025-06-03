@@ -70,21 +70,25 @@ function AboutPage() {
         </div>
         <div className={aboutStyles.aboutText}>
             <Text type="body">
-            I am Jordan Abbott, Senior Data Scientist for the Education Funding Equity Initiative at New America. My work lies at the intersection of Computer Science, Data Science, Education Policy, Sociology, and Geography. My research confronts a critical challenge: how the very structures of our cities and municipalities—their governance, policies, and resource allocation—create and perpetuate spatial and educational inequities.
+              I am Jordan Abbott, Senior Data Scientist at the Education Funding Equity Initiative at New America. My work sits at the intersection of data science, education policy, sociology, and geography, with a focus on how municipal governance structures and policies shape spatial and educational inequities in communities.
             </Text>
             
             <Text type="body">
-            Traditional approaches often examine these issues within disciplinary silos. However, the complex interplay between housing policy, school funding mechanisms, demographic shifts, and historical geographic patterns demands a more integrated perspective. I bridge this gap by leveraging the power of computational methods to analyze social processes at scale and across space. My work combines the theoretical grounding and contextual understanding from sociology and policy analysis with the rigorous techniques of data science and spatial computing.
+              My current research involves developing algorithmic redistricting models to understand and evaluate the role of district boundaries in shaping educational opportunities. These models draw on advanced spatial and computational methods to test how redrawing school district lines could impact resource allocation and school integration. By simulating alternative scenarios, I aim to inform efforts to promote equity and challenge entrenched patterns of segregation.
             </Text>
 
             <Text type="body">
-            Specifically, my anticipated doctoral research investigates how local municipal governance – encompassing school finance formulas, zoning regulations, tax structures, and housing affordability mandates – differentially impacts opportunities and outcomes across diverse communities. I utilize methods ranging from econometric modeling and causal inference to geospatial analysis (GIS) and agent-based modeling to simulate urban dynamics and policy effects. By integrating large-scale administrative data, census records, and spatial datasets, I aim to uncover the often hidden mechanisms that link policy decisions to tangible inequalities on the ground.
+              I strive to complement my research with interactive, data-driven tools that communicate findings clearly and effectively to diverse audiences. I believe that bridging the gap between complex quantitative research and accessible, engaging visualizations is essential for democratizing data and fostering real dialogue about equity. My work leverages web-based data visualization platforms, interactive mapping tools, and custom applications to ensure that insights are not just buried in technical reports, but shared in ways that empower stakeholders and amplify community voices.
             </Text>
 
             <Text type="body">
-            This computational social science approach allows not only for a deeper diagnosis of spatial inequity but also for exploring the potential impacts of alternative policy scenarios. My goal is to produce research that is both analytically rigorous and relevant for policymakers and communities striving for greater equity.
+              I approach all of my work through a computational social science lens, integrating econometric modeling and causal inference with geospatial analysis and agent-based modeling. I use complex, large-scale data sources to build a clearer picture of how these systems interact and produce real disparities in people’s lives 
             </Text>
 
+            <Text type="body">
+              In my anticipated doctoral research, I plan to continue this line of inquiry, investigating how municipal governance systems – encompassing school finance formulas, zoning regulations, tax structures, and housing affordability mandates – differentially impact opportunities and outcomes across diverse communities. Ultimately, my goal is to produce work that is not only analytically rigorous, but also practically useful and meaningfully engaged with those striving for greater equity in their communities.
+            </Text>
+          
             <Text type="body">
             I am passionate about collaborating with researchers across disciplines who share an interest in urban studies, computational methods, and social justice. If my work resonates with you, please feel free to connect.
             </Text>
