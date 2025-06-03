@@ -1230,14 +1230,14 @@ map.on('click', mainId, (e) => {
     // --- Reset View Handler ---
     const handleResetView = useCallback(() => {
         if (!mapRef.current) return;
-        console.log("Reset View Clicked - Flying map only"); // Add log for debugging
+        console.log("Reset View Clicked - Flying map and cleaning up arrows"); // Add log for debugging
 
-        // Reset map position and zoom
-        mapRef.current.flyTo({
-            center: [initialViewState.longitude, initialViewState.latitude],
-            zoom: initialViewState.zoom,
-            duration: 1500 // Animation duration
-        });
+        // Clean up arrows and case study location nodes
+        cleanupArrows();
+
+        // Close contextual panel first
+        setSelectedNodeData(null);
+        setSelectedIndex(-1);
 
         // Reset filters
         setActiveFilters(['education', 'work', 'publication', 'conference']);
@@ -1251,11 +1251,22 @@ map.on('click', mainId, (e) => {
             debouncedYearChange.cancel();
         }, 50); // Small delay
 
-        // Close contextual panel
-        setSelectedNodeData(null);
-        setSelectedIndex(-1);
+        // Wait for panel to close and layout to stabilize before centering map
+        setTimeout(() => {
+            if (mapRef.current) {
+                // Trigger a resize event to ensure map container dimensions are updated
+                mapRef.current.resize();
+                
+                // Then fly to the initial position
+                mapRef.current.flyTo({
+                    center: [initialViewState.longitude, initialViewState.latitude],
+                    zoom: initialViewState.zoom,
+                    duration: 1500 // Animation duration
+                });
+            }
+        }, 100); // Wait for panel close animation to complete
 
-    }, [initialViewState, maxYear, debouncedYearChange]); // Dependencies - Restored
+    }, [initialViewState, maxYear, debouncedYearChange, cleanupArrows]); // Dependencies - Added cleanupArrows
 
     // --- View Current Work Handler ---
     const handleViewCurrentWork = useCallback(() => {
