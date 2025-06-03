@@ -16,11 +16,11 @@ function SoftwarePage() {
       icon: '📊'
     },
     {
-      id: 'segregation',
-      name: 'segregation',
+      id: 'segmetrics',
+      name: 'segmetrics',
       description: 'A collection of different segregation measures for analyzing spatial and social segregation patterns. Includes implementations of classic indices like dissimilarity, isolation, and exposure indices, as well as modern spatial segregation measures.',
-      cranUrl: 'https://cran.r-project.org/package=segregation',
-      githubUrl: 'https://github.com/username/segregation',
+      cranUrl: 'https://cran.r-project.org/package=segmetrics',
+      githubUrl: 'https://github.com/username/segmetrics',
       icon: '🏘️'
     }
   ];
@@ -29,8 +29,8 @@ function SoftwarePage() {
     <div className={styles.pageContainer}>
       <div className={styles.pageHeader}>
         <Heading level={1}>Software</Heading>
-        <Text type="body">
-          R packages I have developed for spatial analysis and demographic research.
+        <Text type="body" >
+          R packages I have developed for spatial analysis, econometric modeling, and demographic measurement.
         </Text>
       </div>
 

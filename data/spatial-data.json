@@ -79,28 +79,28 @@
           "url": "https://www.newamerica.org/education-policy/reports/segregation-and-resource-inequality-between-americas-school-districts/",
           "caseStudyLocations": [
             {
-              "name": "Oglala-Lakota & Custer County",
+              "name": "Oglala-Lakota & Custer County, SD",
               "lat": 43.1769116,
               "lon": -102.7813976,
               "description": "Rural Native populations and resource inequity.",
               "url": "https://storymaps.arcgis.com/stories/09464508a0894f0b863bfcbef0a2b748#ref-n-06RgLz"
             },
             {
-              "name": "Wahluke & Kititas",
+              "name": "Wahluke & Kititas, WA",
               "lat": 46.7086338,
               "lon": -119.552194,
               "description": "Rural funding disparities and migrant communities.",
               "url": "https://storymaps.arcgis.com/stories/09464508a0894f0b863bfcbef0a2b748#ref-n-FbW7bM"
             },
             {
-              "name": "Dallas-Highland Park",
+              "name": "Dallas-Highland Park, TX",
               "lat": 32.8350345,
               "lon": -96.8341212,
               "description": "Resource hoarding and racial segregation.",
               "url": "https://storymaps.arcgis.com/stories/09464508a0894f0b863bfcbef0a2b748#ref-n-8e2KsK"
             },
             {
-              "name": "Saginaw-Frankenmuth",
+              "name": "Saginaw-Frankenmuth, MI",
               "lat": 43.424748,
               "lon": -84.096159,
               "description": "Enrollment decline and lack of opportunity.",
@@ -125,22 +125,16 @@
           "url": "https://www.newamerica.org/education-policy/reports/segregation-between-americas-school-districts-in-the-21st-century/",
           "caseStudyLocations": [
             {
-              "name": "Phoenix Metro Area",
-              "lat": 33.4484,
-              "lon": -112.0740,
-              "description": "Rapid demographic change analysis"
+              "name": "Dallas-Fort Worth Metro Area",
+              "lat": 32.8185041,
+              "lon": -96.7320961,
+              "description": "Diversification of Suburbs"
             },
             {
-              "name": "Charlotte Metro Area",
-              "lat": 35.2271,
-              "lon": -80.8431,
-              "description": "Southern urbanization patterns"
-            },
-            {
-              "name": "Las Vegas Metro Area",
-              "lat": 36.1699,
-              "lon": -115.1398,
-              "description": "Western growth corridor study"
+              "name": "Detroit Metro Area",
+              "lat": 42.352477,
+              "lon": -83.2639232,
+              "description": "Increasing segregation between inner and outer ring suburbs"
             }
           ]
         },
@@ -343,7 +337,7 @@
      {
       "id": "conf002",
       "type": "conference",
-      "title": "Paper Presentation: Examaning the impact of racial and economic segregation on school funding",
+      "title": "Paper Presentation: Spatial Educational Disparities: Exploring the Extent of Place-Based Inequity and Residential Segregation between Public School Districts",
       "venue": "Journal of Urban Affairs (UAA)",
       "location": "New York, NY",
       "lat": 40.7586,
