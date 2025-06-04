@@ -417,5 +417,15 @@
       "url": "https://www.wesa.fm/arts-sports-culture/2022-03-30/a-local-art-exhibit-exposes-the-overtaxing-and-undervaluation-of-black-owned-homes-in-pittsburgh",
       "description": "Profile piece highlighting how artists have raised awareness about racial disparity in property tax assessments and appraisals.",
       "context": "Research cited and artist, Harrison Kinnane Smith interviewed."
+     },
+     {
+      "id": "media004",
+      "type": "media",
+      "title": "The Dismantling of US Statistical and Data Infrastructures by the Trump Administration",
+      "outlet": "The Review of Democracy",
+      "date": "2025-03-25",
+      "url": "https://revdem.ceu.edu/2025/03/25/dismantling-data/",
+      "description": "Article detailing cuts to the Department of Education and its data collection infrastructure.",
+      "context": "Quoted in article, along with link to my previous commentary on the subject."
      }
   ]
