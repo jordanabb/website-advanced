@@ -121,7 +121,20 @@ function Header() {
     <header className={`${styles.siteHeader} ${isOpen ? styles.menuOpen : ''}`}>
       {/* Left side content */}
       <div className={styles.leftContent}>
-        <div className={styles.name}>Jordan Abbott</div>
+        <Link 
+          to="/" 
+          className={styles.name}
+          style={{ 
+            textDecoration: 'none', 
+            color: 'inherit',
+            cursor: 'pointer',
+            transition: 'opacity 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.target.style.opacity = '0.7'}
+          onMouseLeave={(e) => e.target.style.opacity = '1'}
+        >
+          Jordan Abbott
+        </Link>
         <div 
           className={`${styles.title} ${isOnSpatialResumePage ? styles.clickable : ''}`}
           onClick={handleTitleClick}

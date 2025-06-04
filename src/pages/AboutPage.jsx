@@ -70,7 +70,7 @@ function AboutPage() {
         </div>
         <div className={aboutStyles.aboutText}>
             <Text type="body">
-              I am Jordan Abbott, Senior Data Scientist at the Education Funding Equity Initiative at New America. My work sits at the intersection of data science, education policy, sociology, and geography, with a focus on how municipal governance structures and policies shape spatial and educational inequities in communities.
+              I am Jordan Abbott, Senior Data Scientist at the Education Funding Equity Initiative at New America. My work sits at the intersection of data science, education policy, sociology, and geography, with a focus on how municipal governance structures and policies shape spatial and educational inequities.
             </Text>
             
             <Text type="body">
@@ -78,7 +78,7 @@ function AboutPage() {
             </Text>
 
             <Text type="body">
-              I strive to complement my research with interactive, data-driven tools that communicate findings clearly and effectively to diverse audiences. My work leverages web-based data visualization platforms, interactive mapping tools, and custom applications to ensure that insights are not just buried in technical reports, but shared in ways that inform policymakers, empower stakeholders, and amplify community voices.
+              I strive to complement my research with interactive, data-driven tools that communicate findings clearly and effectively to diverse audiences. My work leverages web-based data visualizations, interactive mapping tools, and custom applications to ensure that insights are not just buried in technical reports, but shared in ways that inform policymakers, empower stakeholders, and amplify community voices.
             </Text>
 
             <Text type="body">
