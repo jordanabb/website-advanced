@@ -59,7 +59,7 @@
     {
       "id": "work002",
       "type": "work",
-      "title": "Senior Data Scientist, Education Funding Equity Initiative",
+      "title": "Senior Data Scientist | Education Funding Equity Initiative",
       "institution": "New America",
       "location": "Washington, DC",
       "lat": 38.9072,
@@ -155,7 +155,7 @@
     {
       "id": "work003",
       "type": "work",
-      "title": "Research Assistant, Office of the Executive Director for Canada",
+      "title": "Research Assistant | Board of Executive Directors",
       "institution": "Inter-American Development Bank",
       "location": "Washington, DC",
       "lat": 38.9042,
@@ -199,7 +199,7 @@
     {
       "id": "edu001",
       "type": "education",
-      "title": "B.S. Economics & Statistics,\nB.A. Political Science\nMinor, Hispanic Languages and Literature",
+      "title": "B.S. Economics & Statistics;\nB.A. Political Science;\nMinor: Hispanic Languages and Literature",
       "institution": "University of Pittsburgh",
       "location": "Pittsburgh, PA",
       "lat": 40.4414,
@@ -208,8 +208,8 @@
       "endDate": "2019-04",
       "disciplines": ["Soc", "Geo"],
       "thesis": {
-        "title": "Spatial Econometrics of Urban Inequality: A Comparative Analysis of Municipal Resource Allocation",
-        "advisor": "Dr. Emily Rodriguez",
+        "title": "Remittances and Social Expenditure in Latin America: How Migration and Resource Flows Shift Government Expenditure",
+        "advisor": "Dr. Barry Ames",
         "publications": ["pub003"]
       }
     },
@@ -225,8 +225,8 @@
       "endDate": "2024-12",
       "disciplines": ["Policy", "Data Sci", "Soc"],
       "thesis": {
-        "title": "Computational Methods for Measuring Spatial Inequity in Urban Environments",
-        "advisor": "Dr. Michael Chen",
+        "title": "Optimizing Opportunity: An Algorithmic Approach to Redistricting for Fairer School Funding",
+        "advisor": "Dr. Chris Kromphardt",
         "publications": ["pub002"]
       }
     },
@@ -234,25 +234,32 @@
       "id": "edu002",
       "type": "education",
       "title": "Student Fellow, División de Economia y Ciencia Política",
-      "institution": "CIDE",
+      "institution": "Centro de Investigación y Docencia Económicas (CIDE)",
       "location": "Mexico City, Mexico",
       "lat": 19.3743,
       "lon": -99.2636,
       "startDate": "2019-09",
       "endDate": "2020-03",
-      "disciplines": ["CS", "Data Sci", "Soc", "Policy", "Geo"]
-    },
+      "disciplines": ["CS", "Data Sci", "Soc", "Policy", "Geo"],
+      "thesis": {
+        "title": "Governing the Periphery: Education Funding Negotiations between the Sandinista State and the Atlantic Autonomous Region of Nicaragua",
+        "publications": ["pub006"]
+    }},
     {
       "id": "edu005",
       "type": "education",
-      "title": "Summer Program",
+      "title": "Summer Intensive Spanish Language Journalism Program",
       "institution": "Universidad de La Habana, Facultad de Periodismo",
       "location": "Havana, Cuba",
       "lat": 23.1368,
       "lon": -82.3815,
       "startDate": "2019-05",
       "endDate": "2019-08",
-      "disciplines": ["CS", "Data Sci", "Soc", "Policy", "Geo"]
+      "disciplines": ["Soc", "Policy", "Geo"],
+      "thesis": {
+        "title": "Dreaming of a Free Cuba: A Comparative Analysis of Anti-Imperialist Rhetoric in Statebuilding and Solidarity",
+        "publications": ["pub005"]
+      }
     },
     {
       "id": "proj001",
