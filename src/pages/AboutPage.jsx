@@ -78,7 +78,7 @@ function AboutPage() {
             </Text>
 
             <Text type="body">
-              I strive to complement my research with interactive, data-driven tools that communicate findings clearly and effectively to diverse audiences. I believe that bridging the gap between complex quantitative research and accessible, engaging visualizations is essential for democratizing data and fostering real dialogue about equity. My work leverages web-based data visualization platforms, interactive mapping tools, and custom applications to ensure that insights are not just buried in technical reports, but shared in ways that empower stakeholders and amplify community voices.
+              I strive to complement my research with interactive, data-driven tools that communicate findings clearly and effectively to diverse audiences. My work leverages web-based data visualization platforms, interactive mapping tools, and custom applications to ensure that insights are not just buried in technical reports, but shared in ways that inform policymakers, empower stakeholders, and amplify community voices.
             </Text>
 
             <Text type="body">
