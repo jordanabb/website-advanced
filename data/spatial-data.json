@@ -226,7 +226,6 @@
       "disciplines": ["Policy", "Data Sci", "Soc"],
       "thesis": {
         "title": "Optimizing Opportunity: An Algorithmic Approach to Redistricting for Fairer School Funding",
-        "advisor": "Dr. Chris Kromphardt",
         "publications": ["pub002"]
       }
     },
@@ -261,74 +260,16 @@
         "publications": ["pub005"]
       }
     },
-    {
-      "id": "proj001",
-      "type": "project",
-      "title": "Housing Policy Impacts on School Resource Allocation in California",
-      "institution": "Stanford University (PhD Research)",
-      "location": "Stanford, CA", 
-      "lat": 37.4275,
-      "lon": -122.1697,
-      "startDate": "2021-01",
-      "endDate": "Present",
-      "description": "Analyzing causal links between local housing policies (zoning, affordability mandates) and K-12 school funding disparities using econometric models and spatial analysis.",
-      "disciplines": ["Policy", "Geo", "Data Sci", "Soc"],
-      "relatedWork": "work001",
-      "caseStudyLocations": [
-        {
-          "name": "San Francisco Bay Area",
-          "lat": 37.7749,
-          "lon": -122.4194,
-          "description": "High-cost housing market analysis"
-        },
-        {
-          "name": "Central Valley",
-          "lat": 36.7783,
-          "lon": -119.4179,
-          "description": "Agricultural community school funding"
-        },
-        {
-          "name": "Orange County",
-          "lat": 33.7175,
-          "lon": -117.8311,
-          "description": "Suburban zoning impact study"
-        }
-      ]
-    },
-    
-    {
-      "id": "proj002",
-      "type": "project",
-      "title": "Modeling Demographic Futures & Municipal Services in the Sun Belt",
-      "institution": "Stanford University (PhD Research)",
-      "location": "Austin, TX", 
-      "lat": 30.2672,
-      "lon": -97.7431,
-      "startDate": "2022-06",
-      "endDate": "2025-03",
-      "description": "Developing agent-based models informed by census data and sociological theory to simulate population shifts and predict strain on municipal resources (schools, infrastructure) under different policy scenarios.",
-      "disciplines": ["CS", "Data Sci", "Soc", "Geo", "Policy"],
-      "relatedWork": "work001",
-      "caseStudyLocations": [
-        {
-          "name": "Austin Metro Area",
-          "lat": 30.2672,
-          "lon": -97.7431,
-          "description": "Primary modeling location"
-        },
-        {
-          "name": "San Antonio",
-          "lat": 29.4241,
-          "lon": -98.4936,
-          "description": "Comparative growth patterns"
-        },
-        {
-          "name": "Raleigh-Durham",
-          "lat": 35.7796,
-          "lon": -78.6382,
-          "description": "Eastern Sun Belt comparison"
-        }
-      ]
+     {
+      "id": "pub001",
+      "type": "publication",
+      "title": "Optimizing Opportunity: An Algorithmic Approach to Redistricting for Fairer School Funding",
+      "publisher": "Proceedings of NCME AI-CON, ACL Anthology",
+      "location": "Pittsburgh, PA", 
+      "lat": 40.4445,
+      "lon": -79.9613,
+      "date": "2025-11",
+      "url": "https://doi.org/10.xxxx/xxxxxx"
     },
     {
       "id": "conf001",
@@ -357,12 +298,11 @@
       "type": "education",
       "title": "EdFund Research Cohort",
       "institution": "EdFund",
-      "location": "Washington, DC",
-      "lat": 38.9165712,
-      "lon": -77.0454106,
+      "location": "New York, NY",
+      "lat": 40.7195,
+      "lon": -74.0430,
       "startDate": "2025-07",
-      "endDate": "Present",
-      "disciplines": ["Geo", "Data Sci", "Soc"]
+      "endDate": "Present"
     },
      {
       "id": "conf003", 
@@ -374,6 +314,28 @@
       "lon": -117.1611,
       "date": "2025-07",
       "relatedItems": ["proj001"]
+     },
+     {
+      "id": "conf004", 
+      "type": "conference",
+      "title": "Paper Presentation: Optimizing Opportunity: An AI-Driven Approach to Redistricting for Fairer School Funding",
+      "venue": "NCME AI-CON",
+      "location": "Pittsburgh, PA",
+      "lat": 40.4418,
+      "lon": -80.004,
+      "date": "2025-10",
+      "relatedItems": ["pub001"]
+     },
+     {
+      "id": "conf005", 
+      "type": "conference",
+      "title": "Poster: Optimizing Opportunity: An Algorithmic Approach to Redistricting for Fairer School Funding",
+      "venue": "ACM EAAMO",
+      "location": "Pittsburgh, PA",
+      "lat": 40.4445,
+      "lon": -79.86,
+      "date": "2025-11",
+      "relatedItems": ["pub001"]
      },
      {
       "id": "article001",

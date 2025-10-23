@@ -74,7 +74,7 @@ function AboutPage() {
             </Text>
             
             <Text type="body">
-              My current research involves developing algorithmic redistricting models to understand and evaluate the role of district boundaries in shaping educational opportunities. These models draw on advanced spatial and computational methods to test how redrawing school district lines could impact resource allocation and school integration. By simulating alternative scenarios, I aim to inform efforts to promote equity and challenge entrenched patterns of segregation.
+              My current research involves developing algorithmic redistricting models to understand and evaluate the role of school district boundaries in shaping educational opportunities. These models draw on advanced spatial and computational methods to test how redrawing district lines could impact resource allocation and school integration. By simulating alternative scenarios, I aim to inform efforts to promote funding equity and challenge entrenched patterns of segregation.
             </Text>
 
             <Text type="body">
