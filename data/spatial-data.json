@@ -149,6 +149,18 @@
           "caseStudyLocations": [
             
           ]
+        },
+        {
+          "id": "proj007",
+          "title": "Redrawing the Lines: How Purposeful School System Redistricting Can Increase Funding Fairness and Decrease Segregation",
+          "description": "We draw on the machine-learning methods often used for legislative redistricting to engineer fairer-funded, more integrated school systems.", 
+          "startDate": "2024-12",
+          "endDate": "2025-09",
+          "status": "Completed",
+          "url": "https://www.newamerica.org/education-policy/reports/redrawing-the-lines-school-system-redistricting-increase-funding-fairness-decrease-segregation/",
+          "caseStudyLocations": [
+            
+          ]
         }
       ]
     },
