@@ -153,8 +153,8 @@ function WritingMediaPage() {
       <div className={styles.pageHeader}>
         <Heading level={1}>Writing & Media Coverage</Heading>
         <Text type="body">
-          A collection of my non-academic writing and media appearances discussing urban policy, 
-          education equity, and spatial analysis research.
+          A collection of my non-academic writing and media appearances discussing school finance, 
+          education equity, and spatial analysis.
         </Text>
       </div>
 

@@ -382,6 +382,26 @@
       "topics": ["Data Preservation", "Education Access", "Data Analysis"]
      },
      {
+      "id": "article003",
+      "type": "article",
+      "title": "A District-by-District Accounting of the $6.2 Billion the U.S. Department of Education Has Held Back from Schools",
+      "publication": "New America Ed Central",
+      "date": "2025-07-07",
+      "url": "https://www.newamerica.org/education-policy/edcentral/a-district-by-district-accounting-of-the-62-billion-the-us-department-of-education-has-held-back-from-schools/",
+      "description": "The U.S. Department of Education is refusing to release billions of dollars for public schools. See the impact, by school system and congressional district.",
+      "topics": ["School Finance", "Education Access", "Federal Policy"]
+     },
+     {
+      "id": "article004",
+      "type": "article",
+      "title": "Which Congressional Districts Would Lose the Most K–12 Funding Under the Trump and House Education Budgets?",
+      "publication": "New America Ed Central",
+      "date": "2025-09-16",
+      "url": "https://www.newamerica.org/education-policy/edcentral/congressional-districts-losing-the-most-k12-funding-under-trump-and-house-budgets/",
+      "description": "This piece analyzes the impact of two federal education budget proposals—the Trump administration’s FY 2026 budget and the House of Representatives FY 2026 Appropriations bill—on schools and school systems in each congressional district.",
+      "topics": ["School Finance", "Education Access", "Federal Policy"]
+     },
+     {
       "id": "media001",
       "type": "media",
       "title": "Nevada Asked A.I. Which Students Need Help. The Answer Caused an Outcry.",
@@ -420,5 +440,15 @@
       "url": "https://revdem.ceu.edu/2025/03/25/dismantling-data/",
       "description": "Article detailing cuts to the Department of Education and its data collection infrastructure.",
       "context": "Quoted in article, along with link to my previous commentary on the subject."
+     },
+     {
+      "id": "media005",
+      "type": "media",
+      "title": "Who Will Bear the Brunt of Trump’s Hold on $6.8 Billion in School Funds?",
+      "outlet": "Education Week",
+      "date": "2025-07-07",
+      "url": "https://www.edweek.org/policy-politics/who-will-bear-the-brunt-of-trumps-hold-on-6-8-billion-in-school-funds/2025/07",
+      "description": "Article detailing how the administration's withholding of federal funds will impact districts.",
+      "context": "Research cited and exclusive data used to create public-facing interactive tool"
      }
   ]
