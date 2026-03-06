@@ -761,15 +761,15 @@ map.on('click', mainId, (e) => {
                 features: [
                     {
                         type: 'Feature',
-                        id: 'home-dc',
+                        id: 'home-pa',
                         geometry: {
                             type: 'Point',
-                            coordinates: [-78.0904984, 38.9210639] // Washington DC
+                            coordinates: [-122.1430, 37.4419] // Palo Alto
                         },
                         properties: {
                             type: 'home',
                             title: 'Home',
-                            location: 'Washington, DC',
+                            location: 'Palo Alto, CA',
                             icon: 'home'
                         }
                     },

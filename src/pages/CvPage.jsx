@@ -34,6 +34,10 @@ function CVPage() {
       <section className={cvStyles.cvSection}>
         <Heading level={2} className={cvStyles.cvSectionTitle}>Education</Heading>
          <div className={cvStyles.cvEntry}>
+           <Heading level={3} className={cvStyles.cvEntryTitle}>Ph.D. Education Data Science</Heading>
+           <Text type="metadata" className={cvStyles.cvEntryMeta}>Stanford University | 2026 – Present</Text>
+         </div>
+         <div className={cvStyles.cvEntry}>
            <Heading level={3} className={cvStyles.cvEntryTitle}>M.S. Data Science & Policy</Heading>
            <Heading level={4} className={cvStyles.cvMinorsTitle}>Concentration: Statistical Analysis</Heading>
            <Text type="metadata" className={cvStyles.cvEntryMeta}>Johns Hopkins University | 2023 – 2024</Text>
@@ -167,6 +171,10 @@ function CVPage() {
         <div className={cvStyles.cvEntry}>
           <Text type="body"><b>Invited Participant, APPAM Innovation Day for Public Policy Research</b> (2025)</Text>
           <Text type="metadata" className={cvStyles.cvEntryMeta}>Association for Public Policy Analysis and Management (APPAM)</Text>
+        </div>
+        <div className={cvStyles.cvEntry}>
+          <Text type="body"><b>ISEA Fellow</b></Text>
+          <Text type="metadata" className={cvStyles.cvEntryMeta}>University of Washington</Text>
         </div>
       </section>
 

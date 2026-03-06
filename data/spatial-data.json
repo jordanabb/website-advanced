@@ -226,6 +226,18 @@
       }
     },
     {
+      "id": "edu007",
+      "type": "education",
+      "title": "Ph.D. Education Data Science",
+      "institution": "Stanford University",
+      "location": "Palo Alto, CA",
+      "lat": 37.4275,
+      "lon": -122.1697,
+      "startDate": "2026-09",
+      "endDate": "Present",
+      "disciplines": ["Data Sci", "Policy", "Soc"]
+    },
+    {
       "id": "edu003",
       "type": "education",
       "title": "M.S. Data Science and Policy\nConcentration, Statistical Methods",
@@ -271,6 +283,18 @@
         "title": "Dreaming of a Free Cuba: A Comparative Analysis of Anti-Imperialist Rhetoric in Statebuilding and Solidarity",
         "publications": ["pub005"]
       }
+    },
+    {
+      "id": "edu008",
+      "type": "education",
+      "title": "ISEA Fellow",
+      "institution": "University of Washington",
+      "location": "Seattle, WA",
+      "lat": 47.6553,
+      "lon": -122.3035,
+      "startDate": "2026-01",
+      "endDate": "Present",
+      "disciplines": ["Policy", "Data Sci", "Soc"]
     },
     {
       "id": "edu006",

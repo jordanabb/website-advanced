@@ -23,6 +23,7 @@ dist
 *.njsproj
 *.sln
 *.sw?
+*.data-cuts.json
 
 # Environment variables
 .env            # Add this line if missing
