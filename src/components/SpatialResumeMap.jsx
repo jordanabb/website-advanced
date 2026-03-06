@@ -677,7 +677,7 @@ function SpatialResumeMap() {
                 const co=f.geometry.coordinates.slice(); 
                 while(Math.abs(e.lngLat.lng-co[0])>180){co[0]+=e.lngLat.lng>co[0]?360:-360;} 
                 const p=f.properties; 
-                const d=`<strong>${p.title||'Untitled'}</strong><br>Type: ${p.type||'N/A'}<br>Loc: ${p.location||'N/A'}${p.startDate?`<br>Start: ${p.startDate}`:''}${p.endDate && p.endDate !== "Present" ?`<br>End: ${p.endDate}`:''}${p.endDate === "Present" ? `<br>Ongoing`:''}${p.date&&!p.startDate?`<br>Date: ${p.date}`:''}`; 
+                const d=`<strong>${p.title||'Untitled'}</strong>${p.institution?`<br>${p.institution}`:''}<br>Type: ${p.type||'N/A'}<br>Loc: ${p.location||'N/A'}${p.startDate?`<br>Start: ${p.startDate}`:''}${p.endDate && p.endDate !== "Present" ?`<br>End: ${p.endDate}`:''}${p.endDate === "Present" ? `<br>Ongoing`:''}${p.date&&!p.startDate?`<br>Date: ${p.date}`:''}`; 
                 if(popupRef.current?.setLngLat){popupRef.current.setLngLat(co).setHTML(d).addTo(map);} 
             });
             // Inside map.once('load', ...) -> nodeLayersConfig.forEach(...)
@@ -863,7 +863,7 @@ map.on('click', mainId, (e) => {
         map.on('mouseenter', 'home-circle', (e) => {
             map.getCanvas().style.cursor = 'pointer';
             const coordinates = e.features[0].geometry.coordinates.slice();
-            const description = '<strong>Home</strong><br>Washington, DC';
+            const description = '<strong>Home</strong><br>Palo Alto, CA';
             if (popupRef.current?.setLngLat) {
                 popupRef.current.setLngLat(coordinates).setHTML(description).addTo(map);
             }
